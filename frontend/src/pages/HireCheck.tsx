@@ -10,10 +10,18 @@ interface Props {
   m: HireModule;
   qi: number;
   lang: Lang;
+  visual: boolean;
   onNext: (moduleComplete: boolean) => void;
 }
 
-export function HireCheck({ token, m, qi, lang, onNext }: Props) {
+const SURE = [
+  { v: 1, e: "🤔", k: "sure1" },
+  { v: 2, e: "🙂", k: "sure2" },
+  { v: 3, e: "💯", k: "sure3" },
+] as const;
+
+/** Untimed checks. Tap a picture or an answer, say how sure you are, get kind feedback. Free text can be typed or spoken. */
+export function HireCheck({ token, m, qi, lang, visual, onNext }: Props) {
   const q = m.questions[qi];
   const [sel, setSel] = useState<string | null>(null);
   const [text, setText] = useState("");
@@ -26,11 +34,11 @@ export function HireCheck({ token, m, qi, lang, onNext }: Props) {
 
   useEffect(() => { head.current?.focus(); }, [qi]);
 
-  const submit = async (answer: string) => {
+  const submit = async (answer: string, confidence?: number) => {
     setBusy(true);
     setErr("");
     try {
-      const r = await api.answer(token, m.id, q.id, answer);
+      const r = await api.answer(token, m.id, q.id, answer, confidence);
       setRes(r);
       if (r.passed) setHint(null);
       else if (r.hint_text) setHint(r.hint_text);
@@ -42,12 +50,15 @@ export function HireCheck({ token, m, qi, lang, onNext }: Props) {
 
   const retry = () => { setRes(null); setSel(null); };
   const passed = !!res?.passed;
+  const pics = visual && q.options.every((o) => o.icon);
 
   return (
     <div lang={HTML_LANG[lang]}>
-      <p className="muted" style={{ margin: "18px 0 0", fontSize: 16 }}>{m.icon} {m.title} · {tr("checkOf", lang, { n: qi + 1, total: m.questions.length })}</p>
+      <p className="muted" style={{ margin: "18px 0 0", fontSize: 15, fontFamily: "var(--font-ui)" }}>
+        {m.icon} {m.title} · {tr("checkOf", lang, { n: qi + 1, total: m.questions.length })} · {tr("noTimer", lang)}
+      </p>
       <h1 ref={head} tabIndex={-1} id="q-title" style={{ marginTop: 8 }}>{q.prompt}</h1>
-      <SpeakButton text={q.type === "mc" ? `${q.prompt} ${q.options.map((o, i) => `${"ABC"[i]}. ${o.text}`).join(". ")}` : q.prompt} lang={lang} />
+      <SpeakButton text={q.type === "mc" ? `${q.prompt} ${q.options.map((o, i) => `${i + 1}. ${o.text}`).join(". ")}` : q.prompt} lang={lang} />
 
       {!res && hint && (
         <div className="kind almost"><p className="fb">{tr("stepRedo", lang)}</p><mark>{hint}</mark></div>
@@ -56,18 +67,30 @@ export function HireCheck({ token, m, qi, lang, onNext }: Props) {
       {q.type === "mc" ? (
         <>
           <p className="muted" style={{ marginBottom: 0 }}>{tr("chooseOne", lang)}</p>
-          <div className="options" role="group" aria-labelledby="q-title">
-            {q.options.map((o, i) => (
+          <div className={`options ${pics ? "pics" : ""}`} role="group" aria-labelledby="q-title">
+            {q.options.map((o) => (
               <button key={o.id} type="button"
                 className={`option ${passed && sel === o.id ? "right" : ""}`}
                 aria-pressed={sel === o.id}
-                disabled={busy || passed || (!!res && !res.passed)}
-                onClick={() => { setSel(o.id); submit(o.id); }}>
-                <span className="letter" aria-hidden="true">{"ABC"[i]}</span>
+                disabled={busy || !!res}
+                onClick={() => setSel(o.id)}>
+                <span className="oi" aria-hidden="true">{o.icon}</span>
                 <span>{o.text}</span>
               </button>
             ))}
           </div>
+          {sel && !res && (
+            <div className="sure" role="group" aria-labelledby="sure-title">
+              <p id="sure-title">{tr("howSure", lang)}</p>
+              <div className="row-gap">
+                {SURE.map((s) => (
+                  <button key={s.v} type="button" disabled={busy} onClick={() => submit(sel, s.v)}>
+                    <span className="e" aria-hidden="true">{s.e}</span>{tr(s.k, lang)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </>
       ) : (
         <>
@@ -76,7 +99,7 @@ export function HireCheck({ token, m, qi, lang, onNext }: Props) {
             placeholder={tr("placeholder", lang)} disabled={busy || passed} />
           <div className="row-gap" style={{ marginTop: 12 }}>
             {mic.supported && !passed && (
-              <button type="button" className="hbtn ghost" aria-pressed={mic.listening} onClick={mic.listening ? mic.stop : mic.start} disabled={busy}>
+              <button type="button" className="hbtn" aria-pressed={mic.listening} onClick={mic.listening ? mic.stop : mic.start} disabled={busy}>
                 🎤 {mic.listening ? tr("listening", lang) : tr("speakAnswer", lang)}
               </button>
             )}
@@ -89,11 +112,11 @@ export function HireCheck({ token, m, qi, lang, onNext }: Props) {
         </>
       )}
 
-      {err && <p role="alert" style={{ color: "var(--primary)", fontWeight: 700 }}>{err}</p>}
+      {err && <p role="alert" style={{ color: "var(--danger)", fontWeight: 700 }}>{err}</p>}
       {res && <KindFeedback lang={lang} passed={res.passed} feedback={res.feedback} hint={res.passed ? null : hint} />}
 
       {res && !res.passed && q.type === "mc" && (
-        <div className="row-gap"><button type="button" className="hbtn ghost" onClick={retry}>{tr("tryAgain", lang)}</button></div>
+        <div className="row-gap"><button type="button" className="hbtn" onClick={retry}>{tr("tryAgain", lang)}</button></div>
       )}
       {res && passed && (
         <div className="row-gap"><button type="button" className="hbtn primary" onClick={() => onNext(res.module_complete)} autoFocus>{tr("next", lang)} →</button></div>

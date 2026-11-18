@@ -20,25 +20,25 @@ function ChannelPostCard({ p, i, meta }: { p: ChannelPost; i: number; meta: Meta
   };
   return (
     <motion.article
-      className="receipt paper torn"
-      initial={reduce ? { opacity: 0 } : { clipPath: "inset(0 0 100% 0)", y: -14 }}
-      animate={reduce ? { opacity: 1 } : { clipPath: "inset(0 0 -12px 0)", y: 0 }}
-      transition={{ duration: reduce ? 0.2 : 0.75, delay: i * 0.28, ease: [0.2, 0.7, 0.2, 1] }}
+      className="post"
+      initial={reduce ? { opacity: 0 } : { opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: i * 0.08 }}
       aria-label={`${p.label} post`}
     >
-      <div className="receipt-head">
+      <div className="post-head">
         <div>
-          <h3>{p.label.toUpperCase()}</h3>
+          <h3>{p.label}</h3>
           <small>{kind}</small>
         </div>
-        <span className={`count-badge ${over ? "over" : ""}`} title="Characters used / channel limit">{n} / {p.limit}</span>
+        <span className={`badge ${over ? "badge-danger" : ""}`} title="Characters used / channel limit">{n} / {p.limit}</span>
       </div>
       <pre lang={LANG_ATTR[p.lang.split("+")[0]]}>{p.text}</pre>
       <div className="fmt">{p.format_note}</div>
-      <div className="tkt-actions">
-        <button type="button" className="tbtn primary" onClick={copy} aria-live="polite">{copied ? "COPIED ✓" : "COPY"}</button>
+      <div className="row" style={{ marginTop: 12 }}>
+        <button type="button" className="btn btn-primary btn-sm" onClick={copy} aria-live="polite">{copied ? "Copied ✓" : "Copy"}</button>
         {/* [DEMO ONLY] Real platform publishing needs accounts we don't assume access to. */}
-        <DemoOnly className="tbtn">PUBLISH</DemoOnly>
+        <DemoOnly className="btn btn-sm">Publish</DemoOnly>
       </div>
     </motion.article>
   );
@@ -85,11 +85,12 @@ export default function ManagerOrderIn() {
   return (
     <div className="mgr">
       <ManagerHeader />
-      <main id="main" className="order-page">
-        <form className="order-form paper torn" onSubmit={submit} aria-labelledby="order-title">
-          <div className="tkt-head"><span><b>NEW ORDER</b> · ONE ENTRY</span><span>{new Date().toLocaleDateString()}</span></div>
-          <h1 id="order-title" style={{ marginTop: 14 }}>DESCRIBE THE ROLE ONCE</h1>
-          <p style={{ margin: "6px 0 0", fontSize: 13.5, color: "var(--muted)" }}>We print it for every channel, in every language you pick.</p>
+      <main id="main" className="page">
+        <div className="page-head"><div><h1>Post a job</h1><p>Describe the role once. FirstShift writes it for every channel and language.</p></div></div>
+        <div className="order-grid">
+        <form className="panel" onSubmit={submit} aria-labelledby="order-title">
+                    <h2 id="order-title">Role details</h2>
+          <p className="muted" style={{ margin: "4px 0 0", fontSize: 13.5 }}>One entry, every channel.</p>
 
           <span className="field-label" id="role-l">Role</span>
           <div className="seg" role="group" aria-labelledby="role-l">
@@ -99,29 +100,29 @@ export default function ManagerOrderIn() {
                 setTitle(r === "server" ? "Weekend server" : "Weekend dumpling prep");
                 setReqs(r === "server" ? ["no_experience", "weekends", "standing"] : ["no_experience", "standing", "lifting", "food_handler"]);
               }}>
-                {r === "server" ? "SERVER · FRONT" : "KITCHEN PREP · BACK"}
+                {r === "server" ? "Server" : "Kitchen prep"}
               </button>
             ))}
           </div>
 
           <label className="field-label" htmlFor="f-title">Job title</label>
-          <input id="f-title" className="uline" value={title} onChange={(e) => setTitle(e.target.value)} required />
+          <input id="f-title" className="input" value={title} onChange={(e) => setTitle(e.target.value)} required />
 
           <label className="field-label" htmlFor="f-pay">Pay range</label>
-          <input id="f-pay" className="uline" value={pay} onChange={(e) => setPay(e.target.value)} placeholder="e.g. $20–$24/hr + tips" />
+          <input id="f-pay" className="input" value={pay} onChange={(e) => setPay(e.target.value)} placeholder="e.g. $20–$24/hr + tips" />
 
           <label className="field-label" htmlFor="f-sched">Shifts</label>
-          <input id="f-sched" className="uline" value={schedule} onChange={(e) => setSchedule(e.target.value)} />
+          <input id="f-sched" className="input" value={schedule} onChange={(e) => setSchedule(e.target.value)} />
 
           <span className="field-label" id="req-l">What you need</span>
-          <div className="chips" role="group" aria-labelledby="req-l">
+          <div className="row" role="group" aria-labelledby="req-l">
             {meta && Object.entries(meta.requirements).map(([k, v]) => (
               <button type="button" key={k} className="chip" aria-pressed={reqs.includes(k)} onClick={() => setReqs(toggle(reqs, k))}>{v.en}</button>
             ))}
           </div>
 
           <span className="field-label" id="lang-l">Languages welcome (training in each)</span>
-          <div className="chips" role="group" aria-labelledby="lang-l">
+          <div className="row" role="group" aria-labelledby="lang-l">
             {meta?.languages.map((l) => (
               <button type="button" key={l.code} className="chip" aria-pressed={langs.includes(l.code)}
                 disabled={l.code === "en"} title={l.code === "en" ? "English is always included" : undefined}
@@ -138,36 +139,37 @@ export default function ManagerOrderIn() {
           <label className="field-label" htmlFor="f-notes">Anything else (optional)</label>
           <textarea id="f-notes" className="ta" rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="e.g. Staff meal included" />
 
-          {err && <p role="alert" style={{ color: "var(--primary)", fontWeight: 700 }}>{err}</p>}
-          <button type="submit" className="fire" disabled={busy}>{busy ? "PRINTING…" : "FIRE A POSTING"}</button>
+          {err && <p role="alert" style={{ color: "var(--danger)", fontWeight: 600 }}>{err}</p>}
+          <button type="submit" className="btn btn-primary btn-block" style={{ marginTop: 20, minHeight: 46 }} disabled={busy}>{busy ? "Writing posts…" : "Generate posts"}</button>
         </form>
 
         <section aria-labelledby="out-title" aria-live="polite">
-          <div className="receipts-head">
-            <h2 id="out-title">{job ? `${job.posts.length} CHANNELS · ${job.title.toUpperCase()}` : "THE PRINTER"}</h2>
+          <div className="row" style={{ marginBottom: 14 }}>
+            <h2 id="out-title" style={{ margin: 0, fontSize: 18 }}>{job ? `${job.posts.length} channel posts · ${job.title}` : "Channel posts"}</h2>
             {job && (
               <>
-                <a className="tool" href={`/api/jobs/${job.id}/export?fmt=csv`} download>⤓ Export CSV</a>
-                <a className="tool" href={`/api/jobs/${job.id}/export?fmt=json`} download>⤓ Export JSON</a>
+                <a className="btn btn-sm" style={{ marginLeft: "auto" }} href={`/api/jobs/${job.id}/export?fmt=csv`} download>Export CSV</a>
+                <a className="btn btn-sm" href={`/api/jobs/${job.id}/export?fmt=json`} download>Export JSON</a>
               </>
             )}
-            <p>Copy each post to its channel, or export them all. Publishing straight to job boards comes in the pilot.</p>
+            <p className="muted" style={{ flexBasis: "100%", margin: 0, fontSize: 13.5 }}>Copy each post to its channel, or export them all. Publishing straight to job boards comes in the pilot.</p>
           </div>
           {!job && (
-            <div className="empty-receipts">
-              <b>NOTHING PRINTING YET</b>
-              Fill in the ticket and press FIRE A POSTING. One entry prints a job-board listing, a classifieds ad,
+            <div className="empty">
+              <b>No posts yet</b>
+              Fill in the role and press Generate posts. One entry writes a job-board listing, a classifieds ad,
               WeChat and WhatsApp messages, an in-store flyer, a bilingual post and an easy-read version.
             </div>
           )}
           {job && (
-            <div className="receipts" key={printKey}>
+            <div className="posts" key={printKey}>
               {job.posts.map((p, i) => <ChannelPostCard key={p.channel} p={p} i={i} meta={meta} />)}
             </div>
           )}
         </section>
+        </div>
       </main>
-      <p className="footer-note">AI: {meta?.ai.provider ?? "…"} mode · Posts are drafts for the manager to check before posting.</p>
+      <p className="footer-note">AI: {meta?.ai.provider === "converge+fallback" ? "Converge.AI Enter (live, cached)" : "offline mock"} · Posts are drafts to check before posting.</p>
     </div>
   );
 }

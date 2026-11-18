@@ -2,15 +2,16 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ConfidencePicker } from "../components/ConfidencePicker";
 import { SpeakButton } from "../components/SpeakButton";
-import { api, type HireModule, type Lang, type Meta, type Training } from "../lib/api";
+import { api, type Format, type HireModule, type Lang, type Meta, type Training } from "../lib/api";
 import { HTML_LANG, tr } from "../lib/i18n";
 import { HireCheck } from "./HireCheck";
 import { HireDone } from "./HireDone";
 import { HireLanguage } from "./HireLanguage";
-import { HireLesson } from "./HireLesson";
+import { HireLesson, defaultFormat } from "./HireLesson";
+import { HirePrefs } from "./HirePrefs";
 
 type View =
-  | { k: "loading" } | { k: "error" } | { k: "lang" } | { k: "home" }
+  | { k: "loading" } | { k: "error" } | { k: "lang" } | { k: "prefs" } | { k: "home" }
   | { k: "lesson"; mid: number; i: number }
   | { k: "check"; mid: number; qi: number }
   | { k: "confidence"; mid: number }
@@ -27,6 +28,7 @@ export default function HireFlow() {
   const [view, setView] = useState<View>({ k: "loading" });
   const [big, setBig] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [format, setFormat] = useState<Format | null>(null);
   const langRef = useRef<Lang>("en");
   const sentBackKey = useRef<string>("");
 
@@ -69,10 +71,21 @@ export default function HireFlow() {
     setBusy(true);
     try {
       await api.setLang(token, l);
-      await load(l);
+      const d = await load(l);
+      setView(d.hire.prefs.length ? { k: "home" } : { k: "prefs" });
+    } finally { setBusy(false); }
+  };
+
+  const savePrefs = async (prefs: string[]) => {
+    setBusy(true);
+    try {
+      await api.setPrefs(token, prefs);
+      await load(lang);
+      setFormat(defaultFormat(prefs));
       setView({ k: "home" });
     } finally { setBusy(false); }
   };
+  const fmt: Format = format ?? defaultFormat(data?.hire.prefs ?? []);
 
   const mod = (mid: number): HireModule | undefined => data?.modules.find((m) => m.id === mid);
   const nextModule = data?.modules.find((m) => !m.passed);
@@ -105,6 +118,8 @@ export default function HireFlow() {
     );
   } else if (view.k === "lang") {
     body = <HireLanguage current={lang} onPick={pickLang} meta={meta} />;
+  } else if (view.k === "prefs") {
+    body = <HirePrefs lang={lang} initial={data.hire.prefs} onDone={savePrefs} busy={busy} />;
   } else if (view.k === "home") {
     const sb = data.hire.sent_back;
     const waiting = data.hire.status === "REVIEW" && data.modules.every((m) => m.passed);
@@ -112,7 +127,7 @@ export default function HireFlow() {
       <div lang={HTML_LANG[lang]}>
         <h1>{tr("welcome", lang, { name: data.hire.first_name })}</h1>
         <p className="lead">{tr("welcomeSub", lang)}</p>
-        <p className="muted" style={{ marginTop: 10, fontSize: 16 }}>{tr("yourRole", lang)}: <b style={{ color: "var(--ink)" }}>{data.hire.role_title}</b></p>
+        <p className="muted" style={{ marginTop: 10, fontSize: 16 }}>{tr("yourRole", lang)}: <b style={{ color: "var(--text)" }}>{data.hire.role_title}</b></p>
         <div style={{ marginTop: 12 }}>
           <SpeakButton text={`${tr("welcome", lang, { name: data.hire.first_name })} ${tr("welcomeSub", lang)}`} lang={lang} />
         </div>
@@ -127,7 +142,7 @@ export default function HireFlow() {
         )}
 
         {waiting && (
-          <div className="note-card" style={{ borderLeftColor: "var(--secondary)" }} role="status" aria-live="polite">
+          <div className="note-card info" role="status" aria-live="polite">
             <p style={{ margin: 0, fontWeight: 700 }}>{tr("allDone", lang)}</p>
             <p style={{ margin: "6px 0 0" }} className="spinner-dots">{tr("allDoneSub", lang)}</p>
           </div>
@@ -163,11 +178,12 @@ export default function HireFlow() {
     );
   } else if (view.k === "lesson") {
     const m = mod(view.mid)!;
-    body = <HireLesson m={m} i={view.i} lang={lang} onIndex={(i) => setView({ k: "lesson", mid: m.id, i })}
+    body = <HireLesson token={token} m={m} i={view.i} lang={lang} format={fmt} prefs={data.hire.prefs} onFormat={setFormat}
+      onIndex={(i) => setView({ k: "lesson", mid: m.id, i })}
       onChecks={() => startChecks(m)} onHome={() => setView({ k: "home" })} />;
   } else if (view.k === "check") {
     const m = mod(view.mid)!;
-    body = <HireCheck key={`${m.id}-${view.qi}`} token={token} m={m} qi={view.qi} lang={lang}
+    body = <HireCheck key={`${m.id}-${view.qi}`} token={token} m={m} qi={view.qi} lang={lang} visual={data.hire.prefs.includes("visual")}
       onNext={(complete) => {
         if (complete || view.qi + 1 >= m.questions.length) setView({ k: "confidence", mid: m.id });
         else setView({ k: "check", mid: m.id, qi: view.qi + 1 });
@@ -183,7 +199,7 @@ export default function HireFlow() {
         <div className="big-ico" style={{ fontSize: 80, marginTop: 30 }} aria-hidden="true">{m?.icon}</div>
         <h1 tabIndex={-1} ref={(el) => el?.focus()}>{tr("moduleDone", lang, { module: m?.title ?? "" })}</h1>
         {all ? (
-          <div className="note-card" style={{ borderLeftColor: "var(--secondary)", textAlign: "left" }} role="status" aria-live="polite">
+          <div className="note-card info" style={{ textAlign: "left" }} role="status" aria-live="polite">
             <p style={{ margin: 0, fontWeight: 700 }}>{tr("allDone", lang)}</p>
             <p style={{ margin: "6px 0 0" }} className="spinner-dots">{tr("allDoneSub", lang)}</p>
           </div>
@@ -194,7 +210,7 @@ export default function HireFlow() {
               {tr("nextStep", lang)}: {nextModule.title} →
             </button>
           ) : (
-            <button type="button" className="hbtn ghost" onClick={() => setView({ k: "home" })}>{tr("home", lang)}</button>
+            <button type="button" className="hbtn" onClick={() => setView({ k: "home" })}>{tr("home", lang)}</button>
           )}
         </div>
       </div>
@@ -205,12 +221,17 @@ export default function HireFlow() {
 
   const showTop = data && view.k !== "loading" && view.k !== "error";
   return (
-    <div className="hire paper" style={{ ["--hire-size" as string]: big ? "24px" : "20px" }}>
+    <div className="hire" style={{ ["--hire-size" as string]: big ? "24px" : "20px" }}>
       <div className="hire-inner">
         {showTop && (
           <div className="hire-top">
-            <span><b>#{String(data!.hire.ticket_no).padStart(4, "0")}</b> · <span lang={HTML_LANG[lang]}>{data!.hire.role_title}</span></span>
+            <span><b>FirstShift</b> · <span lang={HTML_LANG[lang]}>{data!.hire.role_title}</span></span>
             <span className="hire-top-tools">
+              {view.k !== "lang" && view.k !== "prefs" && view.k !== "ready" && (
+                <button type="button" className="mini" onClick={() => setView({ k: "prefs" })} aria-label={tr("myPrefs", lang)} title={tr("myPrefs", lang)}>
+                  ⚙
+                </button>
+              )}
               {view.k !== "lang" && view.k !== "ready" && (
                 <button type="button" className="mini" onClick={() => setView({ k: "lang" })} aria-label={tr("language", lang)}>
                   🌐 <span lang={HTML_LANG[lang]}>{NATIVE[lang]}</span>

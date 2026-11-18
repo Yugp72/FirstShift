@@ -1,23 +1,24 @@
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { DemoOnly } from "../components/DemoOnly";
 import { InsightsDrawer } from "../components/InsightsDrawer";
 import { ManagerHeader } from "../components/ManagerHeader";
 import { MetricsStrip } from "../components/MetricsStrip";
+import { Passport } from "../components/Passport";
 import { SendBackDialog } from "../components/SendBackDialog";
-import { Stamp } from "../components/Stamp";
-import { Holes, TicketCard, TicketHeader } from "../components/Ticket";
-import { DemoOnly } from "../components/DemoOnly";
+import { Seal } from "../components/Stamp";
+import { PersonCard } from "../components/Ticket";
 import { api, LANG_CHIP, type Board, type Meta, type Status, type Ticket } from "../lib/api";
 import { bell } from "../lib/sound";
 import { subscribeBoard } from "../lib/sse";
 
-const COLS: { key: "ORDER_IN" | Status; label: string; sub: string }[] = [
-  { key: "ORDER_IN", label: "ORDER IN", sub: "Postings out" },
-  { key: "APPLIED", label: "ON THE BOARD", sub: "Applied" },
-  { key: "TRAINING", label: "FIRING", sub: "In training" },
-  { key: "REVIEW", label: "AT THE PASS", sub: "Ready for your check" },
-  { key: "SHIFT_READY", label: "SHIFT-READY", sub: "Stamped" },
+const COLS: { key: "POSTED" | Status; label: string }[] = [
+  { key: "POSTED", label: "Job posts" },
+  { key: "APPLIED", label: "Applied" },
+  { key: "TRAINING", label: "In training" },
+  { key: "REVIEW", label: "Ready for review" },
+  { key: "SHIFT_READY", label: "Shift-ready" },
 ];
 
 export default function ManagerRail() {
@@ -27,26 +28,24 @@ export default function ManagerRail() {
   const [sound, setSound] = useState(false);
   const soundRef = useRef(false);
   soundRef.current = sound;
-  const [swing, setSwing] = useState<Set<number>>(new Set());
+  const [glow, setGlow] = useState<Set<number>>(new Set());
   const [openLink, setOpenLink] = useState<number | null>(null);
   const [busy, setBusy] = useState<number | null>(null);
-  const [stamping, setStamping] = useState<Ticket | null>(null);
+  const [approving, setApproving] = useState<Ticket | null>(null);
   const [sendBack, setSendBack] = useState<Ticket | null>(null);
+  const [passportId, setPassportId] = useState<number | null>(null);
   const [gapsOpen, setGapsOpen] = useState(false);
-  const [toast, setToast] = useState<string>("");
-  const [live, setLive] = useState<string>("");
+  const [toast, setToast] = useState("");
+  const [live, setLive] = useState("");
   const loading = useRef(false);
   const pending = useRef(false);
 
   const load = useCallback(async () => {
     if (loading.current) { pending.current = true; return; }
     loading.current = true;
-    try {
-      setBoard(await api.board());
-      setErr("");
-    } catch (e) {
-      setErr((e as Error).message);
-    } finally {
+    try { setBoard(await api.board()); setErr(""); }
+    catch (e) { setErr((e as Error).message); }
+    finally {
       loading.current = false;
       if (pending.current) { pending.current = false; load(); }
     }
@@ -60,9 +59,9 @@ export default function ManagerRail() {
       if (ev.type === "ticket.moved" && ev.to === "REVIEW" && ev.candidate_id) {
         const id = ev.candidate_id;
         if (soundRef.current) bell();
-        setSwing((s) => new Set(s).add(id));
-        setLive("A ticket just arrived at the pass.");
-        window.setTimeout(() => setSwing((s) => { const n = new Set(s); n.delete(id); return n; }), 1700);
+        setGlow((s) => new Set(s).add(id));
+        setLive("Someone just finished training and is ready for review.");
+        window.setTimeout(() => setGlow((s) => { const n = new Set(s); n.delete(id); return n; }), 1800);
       }
       load();
     });
@@ -74,109 +73,102 @@ export default function ManagerRail() {
     return () => window.clearTimeout(id);
   }, [toast]);
 
+  const all = board ? Object.values(board.columns).flat() : [];
+  const passport = all.find((t) => t.id === passportId) ?? null;
+
   const hire = async (t: Ticket) => {
     setBusy(t.id);
-    try {
-      await api.hire(t.id);
-      setOpenLink(t.id);
-      await load();
-    } catch (e) { setToast((e as Error).message); }
+    try { await api.hire(t.id); setOpenLink(t.id); await load(); }
+    catch (e) { setToast((e as Error).message); }
     setBusy(null);
   };
 
-  const stamp = async (t: Ticket) => {
+  const approve = async (t: Ticket) => {
     if (!t.hire) return;
     setBusy(t.id);
-    setStamping(t);
-    try {
-      await api.stamp(t.hire.id);
-    } catch (e) { setToast((e as Error).message); }
+    setPassportId(null);
+    setApproving(t);
+    try { await api.stamp(t.hire.id); } catch (e) { setToast((e as Error).message); }
     window.setTimeout(() => {
-      setStamping(null);
+      setApproving(null);
       setBusy(null);
-      setLive(`${t.name} is stamped shift-ready.`);
+      setLive(`${t.name} is approved for their first shift.`);
       load();
-    }, 1900);
+    }, 1800);
   };
 
   const reset = async () => {
     await api.reset();
     setOpenLink(null);
+    setPassportId(null);
     setToast("Demo data reset.");
     load();
   };
 
-  const colItems = (key: string): Ticket[] => (board && key !== "ORDER_IN" ? board.columns[key as Status] : []);
-
   return (
     <div className="mgr">
       <ManagerHeader>
-        <button type="button" className="tool" aria-pressed={sound} onClick={() => { setSound(!sound); if (!sound) bell(); }}>
-          {sound ? "🔔 Bell on" : "🔕 Bell off"}
+        <button type="button" className="btn btn-sm hide-sm" aria-pressed={sound} onClick={() => { setSound(!sound); if (!sound) bell(); }}>
+          {sound ? "Sound on" : "Sound off"}
         </button>
-        <button type="button" className="tool" onClick={reset}>↺ Reset demo</button>
+        <button type="button" className="btn btn-sm" onClick={reset}>Reset demo</button>
       </ManagerHeader>
 
-      <main id="main" className="rail-page">
-        <div className="rail-title">
-          <h1>THE RAIL</h1>
-          <p>Every new hire is a ticket. Watch it move from posting to shift-ready, then stamp it.</p>
+      <main id="main" className="page">
+        <div className="page-head">
+          <div>
+            <h1>Hiring pipeline</h1>
+            <p>From job post to first shift. Open anyone's passport to see what they learned, how, and how sure they feel.</p>
+          </div>
+          <button type="button" className="btn" style={{ marginLeft: "auto" }} onClick={() => setGapsOpen(true)}>Team knowledge gaps</button>
         </div>
-        {err && <p role="alert" className="col-empty" style={{ marginBottom: 16 }}>Can't reach the kitchen: {err}</p>}
 
-        <div className="rail">
-          <div className="rail-bar" aria-hidden="true" />
+        {board && <MetricsStrip m={board.metrics} />}
+        {err && <p role="alert" className="col-empty" style={{ marginBottom: 16 }}>Can't reach the server: {err}</p>}
+
+        <div className="board-wrap">
           <LayoutGroup>
-            <div className="cols">
+            <div className="board">
               {COLS.map((c) => {
-                const items = colItems(c.key);
-                const count = c.key === "ORDER_IN" ? board?.jobs.length ?? 0 : items.length;
+                const items = board && c.key !== "POSTED" ? board.columns[c.key] : [];
+                const count = c.key === "POSTED" ? board?.jobs.length ?? 0 : items.length;
                 return (
                   <section key={c.key} className="col" data-col={c.key} aria-labelledby={`col-${c.key}`}>
-                    <div className="clip">
+                    <div className="col-head">
+                      <span className="dot" aria-hidden="true" />
                       <h2 id={`col-${c.key}`}>{c.label}</h2>
-                      <small>{c.sub}</small>
-                      <span className="count" aria-label={`${count} tickets`}>{count}</span>
+                      <span className="count" aria-label={`${count} items`}>{count}</span>
                     </div>
 
-                    {c.key === "ORDER_IN" && board?.jobs.map((j) => (
-                      <article key={`job-${j.id}`} className="tkt paper job-tkt" aria-label={`Posting: ${j.title}`}>
-                        <div className="tkt-head"><span><b>POSTING</b> · {j.role === "server" ? "FRONT" : "KITCHEN"}</span><span>{j.channels} CH</span></div>
-                        <div className="tkt-name">{j.title}</div>
-                        <div className="tkt-meta">{j.schedule}</div>
+                    {c.key === "POSTED" && board?.jobs.map((j) => (
+                      <article key={`job-${j.id}`} className="pcard job-card" aria-label={`Job post: ${j.title}`}>
+                        <div className="pcard-name">{j.title}</div>
+                        <div className="pcard-sub">{j.schedule}</div>
                         <div className="pay">{j.pay_range}</div>
-                        <div className="lang-chips">{j.languages.map((l) => <span className="chip-s" key={l}>{LANG_CHIP[l]}</span>)}</div>
-                        <div className="tkt-meta" style={{ marginTop: 8 }}>{j.applicants} applicants</div>
-                        <div className="tkt-actions">
-                          <Link className="tbtn" to={`/manager/new?job=${j.id}`} style={{ textDecoration: "none", display: "inline-flex", alignItems: "center" }}>VIEW POSTS</Link>
+                        <div className="pcard-meta">
+                          {j.languages.map((l) => <span className="badge" key={l}>{LANG_CHIP[l]}</span>)}
+                          <span className="badge">{j.channels} channels</span>
+                        </div>
+                        <div className="pcard-sub" style={{ marginTop: 8 }}>{j.applicants} applicants</div>
+                        <div className="pcard-actions">
+                          <Link className="btn btn-sm" to={`/manager/new?job=${j.id}`}>View posts</Link>
                           {/* [DEMO ONLY] */}
-                          <DemoOnly className="tbtn">86 THIS POSTING</DemoOnly>
+                          <DemoOnly className="btn btn-sm">Close post</DemoOnly>
                         </div>
                       </article>
                     ))}
-                    {c.key === "ORDER_IN" && (
-                      <Link to="/manager/new" className="col-empty" style={{ textDecoration: "none", color: "var(--paper)" }}>+ FIRE A NEW POSTING</Link>
-                    )}
+                    {c.key === "POSTED" && <Link to="/manager/new" className="col-empty">+ Post a new job</Link>}
 
                     <AnimatePresence initial={false}>
                       {items.map((t) => (
-                        <TicketCard
-                          key={t.id}
-                          t={t}
-                          publicBase={board?.public_base ?? null}
-                          linkOpen={openLink === t.id}
-                          swing={swing.has(t.id)}
-                          busy={busy === t.id}
+                        <PersonCard key={t.id} t={t} publicBase={board?.public_base ?? null}
+                          linkOpen={openLink === t.id} highlight={glow.has(t.id)} busy={busy === t.id}
+                          onOpen={() => setPassportId(t.id)}
                           onToggleLink={() => setOpenLink(openLink === t.id ? null : t.id)}
-                          onHire={() => hire(t)}
-                          onStamp={() => stamp(t)}
-                          onSendBack={() => setSendBack(t)}
-                        />
+                          onHire={() => hire(t)} onApprove={() => approve(t)} onSendBack={() => setSendBack(t)} />
                       ))}
                     </AnimatePresence>
-                    {c.key !== "ORDER_IN" && board && items.length === 0 && (
-                      <div className="col-empty">{c.key === "REVIEW" ? "Nobody at the pass yet." : "Empty."}</div>
-                    )}
+                    {c.key !== "POSTED" && board && items.length === 0 && <div className="col-empty">No one here yet.</div>}
                   </section>
                 );
               })}
@@ -185,36 +177,34 @@ export default function ManagerRail() {
         </div>
       </main>
 
-      <p className="footer-note" style={{ paddingBottom: 110 }}>Sample training content · All people are DEMO DATA · AI: {meta?.ai.provider ?? "…"} mode</p>
+      <p className="footer-note">Sample training content · All people are demo data · AI: {meta?.ai.provider === "converge+fallback" ? "Converge.AI Enter (live, cached)" : "offline mock"}</p>
 
-      {board && <MetricsStrip m={board.metrics} onGaps={() => setGapsOpen(true)} />}
+      <Passport t={passport} publicBase={board?.public_base ?? null} onClose={() => setPassportId(null)}
+        onApprove={approve} onSendBack={(t) => { setPassportId(null); setSendBack(t); }} />
       <InsightsDrawer open={gapsOpen} onClose={() => setGapsOpen(false)} />
 
       {sendBack && (
         <SendBackDialog t={sendBack} meta={meta} onClose={() => setSendBack(null)}
           onSent={(r) => {
             setSendBack(null);
-            setToast(r.translated ? `Sent in ${r.lang.toUpperCase()}: “${r.note}”` : `Sent (shown in English; live AI translates custom notes): “${r.note}”`);
+            setToast(r.translated ? `Sent in ${r.lang.toUpperCase()}: “${r.note}”` : `Sent: “${r.note}”`);
             load();
           }} />
       )}
 
       <AnimatePresence>
-        {stamping && (
-          <motion.div className="stamp-stage" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}>
-            <motion.div className="tkt paper" initial={{ scale: 0.9, y: 30 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.8, opacity: 0 }}>
-              <TicketHeader t={{ ...stamping, hire: stamping.hire && { ...stamping.hire } }} />
-              <div className="tkt-name">{stamping.name}</div>
-              <div className="tkt-meta">{stamping.job_title}</div>
-              <div className="tkt-row"><Holes t={stamping} /><span className="tkt-meta">first try {stamping.hire?.first_try_pct}%</span></div>
-              <p className="tkt-summary" style={{ minHeight: 150 }}>Approved by manager<br />{new Date().toLocaleString()}</p>
-              <Stamp animate delay={0.25} style={{ right: 26, top: 96, width: 180, height: 180 }} />
+        {approving && (
+          <motion.div className="approve-stage" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <motion.div className="approve-card" initial={{ y: 16, scale: 0.97 }} animate={{ y: 0, scale: 1 }}>
+              <Seal animate delay={0.1} />
+              <h2>{approving.name} is shift-ready</h2>
+              <p className="muted" style={{ margin: 0 }}>Approved with evidence · their phone updates now</p>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {toast && <div className="toast paper" role="status">{toast}</div>}
+      {toast && <div className="toast" role="status">{toast}</div>}
       <div className="sr-only" aria-live="polite">{live}</div>
     </div>
   );

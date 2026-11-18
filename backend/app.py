@@ -28,7 +28,7 @@ async def lifespan(_: FastAPI):
 app = FastAPI(title="FirstShift", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
-for r in (jobs.router, hires.router, training.router, events.router, demo.router):
+for r in (jobs.router, hires.router, training.router, training.media_router, events.router, demo.router):
     app.include_router(r)
 
 
@@ -36,6 +36,10 @@ for r in (jobs.router, hires.router, training.router, events.router, demo.router
 async def health():
     return {"ok": True, **provider_info()}
 
+
+MEDIA_DIR = Path(__file__).resolve().parent.parent / "media"
+MEDIA_DIR.mkdir(exist_ok=True)
+app.mount("/media", StaticFiles(directory=MEDIA_DIR), name="media")  # Framia assets downloaded locally
 
 if DIST.exists():
     app.mount("/assets", StaticFiles(directory=DIST / "assets"), name="assets")

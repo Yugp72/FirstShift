@@ -22,11 +22,21 @@ Tests: `make test`. Reset demo data before each take: `make demo-reset` (or the 
 | URL | Who | What to show |
 |---|---|---|
 | `/manager/new` | Manager | **ORDER IN.** Describe the role once, press **FIRE A POSTING**, and 7 receipts print: job board, classifieds, WeChat (中文), WhatsApp (ES), flyer, bilingual and easy-read. Each has a character-limit badge and Copy. Export the lot as CSV or JSON. |
-| `/manager` | Manager | **THE RAIL.** Tickets run ORDER IN → ON THE BOARD → FIRING → AT THE PASS → SHIFT-READY. Mei scored 100% but feels 😟, so she's flagged **Needs a buddy shift**. Jorge felt 💪 but missed allergy checks, so he's flagged **Double-check**. |
+| `/t/hana-demo` | Hana, on her phone | Pick English, then captions and picture steps. The lesson opens on captioned Video. Switch to Pictures, tap a picture answer, and say how sure you are. |
+| `/manager` | Manager | **Pipeline.** Open Daniel's passport (Deaf, learns visually): captioned video and picture steps, with a seated station in his setup notes. |
+| `/manager` | Manager | **THE RAIL (older wording).** Tickets run ORDER IN → ON THE BOARD → FIRING → AT THE PASS → SHIFT-READY. Mei scored 100% but feels 😟, so she's flagged **Needs a buddy shift**. Jorge felt 💪 but missed allergy checks, so he's flagged **Double-check**. |
 | `/t/lin-demo` | Lin, on her phone | Tap 中文, then open the allergy lesson and hit 听一听 to hear it read aloud. Miss a check to get kind feedback ("差一点…") with the lesson line highlighted. Type a free-text answer in Mandarin and the AI grades it in Mandarin. Then tap 💪. |
 | `/manager` | Manager | Lin's ticket swings into AT THE PASS. Turn the bell on to hear it ring. Press **STAMP READY** and the gold 可以/READY chop slams down, and lands on Lin's phone too, read aloud. |
 
 Other parts: **SEND BACK** sends a kind note, translated into the hire's language, and reopens one step. **TEAM KNOWLEDGE GAPS** lists the most-missed checks across all hires. Use **HIRE → FIRE TRAINING** on any applicant to get a link and QR code. For phone testing on your LAN, set `FS_PUBLIC_URL=http://<your-ip>:5173` so the QR code points at your machine.
+
+## Accessibility: every language, every ability
+
+- **"How do you learn best?"** comes after the language picker. Hires can pick captions, picture steps, read aloud, a seated station, or extra time. These are framed as work preferences, not a disability disclosure.
+- **Every lesson has four formats:** captioned **Video**, **Pictures** (picture steps), **Listen** (plays every step aloud, highlighting the current one), and **Read** (text cards). The default follows the hire's preferences. Captions come from `/api/media/{module}/captions.vtt?lang=` in all three languages, so one video works for every language.
+- **Checks have no time limit.** Answers can be tapped as pictures or as text, and free-text answers can be typed or spoken. After each answer, the hire says how sure they were. A confidently wrong answer on an allergen check raises a red flag for the manager.
+- **The readiness passport** (on the manager's pipeline) shows, for each step, the first-try score, how the hire felt, and which formats they used. It also shows their preferences and setup notes for the first shift (e.g. "Offer a seated prep station"). Approval is one click.
+- **Framia media:** follow [framia/brief.md](framia/brief.md), then run `python -m backend.import_media framia/out`. Until then, lessons use a captioned walkthrough.
 
 ## How it's built
 

@@ -19,10 +19,10 @@ export function InsightsDrawer({ open, onClose }: { open: boolean; onClose: () =
       {open && (
         <>
           <motion.div className="scrim" onClick={onClose} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
-          <motion.aside className="drawer paper" role="dialog" aria-modal="true" aria-labelledby="gaps-title"
+          <motion.aside className="drawer" role="dialog" aria-modal="true" aria-labelledby="gaps-title"
             initial={{ x: 460 }} animate={{ x: 0 }} exit={{ x: 460 }} transition={{ type: "spring", stiffness: 320, damping: 34 }}>
             <button ref={closeRef} type="button" className="close-x" onClick={onClose} aria-label="Close">×</button>
-            <h2 id="gaps-title">TEAM KNOWLEDGE GAPS</h2>
+            <h2 id="gaps-title">Team knowledge gaps</h2>
             <p className="sub">Most-missed checks on first try, across every hire. Fix the lesson once, not the person every time.</p>
             {gaps === null && <p className="sub">Loading…</p>}
             {gaps?.length === 0 && <p className="sub">No gaps yet. Every check passed on first try.</p>}

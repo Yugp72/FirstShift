@@ -22,7 +22,7 @@ def seed() -> None:
     mock = MockProvider()
     conn.execute("BEGIN")
     try:
-        for t in ["attempt", "module_result", "hire", "candidate", "job", "module"]:
+        for t in ["attempt", "module_result", "format_use", "hire", "candidate", "job", "module"]:
             conn.execute(f"DELETE FROM {t}")
 
         modules: dict[str, dict] = {}
@@ -60,18 +60,22 @@ def seed() -> None:
             started = now - timedelta(days=h["started_days_ago"], hours=2)
             stamped = now - timedelta(days=h["stamped_days_ago"]) if "stamped_days_ago" in h else None
             cur = conn.execute(
-                "INSERT INTO hire(candidate_id,token,lang,started_at,stamped_at,stamped_by) VALUES (?,?,?,?,?,?)",
+                "INSERT INTO hire(candidate_id,token,lang,started_at,stamped_at,stamped_by,prefs) VALUES (?,?,?,?,?,?,?)",
                 (cid, h["token"], c["lang"], now_iso(started), now_iso(stamped) if stamped else None,
-                 "Manager" if stamped else None))
+                 "Manager" if stamped else None, json.dumps(h.get("prefs", []))))
             hid = cur.lastrowid
             for i, mr in enumerate(h["modules"]):
                 m = modules[mr["slug"]]
                 at = now_iso(started + timedelta(hours=4 * (i + 1)))
                 qs = m["questions"]
+                for fmt in mr.get("formats", ["read"]):
+                    conn.execute("INSERT OR IGNORE INTO format_use(hire_id,module_id,format,created_at) VALUES (?,?,?,?)",
+                                 (hid, m["id"], fmt, at))
                 for q in qs:
                     if q["id"] in mr["missed"]:
-                        conn.execute("INSERT INTO attempt(hire_id,module_id,question_id,answer,passed,feedback,created_at)"
-                                     " VALUES (?,?,?,?,?,?,?)", (hid, m["id"], q["id"], "(seed)", 0, "", at))
+                        conf = 3 if q["id"] in mr.get("confident_wrong", []) else 2
+                        conn.execute("INSERT INTO attempt(hire_id,module_id,question_id,answer,passed,feedback,confidence,created_at)"
+                                     " VALUES (?,?,?,?,?,?,?,?)", (hid, m["id"], q["id"], "(seed)", 0, "", conf, at))
                     conn.execute("INSERT INTO attempt(hire_id,module_id,question_id,answer,passed,feedback,created_at)"
                                  " VALUES (?,?,?,?,?,?,?)", (hid, m["id"], q["id"], "(seed)", 1, "", at))
                 score = (len(qs) - len(mr["missed"])) / len(qs)

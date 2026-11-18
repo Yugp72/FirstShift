@@ -41,9 +41,9 @@ export function SendBackDialog({ t, meta, onClose, onSent }: Props) {
   return (
     <>
       <div className="scrim" onClick={onClose} />
-      <div className="dialog paper" role="dialog" aria-modal="true" aria-labelledby="sb-title">
+      <div className="dialog" role="dialog" aria-modal="true" aria-labelledby="sb-title">
         <button type="button" className="close-x" onClick={onClose} aria-label="Close">×</button>
-        <h2 id="sb-title">SEND BACK · {t.name.toUpperCase()}</h2>
+        <h2 id="sb-title">Send back a step for {t.name}</h2>
         <p className="sub">Pick one step to review again. Your note is translated into {LANG_CHIP[t.lang]} and shown on their phone.</p>
 
         <fieldset style={{ border: 0, padding: 0, margin: 0 }}>
@@ -67,12 +67,12 @@ export function SendBackDialog({ t, meta, onClose, onSent }: Props) {
           <label className="field-label" htmlFor="sb-note">Or write your own</label>
           <textarea id="sb-note" className="ta" rows={3} value={note} onChange={(e) => setNote(e.target.value)} maxLength={400} />
         </fieldset>
-        {err && <p role="alert" style={{ color: "var(--primary)", fontWeight: 700 }}>{err}</p>}
-        <div className="tkt-actions" style={{ marginTop: 18 }}>
-          <button type="button" className="tbtn primary wide" onClick={send} disabled={busy || !moduleId}>
-            {busy ? "TRANSLATING…" : `SEND BACK IN ${LANG_CHIP[t.lang]}`}
+        {err && <p role="alert" style={{ color: "var(--danger)", fontWeight: 600 }}>{err}</p>}
+        <div className="row" style={{ marginTop: 18 }}>
+          <button type="button" className="btn btn-primary" onClick={send} disabled={busy || !moduleId}>
+            {busy ? "Translating…" : `Send in ${LANG_CHIP[t.lang]}`}
           </button>
-          <button type="button" className="tbtn" onClick={onClose}>CANCEL</button>
+          <button type="button" className="btn" onClick={onClose}>Cancel</button>
         </div>
       </div>
     </>

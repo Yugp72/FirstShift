@@ -3,9 +3,9 @@ export type Status = "APPLIED" | "TRAINING" | "REVIEW" | "SHIFT_READY";
 
 export interface ModuleProgress {
   id: number; slug: string; icon: string; title: string;
-  passed: boolean; score: number | null; confidence: number | null;
+  passed: boolean; score: number | null; confidence: number | null; formats?: string[];
 }
-export interface Flag { kind: "buddy" | "double_check"; label: string; detail: string; module: string }
+export interface Flag { kind: "buddy" | "double_check" | "allergen_risk" | "confident_miss"; label: string; detail: string; module: string }
 export interface Ticket {
   id: number; ticket_no: number; name: string; role: "server" | "kitchen"; job_title: string; lang: Lang;
   status: Status; source_channel: string; applied_at: string; updated_at: string; summary: string;
@@ -13,6 +13,7 @@ export interface Ticket {
     id: number; token: string; path: string; lang: Lang; started_at: string; stamped_at: string | null;
     modules: ModuleProgress[]; flags: Flag[]; first_try_pct: number; confidence: number | null;
     sent_back: null | { module_id: number; module: string; note: string };
+    prefs: { id: string; label: string }[]; setup_notes: string[]; formats_used: string[];
   };
 }
 export interface JobCard {
@@ -41,15 +42,18 @@ export interface Meta {
   send_back_notes: L10n[];
   ai: { mode: string; provider: string };
 }
+export type Format = "read" | "pictures" | "video" | "listen";
+export interface ModuleMedia { video?: string; poster?: string; steps?: Record<string, string>; credit?: string }
 export interface HireModule {
   id: number; slug: string; icon: string; title: string;
   cards: { id: string; icon: string; text: string }[];
-  questions: { id: string; type: "mc" | "free"; prompt: string; options: { id: string; text: string }[] }[];
+  questions: { id: string; type: "mc" | "free"; prompt: string; options: { id: string; text: string; icon: string }[] }[];
   passed: boolean; confidence: number | null; answered: string[];
+  media: ModuleMedia; seconds_per_card: number;
 }
 export interface HireStatus { status: Status; stamped_at: string | null; sent_back: null | { module_id: number; note: string; original: string } }
 export interface Training {
-  hire: { name: string; first_name: string; role: string; role_title: string; ticket_no: number; lang: Lang } & HireStatus;
+  hire: { name: string; first_name: string; role: string; role_title: string; ticket_no: number; lang: Lang; prefs: string[] } & HireStatus;
   lang: Lang;
   modules: HireModule[];
 }
@@ -85,8 +89,11 @@ export const api = {
   reset: () => post<{ ok: boolean }>("/api/demo/reset"),
   training: (token: string, lang?: Lang) => req<Training>(`/api/training/${token}${lang ? `?lang=${lang}` : ""}`),
   setLang: (token: string, lang: Lang) => post<{ ok: boolean }>(`/api/training/${token}/lang`, { lang }),
-  answer: (token: string, module_id: number, question_id: string, answer: string) =>
-    post<AnswerResult>(`/api/training/${token}/answers`, { module_id, question_id, answer }),
+  answer: (token: string, module_id: number, question_id: string, answer: string, confidence?: number) =>
+    post<AnswerResult>(`/api/training/${token}/answers`, { module_id, question_id, answer, confidence }),
+  setPrefs: (token: string, prefs: string[]) => post<{ ok: boolean }>(`/api/training/${token}/prefs`, { prefs }),
+  usedFormat: (token: string, module_id: number, format: Format) =>
+    post<{ ok: boolean }>(`/api/training/${token}/format`, { module_id, format }),
   confidence: (token: string, module_id: number, confidence: number) =>
     post<{ ok: boolean; status: Status }>(`/api/training/${token}/confidence`, { module_id, confidence }),
   status: (token: string) => req<HireStatus>(`/api/training/${token}/status`),

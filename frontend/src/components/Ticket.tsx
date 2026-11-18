@@ -2,113 +2,107 @@ import { motion, useReducedMotion } from "framer-motion";
 import { CONF_EMOJI, LANG_CHIP, ago, hireUrl, type Ticket } from "../lib/api";
 import { DemoOnly } from "./DemoOnly";
 import { QR } from "./QR";
-import { Stamp } from "./Stamp";
+import { Seal } from "./Stamp";
+
+export function initials(name: string) {
+  return name.split(/\s+/).map((p) => p[0]).slice(0, 2).join("").toUpperCase();
+}
+
+export function Progress({ t }: { t: Ticket }) {
+  if (!t.hire) return null;
+  const redo = t.hire.sent_back?.module_id;
+  const done = t.hire.modules.filter((m) => m.passed).length;
+  return (
+    <div className="progress" role="img" aria-label={`${done} of ${t.hire.modules.length} training steps passed`}>
+      {t.hire.modules.map((m) => <i key={m.id} className={m.passed ? "on" : redo === m.id ? "redo" : ""} title={m.title} />)}
+    </div>
+  );
+}
 
 interface Props {
   t: Ticket;
   publicBase: string | null;
   linkOpen?: boolean;
-  swing?: boolean;
+  highlight?: boolean;
   busy?: boolean;
-  large?: boolean;
+  onOpen?: () => void;
   onToggleLink?: () => void;
   onHire?: () => void;
-  onStamp?: () => void;
+  onApprove?: () => void;
   onSendBack?: () => void;
 }
 
-export function TicketHeader({ t }: { t: Ticket }) {
-  return (
-    <div className="tkt-head">
-      <span><b>#{String(t.ticket_no).padStart(4, "0")}</b> · {t.role === "server" ? "SERVER" : "KITCHEN"} · <span lang={t.lang === "zh" ? "zh-CN" : undefined}>{LANG_CHIP[t.lang]}</span></span>
-      {t.hire?.confidence ? <span className="conf" aria-label={`Confidence ${t.hire.confidence} of 3`}>{CONF_EMOJI[t.hire.confidence]}</span> : null}
-    </div>
-  );
-}
-
-export function Holes({ t }: { t: Ticket }) {
-  if (!t.hire) return null;
-  const redo = t.hire.sent_back?.module_id;
-  return (
-    <div className="holes" aria-label={`${t.hire.modules.filter((m) => m.passed).length} of ${t.hire.modules.length} steps passed`}>
-      {t.hire.modules.map((m) => (
-        <span key={m.id} className={`hole ${m.passed ? "on" : ""} ${redo === m.id ? "redo" : ""}`} title={`${m.title}${m.passed ? " · passed" : ""}`} />
-      ))}
-    </div>
-  );
-}
-
-export function TicketCard({ t, publicBase, linkOpen, swing, busy, onToggleLink, onHire, onStamp, onSendBack }: Props) {
+export function PersonCard({ t, publicBase, linkOpen, highlight, busy, onOpen, onToggleLink, onHire, onApprove, onSendBack }: Props) {
   const reduce = useReducedMotion();
-  const tilt = (((t.id * 37) % 11) - 5) / 9;
   const h = t.hire;
   const link = h ? hireUrl(h.path, publicBase) : "";
+  const flag = h?.flags[0];
+  const done = h?.modules.filter((m) => m.passed).length ?? 0;
 
   return (
     <motion.article
       layout={!reduce}
-      layoutId={`t-${t.id}`}
-      className="tkt paper"
+      layoutId={`p-${t.id}`}
+      className="pcard"
       initial={false}
-      animate={swing && !reduce ? { rotate: [tilt, 6, -4, 2.5, -1, tilt] } : { rotate: tilt }}
-      transition={swing ? { duration: 1.5, ease: "easeOut" } : { type: "spring", stiffness: 260, damping: 28 }}
-      aria-label={`Ticket ${t.ticket_no}: ${t.name}`}
+      animate={highlight && !reduce ? { boxShadow: ["0 0 0 0 rgba(51,70,196,0)", "0 0 0 6px rgba(51,70,196,.25)", "0 0 0 0 rgba(51,70,196,0)"] } : {}}
+      transition={highlight ? { duration: 1.6 } : { type: "spring", stiffness: 300, damping: 30 }}
+      aria-label={t.name}
     >
-      <TicketHeader t={t} />
-      <div className="tkt-name">{t.name}</div>
-      <div className="tkt-meta">{t.job_title} · via {t.source_channel} · {ago(t.applied_at)}</div>
+      <div className="pcard-top">
+        <span className="initials" aria-hidden="true">{initials(t.name)}</span>
+        <div style={{ minWidth: 0, flex: 1 }}>
+          {h ? <button type="button" className="pcard-name" onClick={onOpen}>{t.name}</button> : <div className="pcard-name">{t.name}</div>}
+          <div className="pcard-sub">{t.role === "server" ? "Server" : "Kitchen prep"} · {t.source_channel} · {ago(t.applied_at)}</div>
+        </div>
+        {t.status === "SHIFT_READY" && <Seal size="sm" />}
+      </div>
+
+      <div className="pcard-meta">
+        <span className="badge" lang={t.lang === "zh" ? "zh-CN" : undefined}>{LANG_CHIP[t.lang]}</span>
+        {h?.prefs.slice(0, 2).map((p) => <span key={p.id} className="badge badge-accent">{p.label}</span>)}
+        {h?.confidence ? <span className="badge" aria-label={`Feels ${h.confidence} of 3`}>{CONF_EMOJI[h.confidence]}</span> : null}
+      </div>
 
       {h && (
-        <div className="tkt-row">
-          <Holes t={t} />
-          {h.modules.some((m) => m.passed) && <span className="tkt-meta">first try {h.first_try_pct}%</span>}
+        <div className="row" style={{ marginTop: 10 }}>
+          <Progress t={t} />
+          <span className="muted" style={{ fontSize: 12 }}>{done}/{h.modules.length}</span>
         </div>
       )}
 
-      {t.status === "REVIEW" && h && (
-        <ul className="evidence" aria-label="Evidence">
-          {h.modules.map((m) => (
-            <li key={m.id}>
-              <span aria-hidden="true">{m.icon}</span>
-              <span>{m.title}</span>
-              <span>{m.score !== null ? `${Math.round(m.score * 100)}%` : "–"}</span>
-              <span aria-label={m.confidence ? `confidence ${m.confidence}` : "no confidence"}>{m.confidence ? CONF_EMOJI[m.confidence] : ""}</span>
-            </li>
-          ))}
-        </ul>
-      )}
+      <p className="pcard-summary">{t.summary}</p>
 
-      <p className="tkt-summary"><span className="ai">AI read</span>{t.summary}</p>
-
-      {h?.flags.map((f) => (
-        <div key={f.kind}>
-          <span className="flag">⚑ {f.label}</span>
-          <div className="flag-detail">{f.detail}</div>
+      {flag && (
+        <div className={`flagline ${flag.kind === "allergen_risk" ? "danger" : "warn"}`}>
+          <span aria-hidden="true">{flag.kind === "allergen_risk" ? "⚠" : "●"}</span>{flag.label}
         </div>
-      ))}
-
-      {h?.sent_back && (
-        <div className="sentback">Sent back: <b>{h.sent_back.module}</b>. “{h.sent_back.note}”</div>
       )}
+      {h?.sent_back && <div className="flagline warn">Sent back: {h.sent_back.module}</div>}
 
-      <div className="tkt-actions">
+      <div className="pcard-actions">
         {t.status === "APPLIED" && (
           <>
-            <button type="button" className="tbtn primary wide" onClick={onHire} disabled={busy}>HIRE → FIRE TRAINING</button>
+            <button type="button" className="btn btn-primary btn-sm" onClick={onHire} disabled={busy}>Hire &amp; send training</button>
             {/* [DEMO ONLY] */}
-            <DemoOnly className="tbtn">SCHEDULE INTERVIEW</DemoOnly>
+            <DemoOnly className="btn btn-sm">Schedule interview</DemoOnly>
           </>
         )}
         {t.status === "TRAINING" && h && (
-          <button type="button" className="tbtn" onClick={onToggleLink} aria-expanded={linkOpen}>
-            {linkOpen ? "HIDE LINK" : "HIRE LINK + QR"}
-          </button>
+          <>
+            <button type="button" className="btn btn-sm" onClick={onToggleLink} aria-expanded={linkOpen}>{linkOpen ? "Hide link" : "Training link"}</button>
+            <button type="button" className="btn btn-sm" onClick={onOpen}>Passport</button>
+          </>
         )}
         {t.status === "REVIEW" && h && (
           <>
-            <button type="button" className="tbtn gold wide" onClick={onStamp} disabled={busy}>STAMP READY</button>
-            <button type="button" className="tbtn" onClick={onSendBack} disabled={busy}>SEND BACK</button>
+            <button type="button" className="btn btn-success btn-sm" onClick={onApprove} disabled={busy}>Approve for shift</button>
+            <button type="button" className="btn btn-sm" onClick={onOpen}>Review passport</button>
+            <button type="button" className="btn btn-sm" onClick={onSendBack} disabled={busy}>Send back</button>
           </>
+        )}
+        {t.status === "SHIFT_READY" && h && (
+          <button type="button" className="btn btn-sm" onClick={onOpen}>Passport</button>
         )}
       </div>
 
@@ -117,15 +111,9 @@ export function TicketCard({ t, publicBase, linkOpen, swing, busy, onToggleLink,
           <QR value={link} />
           <div>
             <code>{link}</code>
-            <div style={{ marginTop: 8, fontSize: 13 }}>
-              <a href={h.path} target="_blank" rel="noreferrer">Open hire view ↗</a>
-            </div>
+            <div style={{ marginTop: 6, fontSize: 13 }}><a href={h.path} target="_blank" rel="noreferrer">Open hire view ↗</a></div>
           </div>
         </div>
-      )}
-
-      {t.status === "SHIFT_READY" && (
-        <Stamp size="sm" style={{ right: 12, top: 52 }} />
       )}
     </motion.article>
   );

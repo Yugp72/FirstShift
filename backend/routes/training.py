@@ -1,7 +1,11 @@
 """The hire's side: modules in their language, kind grading, confidence, readiness status."""
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel
 
 from ..db import execute, module_by_id, modules_for, now_iso, row, rows
@@ -11,6 +15,20 @@ from ..services.grading import grade
 from ..services.readiness import recompute
 
 router = APIRouter(prefix="/api/training", tags=["training"])
+media_router = APIRouter(prefix="/api/media", tags=["media"])
+
+MEDIA_FILE = Path(__file__).resolve().parent.parent / "seed" / "media.json"
+SECONDS_PER_CARD = 6
+PREF_IDS = {"captions", "visual", "read_aloud", "seated", "extra_time"}
+FORMATS = {"read", "pictures", "video", "listen"}
+
+
+def _media() -> dict:
+    """Framia-generated media per module slug. Missing entries fall back to the built-in walkthrough."""
+    try:
+        return json.loads(MEDIA_FILE.read_text(encoding="utf-8")).get("modules", {})
+    except (OSError, ValueError):
+        return {}
 
 ROLE_TITLES = {"server": {"en": "Server", "zh": "服务员", "es": "Mesero/a"},
                "kitchen": {"en": "Kitchen prep", "zh": "厨房备料", "es": "Preparación en cocina"}}
@@ -34,8 +52,11 @@ def _localize_module(m: dict, lang: str, hire_id: int) -> dict:
         "cards": [{"id": c["id"], "icon": c["icon"], "text": pick(c["text"], lang)} for c in m["cards"]],
         "questions": [{
             "id": q["id"], "type": q["type"], "prompt": pick(q["prompt"], lang),
-            "options": [{"id": o["id"], "text": pick(o["text"], lang)} for o in q.get("options", [])],
+            "options": [{"id": o["id"], "text": pick(o["text"], lang), "icon": o.get("icon", "")}
+                        for o in q.get("options", [])],
         } for q in m["questions"]],
+        "media": _media().get(m["slug"], {}),
+        "seconds_per_card": SECONDS_PER_CARD,
         "passed": bool(res and res["passed"]), "confidence": res["confidence"] if res else None,
         "answered": sorted(answered),
     }
@@ -56,7 +77,8 @@ async def get_training(token: str, lang: str | None = None):
     return {
         "hire": {"name": h["name"], "first_name": h["name"].split()[0], "role": h["role"],
                  "role_title": pick(ROLE_TITLES.get(h["role"], ROLE_TITLES["server"]), lang),
-                 "ticket_no": h["ticket_no"], "lang": h["lang"], **_status(h)},
+                 "ticket_no": h["ticket_no"], "lang": h["lang"],
+                 "prefs": json.loads(h["prefs"] or "[]"), **_status(h)},
         "lang": lang,
         "modules": [_localize_module(m, lang, h["id"]) for m in modules_for(h["role"])],
     }
@@ -77,10 +99,39 @@ async def set_lang(token: str, body: LangIn):
     return {"ok": True, "lang": body.lang}
 
 
+class PrefsIn(BaseModel):
+    prefs: list[str]
+
+
+@router.post("/{token}/prefs")
+async def set_prefs(token: str, body: PrefsIn):
+    h = _hire(token)
+    prefs = [p for p in body.prefs if p in PREF_IDS]
+    execute("UPDATE hire SET prefs=? WHERE id=?", json.dumps(prefs), h["id"])
+    bus.publish({"type": "ticket.updated", "candidate_id": h["candidate_id"]})
+    return {"ok": True, "prefs": prefs}
+
+
+class FormatIn(BaseModel):
+    module_id: int
+    format: str
+
+
+@router.post("/{token}/format")
+async def used_format(token: str, body: FormatIn):
+    h = _hire(token)
+    if body.format not in FORMATS:
+        raise HTTPException(400, "Unknown format")
+    execute("INSERT OR IGNORE INTO format_use(hire_id,module_id,format,created_at) VALUES (?,?,?,?)",
+            h["id"], body.module_id, body.format, now_iso())
+    return {"ok": True}
+
+
 class AnswerIn(BaseModel):
     module_id: int
     question_id: str
     answer: str
+    confidence: int | None = None
 
 
 @router.post("/{token}/answers")
@@ -98,8 +149,10 @@ async def answer(token: str, body: AnswerIn):
     prior = row("SELECT COUNT(*) AS n FROM attempt WHERE hire_id=? AND module_id=? AND question_id=? AND superseded=0",
                 h["id"], m["id"], q["id"])["n"]
     result = grade(q, body.answer, lang)
-    execute("INSERT INTO attempt(hire_id,module_id,question_id,answer,passed,feedback,created_at) VALUES (?,?,?,?,?,?,?)",
-            h["id"], m["id"], q["id"], body.answer, int(result["passed"]), result["feedback"], now_iso())
+    conf = body.confidence if body.confidence in (1, 2, 3) else None
+    execute("INSERT INTO attempt(hire_id,module_id,question_id,answer,passed,feedback,confidence,created_at)"
+            " VALUES (?,?,?,?,?,?,?,?)",
+            h["id"], m["id"], q["id"], body.answer, int(result["passed"]), result["feedback"], conf, now_iso())
 
     hint_text = None
     if result["hint_card"]:
@@ -149,3 +202,20 @@ async def confidence(token: str, body: ConfidenceIn):
 @router.get("/{token}/status")
 async def status(token: str):
     return _status(_hire(token))
+
+
+@media_router.get("/{module_id}/captions.vtt")
+async def captions(module_id: int, lang: str = "en"):
+    """WebVTT captions, one cue per lesson card. Framia videos are generated to the same timing."""
+    m = module_by_id(module_id)
+    if not m:
+        raise HTTPException(404, "Module not found")
+    lang = lang if lang in LANGS else "en"
+
+    def ts(sec: int) -> str:
+        return f"00:{sec // 60:02d}:{sec % 60:02d}.000"
+
+    lines = ["WEBVTT", ""]
+    for i, c in enumerate(m["cards"]):
+        lines += [str(i + 1), f"{ts(i * SECONDS_PER_CARD)} --> {ts((i + 1) * SECONDS_PER_CARD)}", pick(c["text"], lang), ""]
+    return PlainTextResponse("\n".join(lines), media_type="text/vtt; charset=utf-8")
