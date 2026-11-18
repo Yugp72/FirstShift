@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+node_modules/
+frontend/dist/
+data/*.db
+data/*.db-*
+.env
+.DS_Store
+# Live AI cache: commit only the reviewed demo cache files explicitly (git add -f).
+backend/cache/*
+!backend/cache/.gitkeep

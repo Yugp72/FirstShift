@@ -1,0 +1,57 @@
+{
+  "_note": "DEMO DATA. All people are fictional.",
+  "jobs": [
+    {"key": "server", "role": "server", "title": "Server (front of house)", "location": "Palo Alto, CA",
+      "pay_range": "Sample: $20–$24/hr + tips", "schedule": "Fri–Sun evenings, 4 shifts a week",
+      "requirements": ["no_experience", "weekends", "standing", "team"], "languages": ["en", "zh", "es"], "days_ago": 9},
+    {"key": "kitchen", "role": "kitchen", "title": "Weekend dumpling prep", "location": "Palo Alto, CA",
+      "pay_range": "Sample: $21–$25/hr", "schedule": "Sat–Sun mornings, 4 shifts a week",
+      "requirements": ["no_experience", "standing", "lifting", "food_handler"], "languages": ["en", "zh", "es"], "days_ago": 8}
+  ],
+  "candidates": [
+    {"ticket": 401, "name": "Grace Okafor", "job": "server", "lang": "en", "source": "Job board", "status": "APPLIED", "applied_days_ago": 1},
+    {"ticket": 402, "name": "Tomás Herrera", "job": "kitchen", "lang": "es", "source": "Classifieds", "status": "APPLIED", "applied_days_ago": 1},
+    {"ticket": 403, "name": "Wei Zhang", "job": "kitchen", "lang": "zh", "source": "WeChat", "status": "APPLIED", "applied_days_ago": 2},
+    {"ticket": 404, "name": "Priya Nair", "job": "server", "lang": "en", "source": "In-store flyer", "status": "APPLIED", "applied_days_ago": 2},
+    {"ticket": 405, "name": "Sofía Ramírez", "job": "server", "lang": "es", "source": "WhatsApp", "status": "APPLIED", "applied_days_ago": 3},
+    {"ticket": 406, "name": "Duc Nguyen", "job": "kitchen", "lang": "en", "source": "Referral", "status": "APPLIED", "applied_days_ago": 3},
+
+    {"ticket": 412, "name": "Lin Chen", "job": "server", "lang": "zh", "source": "WeChat", "status": "TRAINING", "applied_days_ago": 5,
+      "hire": {"token": "lin-demo", "started_days_ago": 2, "modules": [
+        {"slug": "greeting", "missed": [], "confidence": 3},
+        {"slug": "tea", "missed": ["q1"], "confidence": 2}
+      ]}},
+    {"ticket": 409, "name": "Marco Díaz", "job": "kitchen", "lang": "es", "source": "WhatsApp", "status": "TRAINING", "applied_days_ago": 4,
+      "hire": {"token": "marco-demo", "started_days_ago": 1, "modules": [
+        {"slug": "handwash", "missed": ["q2"], "confidence": 2}
+      ]}},
+    {"ticket": 410, "name": "Hana Kim", "job": "server", "lang": "en", "source": "Job board", "status": "TRAINING", "applied_days_ago": 2,
+      "hire": {"token": "hana-demo", "started_days_ago": 0, "modules": []}},
+
+    {"ticket": 407, "name": "Mei Huang", "job": "kitchen", "lang": "zh", "source": "In-store flyer", "status": "REVIEW", "applied_days_ago": 6,
+      "hire": {"token": "mei-demo", "started_days_ago": 3, "modules": [
+        {"slug": "handwash", "missed": [], "confidence": 2},
+        {"slug": "cold", "missed": [], "confidence": 1},
+        {"slug": "knife", "missed": [], "confidence": 1}
+      ]}},
+    {"ticket": 408, "name": "Jorge Castillo", "job": "server", "lang": "es", "source": "Classifieds", "status": "REVIEW", "applied_days_ago": 6,
+      "hire": {"token": "jorge-demo", "started_days_ago": 3, "modules": [
+        {"slug": "greeting", "missed": [], "confidence": 3},
+        {"slug": "tea", "missed": ["q1"], "confidence": 3},
+        {"slug": "allergy", "missed": ["q1", "q3"], "confidence": 3}
+      ]}},
+
+    {"ticket": 398, "name": "Ana López", "job": "server", "lang": "es", "source": "WhatsApp", "status": "SHIFT_READY", "applied_days_ago": 9,
+      "hire": {"token": "ana-demo", "started_days_ago": 7, "stamped_days_ago": 4, "modules": [
+        {"slug": "greeting", "missed": [], "confidence": 3},
+        {"slug": "tea", "missed": [], "confidence": 3},
+        {"slug": "allergy", "missed": ["q3"], "confidence": 2}
+      ]}},
+    {"ticket": 399, "name": "Kevin Wu", "job": "kitchen", "lang": "zh", "source": "Referral", "status": "SHIFT_READY", "applied_days_ago": 8,
+      "hire": {"token": "kevin-demo", "started_days_ago": 6, "stamped_days_ago": 3, "modules": [
+        {"slug": "handwash", "missed": [], "confidence": 3},
+        {"slug": "cold", "missed": ["q2"], "confidence": 2},
+        {"slug": "knife", "missed": [], "confidence": 3}
+      ]}}
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "_note": "Mock AI behaviour. Keywords are matched across all languages because hires may answer in any language. Tune grading by editing this file, never by spending live calls.",
+  "rubric_keywords": {
+    "greeting.elder": {
+      "en": ["grandma", "grandmother", "granny", "elder", "older", "pull out", "help her"],
+      "zh": ["奶奶", "长辈", "老人", "拉椅子", "扶", "外婆"],
+      "es": ["abuela", "mayor", "anciana", "ayudo a", "ayudar a"]
+    },
+    "greeting.highchair": {
+      "en": ["high chair", "highchair", "baby chair", "booster", "kid chair", "child seat"],
+      "zh": ["儿童椅", "宝宝椅", "婴儿椅", "高脚椅", "小孩椅"],
+      "es": ["silla alta", "silla para bebe", "silla de bebe", "periquera", "silla para nino"]
+    },
+    "tea.spout": {
+      "en": ["spout", "away from", "careful", "slowly", "not toward", "not at"],
+      "zh": ["壶嘴", "不要对着", "不对着", "小心", "慢"],
+      "es": ["pico", "lejos", "cuidado", "despacio"]
+    },
+    "tea.level": {
+      "en": ["three-quarter", "three quarter", "3/4", "not full", "not to the top", "75"],
+      "zh": ["七分满", "七分", "不要倒满", "不倒满", "别倒满"],
+      "es": ["tres cuartos", "3/4", "no llen", "sin llenar"]
+    },
+    "allergy.kitchen": {
+      "en": ["kitchen", "chef", "cook"],
+      "zh": ["厨房", "厨师", "师傅", "后厨"],
+      "es": ["cocina", "chef", "cociner"]
+    },
+    "allergy.write": {
+      "en": ["write", "order", "ticket", "note it", "mark"],
+      "zh": ["写", "单", "记", "标"],
+      "es": ["escrib", "orden", "nota", "anot", "apunt"]
+    },
+    "handwash.torn": {
+      "en": ["tear", "torn", "rip", "broke", "hole"],
+      "zh": ["破", "烂", "洞"],
+      "es": ["romp", "rot", "agujero"]
+    },
+    "handwash.switch": {
+      "en": ["switch", "task", "raw", "meat", "different job"],
+      "zh": ["换工作", "换任务", "生", "肉", "不同"],
+      "es": ["otra tarea", "cambiar de tarea", "crud", "carne"]
+    },
+    "cold.name": {
+      "en": ["name", "what it is", "item"],
+      "zh": ["名称", "名字", "什么", "食物"],
+      "es": ["nombre", "que es"]
+    },
+    "cold.date": {
+      "en": ["date", "day", "when it was made", "made on"],
+      "zh": ["日期", "时间", "几号", "哪天"],
+      "es": ["fecha", "dia"]
+    },
+    "cold.initials": {
+      "en": ["initial", "who made", "signature"],
+      "zh": ["缩写", "谁做", "签名", "首字母"],
+      "es": ["inicial", "quien", "firma"]
+    },
+    "knife.claw": {
+      "en": ["claw", "curl", "fingertip", "tuck", "bend"],
+      "zh": ["爪", "弯", "手指"],
+      "es": ["garra", "dobl", "dedo"]
+    },
+    "knife.board": {
+      "en": ["towel", "board", "slide", "slip"],
+      "zh": ["毛巾", "砧板", "滑"],
+      "es": ["trapo", "tabla", "resbal"]
+    }
+  },
+  "translations": {}
+}
