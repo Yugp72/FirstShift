@@ -23,6 +23,11 @@ PREF_IDS = {"captions", "visual", "read_aloud", "seated", "extra_time"}
 FORMATS = {"read", "pictures", "video", "listen"}
 
 
+def _seconds_per_card(slug: str) -> int:
+    """Caption timing per lesson; a Framia video can set its own (e.g. 3 s per step for a 15 s clip)."""
+    return int(_media().get(slug, {}).get("seconds_per_card", SECONDS_PER_CARD))
+
+
 def _media() -> dict:
     """Framia-generated media per module slug. Missing entries fall back to the built-in walkthrough."""
     try:
@@ -56,7 +61,7 @@ def _localize_module(m: dict, lang: str, hire_id: int) -> dict:
                         for o in q.get("options", [])],
         } for q in m["questions"]],
         "media": _media().get(m["slug"], {}),
-        "seconds_per_card": SECONDS_PER_CARD,
+        "seconds_per_card": _seconds_per_card(m["slug"]),
         "passed": bool(res and res["passed"]), "confidence": res["confidence"] if res else None,
         "answered": sorted(answered),
     }
@@ -215,7 +220,8 @@ async def captions(module_id: int, lang: str = "en"):
     def ts(sec: int) -> str:
         return f"00:{sec // 60:02d}:{sec % 60:02d}.000"
 
+    per = _seconds_per_card(m["slug"])
     lines = ["WEBVTT", ""]
     for i, c in enumerate(m["cards"]):
-        lines += [str(i + 1), f"{ts(i * SECONDS_PER_CARD)} --> {ts((i + 1) * SECONDS_PER_CARD)}", pick(c["text"], lang), ""]
+        lines += [str(i + 1), f"{ts(i * per)} --> {ts((i + 1) * per)}", pick(c["text"], lang), ""]
     return PlainTextResponse("\n".join(lines), media_type="text/vtt; charset=utf-8")

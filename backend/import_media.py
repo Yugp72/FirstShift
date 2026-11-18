@@ -18,6 +18,20 @@ MANIFEST = Path(__file__).resolve().parent / "seed" / "media.json"
 SLUGS = {"greeting", "tea", "allergy", "handwash", "cold", "knife"}
 VIDEO = {".mp4", ".webm", ".mov"}
 IMAGE = {".png", ".jpg", ".jpeg", ".webp"}
+CARD_COUNTS = {"greeting": 5, "tea": 5, "allergy": 5, "handwash": 4, "cold": 5, "knife": 5}
+
+
+def _duration(path: Path) -> float | None:
+    """Video length in seconds via ffprobe or macOS mdls; None if neither is available."""
+    import subprocess
+    for cmd in (["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "default=nw=1:nk=1", str(path)],
+                ["mdls", "-raw", "-name", "kMDItemDurationSeconds", str(path)]):
+        try:
+            out = subprocess.run(cmd, capture_output=True, text=True, timeout=20).stdout.strip()
+            return float(out)
+        except (OSError, ValueError, subprocess.SubprocessError):
+            continue
+    return None
 
 
 def run(src: Path) -> dict:
@@ -37,6 +51,10 @@ def run(src: Path) -> dict:
         url = f"/media/{f.name}"
         if ext in VIDEO and part is None:
             entry["video"] = url
+            secs = _duration(f)
+            cards = CARD_COUNTS.get(slug)
+            if secs and cards:
+                entry["seconds_per_card"] = max(1, round(secs / cards))
         elif part == "poster":
             entry["poster"] = url
         elif part and part.startswith("c") and ext in IMAGE:

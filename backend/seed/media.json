@@ -9,7 +9,10 @@
         "c3": "/media/allergy-c3.jpg",
         "c4": "/media/allergy-c4.jpg",
         "c5": "/media/allergy-c5.jpg"
-      }
+      },
+      "poster": "/media/allergy-poster.jpg",
+      "video": "/media/allergy.mp4",
+      "seconds_per_card": 3
     }
   }
 }
