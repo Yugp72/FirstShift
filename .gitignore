@@ -11,3 +11,6 @@ data/*.db-*
 # Live AI cache: commit only the reviewed demo cache files explicitly (git add -f).
 backend/cache/*
 !backend/cache/.gitkeep
+
+# Framia originals (large); web copies live in media/
+framia/out/

@@ -39,3 +39,10 @@ Both are cached in `backend/cache/converge-grade_answer-*.json` and committed. T
 
 - `FS_MODE=live` (local demo, via `.env`): grading, translation and job posts go to Enter. Every response is cached. Any error falls back to the mock.
 - `FS_MODE=mock` (default, judge deploy): zero network calls.
+
+## Framia (training media)
+
+- Installed plugin `framia-plugin-claude.zip` 1.0.19 (remote HTTP MCP, checksum-verified) and authorized on a **Pro** Framia workspace. Read-only check passed: `framia_guide` + `framia_projects_list` (0 projects).
+- Allergy lesson, Nov 18: **5 picture cards** generated (GPT Image 2, 2K, about 54 credits each). I reviewed each one: no text, on-topic. They're resized to 1024px JPEG in `media/` and wired in through `backend/seed/media.json`.
+- The **allergy video** (Seedance 2.5 Flash, 30 s, 720p, quoted at 555 credits) ended with `generation_failed` and no detail. It hasn't been retried; Framia only retries when the user asks. Until then the Video tab uses the captioned walkthrough with the Framia cards.
+- The guide's "upgrade available (≤1.0.14)" notice is wrong. The remote package doesn't report its version, and 1.0.19 is the latest.

@@ -1,1 +1,15 @@
-{"_note": "Framia-generated training media per module slug: {video, poster, steps: {card_id: image}}. Empty entries use the built-in captioned walkthrough.", "modules": {}}
+{
+  "_note": "Framia-generated training media per module slug: {video, poster, steps: {card_id: image}}. Empty entries use the built-in captioned walkthrough.",
+  "modules": {
+    "allergy": {
+      "credit": "Framia by Converge.AI",
+      "steps": {
+        "c1": "/media/allergy-c1.jpg",
+        "c2": "/media/allergy-c2.jpg",
+        "c3": "/media/allergy-c3.jpg",
+        "c4": "/media/allergy-c4.jpg",
+        "c5": "/media/allergy-c5.jpg"
+      }
+    }
+  }
+}
