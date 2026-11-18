@@ -1,0 +1,32 @@
+/* FirstShift design tokens (Apple-inspired). Plain CSS: no Tailwind directives. */
+:root {
+  --font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "PingFang SC", "Noto Sans SC", Helvetica, Arial, sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", "PingFang SC", "Noto Sans SC", Helvetica, Arial, sans-serif;
+  --font-read: var(--font-ui);
+
+  --bg: #ffffff;
+  --bg-alt: #f5f5f7;
+  --surface: #ffffff;
+  --surface-2: #f5f5f7;
+  --border: #e8e8ed;
+  --border-strong: #d2d2d7;
+  --text: #1d1d1f;
+  --muted: #6e6e73;            /* 5.0:1 on white */
+  --accent: #0071e3;           /* buttons */
+  --accent-hover: #0077ed;
+  --link: #0066cc;             /* 5.6:1 on white */
+  --accent-soft: #e8f2fd;
+  --success: #1e7e34;          /* 5.0:1 on white */
+  --success-soft: #e9f6ec;
+  --warn: #b64400;             /* 5.2:1 on white */
+  --warn-soft: #fff4e5;
+  --danger: #d70015;           /* 5.0:1 on white */
+  --danger-soft: #ffeef0;
+  --radius: 18px;
+  --radius-sm: 12px;
+  --pill: 980px;
+  --shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.14);
+  --hire-size: 19px;
+  --track: -0.022em;
+}
