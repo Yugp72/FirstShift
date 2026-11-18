@@ -24,8 +24,11 @@ def test_confidently_wrong_allergen_is_flagged(client):
 def test_captions_vtt_per_language(client):
     mid = _allergy_id(client)
     vtt = client.get(f"/api/media/{mid}/captions.vtt?lang=es")
+    per = next(m for m in client.get("/api/training/lin-demo").json()["modules"] if m["id"] == mid)["seconds_per_card"]
     assert vtt.status_code == 200 and vtt.text.startswith("WEBVTT")
-    assert "00:00:00.000 --> 00:00:06.000" in vtt.text and "alergia" in vtt.text
+    assert f"00:00:00.000 --> 00:00:{per:02d}.000" in vtt.text and "alergia" in vtt.text
+    tea = next(m for m in client.get("/api/training/lin-demo").json()["modules"] if m["slug"] == "tea")
+    assert tea["seconds_per_card"] == 6  # lessons without a Framia video keep the default timing
 
 
 def test_seeded_daniel_has_visual_setup(client):
