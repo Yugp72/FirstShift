@@ -1,44 +1,56 @@
 import { Link } from "react-router-dom";
+import { GlobalNav } from "../components/GlobalNav";
 
 export default function Landing() {
   return (
-    <div className="mgr">
-      <main id="main" className="landing">
-        <div className="landing-inner">
-          <span className="brand-mark" style={{ width: 44, height: 44, borderRadius: 12 }} aria-hidden="true">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
-          </span>
-          <h1>From first hello to first shift, in every language and every ability.</h1>
-          <p>
-            Post a job once and FirstShift writes it for every channel. Each new hire gets one link with training in their
-            language and the format that works for them: captioned video, picture steps, read-aloud or text. The manager
-            sees a readiness passport and approves with one click.
-          </p>
-          <div className="doors">
-            <Link className="door" to="/manager">
-              <span className="badge">Manager · laptop</span>
-              <b>Hiring pipeline →</b>
-              <span className="muted">Job posts, training progress, readiness passports, approvals.</span>
-            </Link>
-            <Link className="door" to="/t/lin-demo">
-              <span className="badge">New hire · phone</span>
-              <b>Lin's training →</b>
-              <span className="muted"><span lang="zh-CN">中文</span> / Español / English, with video, pictures and read-aloud.</span>
-            </Link>
-            <Link className="door" to="/t/hana-demo">
-              <span className="badge">New hire · phone</span>
-              <b>Start fresh as Hana →</b>
-              <span className="muted">See the full flow, including "How do you learn best?"</span>
-            </Link>
-            <Link className="door" to="/manager/new">
-              <span className="badge">Manager · laptop</span>
-              <b>Post a job →</b>
-              <span className="muted">One entry, seven channel-ready posts.</span>
-            </Link>
+    <>
+      <GlobalNav />
+      <main id="main">
+        <section className="section center">
+          <div className="section-inner">
+            <p className="eyebrow">Imperial Treasure Palo Alto</p>
+            <h1 className="headline">From first hello<br />to first shift.</h1>
+            <p className="subhead">Find a job, learn it in your language and your way, and get approved for your first shift.</p>
+            <div className="row" style={{ justifyContent: "center", marginTop: 26 }}>
+              <Link className="btn btn-primary btn-lg" to="/jobs">Browse jobs</Link>
+              <Link className="btn btn-lg" to="/learn">Start training</Link>
+            </div>
           </div>
-          <p style={{ fontSize: 13, marginTop: 26 }}>Team33 · Built on Converge.AI Enter and Framia · Sample training content · All people are demo data</p>
-        </div>
+        </section>
+
+        <section className="section alt">
+          <div className="section-inner">
+            <div className="tiles">
+              <Link className="tile" to="/jobs">
+                <span className="ico" aria-hidden="true">💼</span>
+                <h3>Jobs</h3>
+                <p>Open roles in the dining room and the kitchen. Apply in a minute. No résumé needed.</p>
+                <span className="more">See open jobs ›</span>
+              </Link>
+              <Link className="tile" to="/learn">
+                <span className="ico" aria-hidden="true">🎓</span>
+                <h3>Training</h3>
+                <p>Short lessons with video, pictures and read-aloud in English, 中文 and Español, each ending in a quick quiz.</p>
+                <span className="more">Start learning ›</span>
+              </Link>
+              <Link className="tile" to="/manager">
+                <span className="ico" aria-hidden="true">✅</span>
+                <h3>For managers</h3>
+                <p>Post once to every channel, follow each hire's progress, and approve them with evidence.</p>
+                <span className="more">Open the pipeline ›</span>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section className="section center">
+          <div className="section-inner">
+            <h2 className="headline" style={{ fontSize: "clamp(32px, 5vw, 48px)" }}>Every language. Every ability.</h2>
+            <p className="subhead">Captioned video for people who are Deaf or hard of hearing. Picture steps for visual learners. Read-aloud for low vision. No time limits, ever.</p>
+          </div>
+        </section>
       </main>
-    </div>
+      <p className="footer-note">Team33 · Built on Converge.AI Enter and Framia · Sample training content · Demo data</p>
+    </>
   );
 }

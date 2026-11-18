@@ -83,7 +83,8 @@ async def get_training(token: str, lang: str | None = None):
         "hire": {"name": h["name"], "first_name": h["name"].split()[0], "role": h["role"],
                  "role_title": pick(ROLE_TITLES.get(h["role"], ROLE_TITLES["server"]), lang),
                  "ticket_no": h["ticket_no"], "lang": h["lang"],
-                 "prefs": json.loads(h["prefs"] or "[]"), **_status(h)},
+                 "prefs": json.loads(h["prefs"] or "[]"), "mode": "practice" if h["status"] == "PRACTICE" else "hired",
+                 **_status(h)},
         "lang": lang,
         "modules": [_localize_module(m, lang, h["id"]) for m in modules_for(h["role"])],
     }

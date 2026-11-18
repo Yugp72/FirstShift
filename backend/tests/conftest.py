@@ -18,4 +18,5 @@ def client():
 
     with TestClient(app) as c:
         seed()
+        assert c.post("/api/auth/demo", json={"role": "manager"}).status_code == 200
         yield c

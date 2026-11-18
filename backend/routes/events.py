@@ -4,12 +4,13 @@ from __future__ import annotations
 import asyncio
 import json
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Depends, Request
 from fastapi.responses import StreamingResponse
 
+from ..auth import require_manager
 from ..services.events import bus
 
-router = APIRouter(prefix="/api", tags=["events"])
+router = APIRouter(prefix="/api", tags=["events"], dependencies=[Depends(require_manager)])
 
 
 @router.get("/events")

@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS job(
   requirements TEXT, languages TEXT, notes TEXT, posts TEXT, closed INTEGER DEFAULT 0, created_at TEXT);
 CREATE TABLE IF NOT EXISTS candidate(
   id INTEGER PRIMARY KEY, job_id INTEGER, ticket_no INTEGER, name TEXT, preferred_lang TEXT,
-  source_channel TEXT, status TEXT, created_at TEXT, updated_at TEXT);
+  source_channel TEXT, status TEXT, created_at TEXT, updated_at TEXT, account_id INTEGER);
 CREATE TABLE IF NOT EXISTS hire(
   id INTEGER PRIMARY KEY, candidate_id INTEGER UNIQUE, token TEXT UNIQUE, lang TEXT,
   started_at TEXT, stamped_at TEXT, stamped_by TEXT,
@@ -27,6 +27,9 @@ CREATE TABLE IF NOT EXISTS attempt(
 CREATE TABLE IF NOT EXISTS format_use(
   id INTEGER PRIMARY KEY, hire_id INTEGER, module_id INTEGER, format TEXT, created_at TEXT,
   UNIQUE(hire_id, module_id, format));
+CREATE TABLE IF NOT EXISTS account(
+  id INTEGER PRIMARY KEY, email TEXT UNIQUE, name TEXT, role TEXT, pw_hash TEXT, lang TEXT, created_at TEXT);
+CREATE TABLE IF NOT EXISTS session(token TEXT PRIMARY KEY, account_id INTEGER, created_at TEXT);
 CREATE TABLE IF NOT EXISTS module_result(
   id INTEGER PRIMARY KEY, hire_id INTEGER, module_id INTEGER, passed INTEGER, score REAL,
   confidence INTEGER, updated_at TEXT, UNIQUE(hire_id, module_id));
@@ -48,7 +51,8 @@ def get_conn() -> sqlite3.Connection:
         _conn.row_factory = sqlite3.Row
         _conn.executescript(SCHEMA)
         # Lightweight migrations for DBs created before these columns existed.
-        for sql in ("ALTER TABLE hire ADD COLUMN prefs TEXT", "ALTER TABLE attempt ADD COLUMN confidence INTEGER"):
+        for sql in ("ALTER TABLE hire ADD COLUMN prefs TEXT", "ALTER TABLE attempt ADD COLUMN confidence INTEGER",
+                    "ALTER TABLE candidate ADD COLUMN account_id INTEGER"):
             try:
                 _conn.execute(sql)
             except sqlite3.OperationalError:

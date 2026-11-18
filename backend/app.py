@@ -11,7 +11,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from .ai import provider_info
-from .routes import demo, events, hires, jobs, training
+from .routes import auth, careers, demo, events, hires, jobs, training
 from .seed import ensure_seeded
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
@@ -28,7 +28,8 @@ async def lifespan(_: FastAPI):
 app = FastAPI(title="FirstShift", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
-for r in (jobs.router, hires.router, training.router, training.media_router, events.router, demo.router):
+for r in (auth.router, careers.router, jobs.router, hires.router, training.router, training.media_router,
+          events.router, demo.router):
     app.include_router(r)
 
 

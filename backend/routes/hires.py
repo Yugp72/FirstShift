@@ -3,14 +3,15 @@ from __future__ import annotations
 
 import secrets
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
 from ..ai import get_provider
+from ..auth import require_manager
 from ..db import execute, now_iso, row
 from ..services.readiness import board, insights, move, ticket
 
-router = APIRouter(prefix="/api", tags=["rail"])
+router = APIRouter(prefix="/api", tags=["rail"], dependencies=[Depends(require_manager)])
 
 
 @router.get("/board")

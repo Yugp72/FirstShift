@@ -7,6 +7,9 @@ from pathlib import Path
 
 from .ai.base import ALL_CHANNELS, JobInput
 from .ai.mock import MockProvider
+import os
+
+from .auth import hash_pw
 from .db import get_conn, now_iso, row
 
 SEED_DIR = Path(__file__).resolve().parent / "seed"
@@ -33,6 +36,17 @@ def seed() -> None:
                 modules[m["slug"]] = {**m, "id": cur.lastrowid}
 
         people = _load("people.json")
+        # Demo accounts survive a reset (so nobody is signed out); passwords come from the seed file or env.
+        pw = os.environ.get("FS_DEMO_PASSWORD") or people["demo_password"]
+        acct_ids: dict[str, int] = {}
+        for a in people["accounts"]:
+            ex = conn.execute("SELECT id FROM account WHERE email=?", (a["email"],)).fetchone()
+            if ex:
+                acct_ids[a.get("candidate", a["email"])] = ex[0]
+                continue
+            cur = conn.execute("INSERT INTO account(email,name,role,pw_hash,lang,created_at) VALUES (?,?,?,?,?,?)",
+                               (a["email"], a["name"], a["role"], hash_pw(pw), a["lang"], now_iso(now)))
+            acct_ids[a.get("candidate", a["email"])] = cur.lastrowid
         job_ids: dict[str, int] = {}
         for j in people["jobs"]:
             ji = JobInput(role=j["role"], title=j["title"], location=j["location"], pay_range=j["pay_range"],
@@ -49,10 +63,10 @@ def seed() -> None:
         for c in people["candidates"]:
             created = now - timedelta(days=c["applied_days_ago"], hours=3)
             cur = conn.execute(
-                "INSERT INTO candidate(job_id,ticket_no,name,preferred_lang,source_channel,status,created_at,updated_at)"
-                " VALUES (?,?,?,?,?,?,?,?)",
+                "INSERT INTO candidate(job_id,ticket_no,name,preferred_lang,source_channel,status,created_at,updated_at,account_id)"
+                " VALUES (?,?,?,?,?,?,?,?,?)",
                 (job_ids[c["job"]], c["ticket"], c["name"], c["lang"], c["source"], c["status"],
-                 now_iso(created), now_iso(created)))
+                 now_iso(created), now_iso(created), acct_ids.get(c["name"])))
             cid = cur.lastrowid
             h = c.get("hire")
             if not h:
@@ -87,9 +101,24 @@ def seed() -> None:
         raise
 
 
+def ensure_accounts() -> None:
+    """Create any missing demo accounts and link them to their seeded candidates (for DBs made before accounts)."""
+    conn = get_conn()
+    people = _load("people.json")
+    pw = os.environ.get("FS_DEMO_PASSWORD") or people["demo_password"]
+    for a in people["accounts"]:
+        ex = row("SELECT id FROM account WHERE email=?", a["email"])
+        aid = ex["id"] if ex else conn.execute(
+            "INSERT INTO account(email,name,role,pw_hash,lang,created_at) VALUES (?,?,?,?,?,?)",
+            (a["email"], a["name"], a["role"], hash_pw(pw), a["lang"], now_iso())).lastrowid
+        if a.get("candidate"):
+            conn.execute("UPDATE candidate SET account_id=? WHERE name=? AND account_id IS NULL", (aid, a["candidate"]))
+
+
 def ensure_seeded() -> None:
     if not row("SELECT id FROM module LIMIT 1"):
         seed()
+    ensure_accounts()
 
 
 if __name__ == "__main__":

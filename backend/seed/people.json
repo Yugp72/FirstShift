@@ -408,5 +408,29 @@
         ]
       }
     }
+  ],
+  "_demo_password_note": "Test-only password for the seeded demo accounts. Override with FS_DEMO_PASSWORD. Judges can also use the one-click demo sign-in.",
+  "demo_password": "FirstShift-demo-2026",
+  "accounts": [
+    {
+      "email": "manager@firstshift.test",
+      "name": "Restaurant Manager",
+      "role": "manager",
+      "lang": "en"
+    },
+    {
+      "email": "lin@firstshift.test",
+      "name": "Lin Chen",
+      "role": "applicant",
+      "lang": "zh",
+      "candidate": "Lin Chen"
+    },
+    {
+      "email": "grace@firstshift.test",
+      "name": "Grace Okafor",
+      "role": "applicant",
+      "lang": "en",
+      "candidate": "Grace Okafor"
+    }
   ]
 }

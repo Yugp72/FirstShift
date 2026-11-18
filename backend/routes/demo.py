@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
+from ..auth import require_manager
 from ..seed import seed
 from ..services.events import bus
 
-router = APIRouter(prefix="/api", tags=["demo"])
+router = APIRouter(prefix="/api", tags=["demo"], dependencies=[Depends(require_manager)])
 
 
 @router.post("/demo/reset")

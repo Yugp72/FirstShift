@@ -1,5 +1,5 @@
 export type Lang = "en" | "zh" | "es";
-export type Status = "APPLIED" | "TRAINING" | "REVIEW" | "SHIFT_READY";
+export type Status = "APPLIED" | "TRAINING" | "REVIEW" | "SHIFT_READY" | "PRACTICE";
 
 export interface ModuleProgress {
   id: number; slug: string; icon: string; title: string;
@@ -53,7 +53,7 @@ export interface HireModule {
 }
 export interface HireStatus { status: Status; stamped_at: string | null; sent_back: null | { module_id: number; note: string; original: string } }
 export interface Training {
-  hire: { name: string; first_name: string; role: string; role_title: string; ticket_no: number; lang: Lang; prefs: string[] } & HireStatus;
+  hire: { name: string; first_name: string; role: string; role_title: string; ticket_no: number; lang: Lang; prefs: string[]; mode: "practice" | "hired" } & HireStatus;
   lang: Lang;
   modules: HireModule[];
 }
@@ -62,21 +62,51 @@ export interface AnswerResult {
   first_try: boolean; module_complete: boolean;
 }
 
+export class ApiError extends Error {
+  constructor(message: string, public status: number) { super(message); }
+}
+
 async function req<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(path, {
+    credentials: "same-origin",
     ...init,
     headers: { "Content-Type": "application/json", ...(init?.headers || {}) },
   });
   if (!res.ok) {
     let msg = res.statusText;
     try { msg = (await res.json()).detail || msg; } catch { /* keep statusText */ }
-    throw new Error(msg);
+    throw new ApiError(msg, res.status);
   }
   return res.json() as Promise<T>;
+}
+
+export interface Account { id: number; email: string; name: string; role: "manager" | "applicant"; lang: Lang }
+export interface PublicJob {
+  id: number; role: "server" | "kitchen"; area: string; title: string; location: string; pay_range: string; schedule: string;
+  requirements: string[]; languages: Lang[]; created_at: string; listing: string; easy_read: string;
+}
+export interface Application {
+  id: number; job_id: number; title: string; role: "server" | "kitchen"; location: string; schedule: string; status: Status;
+  applied_at: string; training: null | { token: string; passed: number; total: number }; stamped_at: string | null;
+}
+export interface Course {
+  role: "server" | "kitchen"; title: string; area: string; blurb: string; lessons: number; quizzes: number;
+  sections: { title: string; icon: string; lessons: number; questions: number; has_video: boolean }[];
 }
 const post = <T>(path: string, body?: unknown) => req<T>(path, { method: "POST", body: body ? JSON.stringify(body) : undefined });
 
 export const api = {
+  me: () => req<{ account: Account | null }>("/api/auth/me"),
+  login: (email: string, password: string) => post<{ account: Account }>("/api/auth/login", { email, password }),
+  signup: (name: string, email: string, password: string, lang: Lang) => post<{ account: Account }>("/api/auth/signup", { name, email, password, lang }),
+  demoLogin: (role: "manager" | "applicant") => post<{ account: Account }>("/api/auth/demo", { role }),
+  logout: () => post<{ ok: boolean }>("/api/auth/logout"),
+  openJobs: () => req<{ jobs: PublicJob[] }>("/api/careers/jobs"),
+  openJob: (id: number) => req<PublicJob>(`/api/careers/jobs/${id}`),
+  apply: (id: number, lang?: Lang) => post<{ ok: boolean }>(`/api/careers/jobs/${id}/apply`, { lang }),
+  myApplications: () => req<{ applications: Application[] }>("/api/me/applications"),
+  courses: () => req<{ courses: Course[] }>("/api/learn/courses"),
+  learnSession: (role: string, token?: string | null) => post<{ token: string; mode: "practice" | "hired" }>("/api/learn/session", { role, token }),
   meta: () => req<Meta>("/api/meta"),
   board: () => req<Board>("/api/board"),
   insights: () => req<{ gaps: Gap[] }>("/api/insights"),

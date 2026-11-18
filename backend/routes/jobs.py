@@ -6,11 +6,12 @@ import io
 import json
 from pathlib import Path
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import Response
 
 from ..ai import get_provider, provider_info
 from ..ai.base import ALL_CHANNELS, JobInput
+from ..auth import require_manager
 from ..db import execute, now_iso, row
 from ..services.events import bus
 
@@ -30,7 +31,7 @@ def _job_out(j: dict) -> dict:
             "posts": json.loads(j["posts"] or "[]")}
 
 
-@router.post("/jobs")
+@router.post("/jobs", dependencies=[Depends(require_manager)])
 async def create_job(job: JobInput):
     if not job.title.strip():
         raise HTTPException(400, "Give the role a title")
@@ -44,7 +45,7 @@ async def create_job(job: JobInput):
     return _job_out(row("SELECT * FROM job WHERE id=?", jid))
 
 
-@router.get("/jobs/{job_id}")
+@router.get("/jobs/{job_id}", dependencies=[Depends(require_manager)])
 async def get_job(job_id: int):
     j = row("SELECT * FROM job WHERE id=?", job_id)
     if not j:
@@ -52,7 +53,7 @@ async def get_job(job_id: int):
     return _job_out(j)
 
 
-@router.get("/jobs/{job_id}/export")
+@router.get("/jobs/{job_id}/export", dependencies=[Depends(require_manager)])
 async def export_job(job_id: int, fmt: str = "csv"):
     j = row("SELECT * FROM job WHERE id=?", job_id)
     if not j:

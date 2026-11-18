@@ -138,7 +138,7 @@ def metrics(tickets: list[dict]) -> dict:
 
 
 def board() -> dict:
-    cands = rows("SELECT * FROM candidate ORDER BY updated_at DESC, id DESC")
+    cands = rows("SELECT * FROM candidate WHERE status != 'PRACTICE' ORDER BY updated_at DESC, id DESC")
     tickets = [ticket(c) for c in cands]
     columns = {s: [t for t in tickets if t["status"] == s] for s in STATUSES}
     jobs = []
@@ -176,7 +176,8 @@ def insights(limit: int = 3) -> list[dict]:
     first = rows(
         "SELECT a.hire_id, a.module_id, a.question_id, a.passed FROM attempt a "
         "JOIN (SELECT hire_id, module_id, question_id, MIN(id) AS mid FROM attempt "
-        "      GROUP BY hire_id, module_id, question_id) f ON f.mid = a.id")
+        "      GROUP BY hire_id, module_id, question_id) f ON f.mid = a.id "
+        "JOIN hire h ON h.id = a.hire_id JOIN candidate c ON c.id = h.candidate_id WHERE c.status != 'PRACTICE'")
     stats: dict[tuple[int, str], dict] = {}
     for a in first:
         s = stats.setdefault((a["module_id"], a["question_id"]), {"attempted": 0, "missed": 0})
