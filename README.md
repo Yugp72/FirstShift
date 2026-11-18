@@ -24,7 +24,7 @@ Tests: `make test`. Reset demo data before each take: `make demo-reset` (or the 
 | `/manager/new` | Manager | **ORDER IN.** Describe the role once, press **FIRE A POSTING**, and 7 receipts print: job board, classifieds, WeChat (中文), WhatsApp (ES), flyer, bilingual and easy-read. Each has a character-limit badge and Copy. Export the lot as CSV or JSON. |
 | `/t/hana-demo` | Hana, on her phone | Pick English, then captions and picture steps. The lesson opens on captioned Video. Switch to Pictures, tap a picture answer, and say how sure you are. |
 | `/manager` | Manager | **Pipeline.** Open Daniel's passport (Deaf, learns visually): captioned video and picture steps, with a seated station in his setup notes. |
-| `/manager` | Manager | **THE RAIL (older wording).** Tickets run ORDER IN → ON THE BOARD → FIRING → AT THE PASS → SHIFT-READY. Mei scored 100% but feels 😟, so she's flagged **Needs a buddy shift**. Jorge felt 💪 but missed allergy checks, so he's flagged **Double-check**. |
+| `/manager` | Manager | **Pipeline.** People move Job posts → Applied → In training → Ready for review → Shift-ready. Mei scored 100% but feels 😟, so she's flagged **Needs a buddy shift**. Jorge felt 💪 but missed allergy checks, so he's flagged **Double-check**. |
 | `/t/lin-demo` | Lin, on her phone | Tap 中文, then open the allergy lesson and hit 听一听 to hear it read aloud. Miss a check to get kind feedback ("差一点…") with the lesson line highlighted. Type a free-text answer in Mandarin and the AI grades it in Mandarin. Then tap 💪. |
 | `/manager` | Manager | Lin's ticket swings into AT THE PASS. Turn the bell on to hear it ring. Press **STAMP READY** and the gold 可以/READY chop slams down, and lands on Lin's phone too, read aloud. |
 
