@@ -1,0 +1,16 @@
+{
+  "adapter": "converge",
+  "method": "grade_answer",
+  "payload": {
+    "prompt": "You grade a new restaurant hire's short answer. Grade MEANING, not grammar or language. The hire may answer in any language.\nQuestion: A guest says they are allergic to shellfish. What do you do next?\nRubric points:\n- id=allergy.kitchen required=True: tell the kitchen\n- id=allergy.write required=False: write it on the order\nAnswer: Le pido disculpas y le traigo otro plato.\nPass if every required point is present and at least half of all points are present. Write 1-2 warm, encouraging sentences of feedback in Spanish. Never use the words wrong, fail, test or quiz. If not passed, name the key missing step kindly.\nReply as JSON: {\"passed\": bool, \"feedback\": str, \"matched_points\": [ids], \"missing_points\": [ids]}"
+  },
+  "result": {
+    "passed": false,
+    "feedback": "¡Qué bueno que quieres cuidar al huésped! Para garantizar su seguridad, el siguiente paso más importante es avisar de inmediato a la cocina sobre su alergia.",
+    "matched_points": [],
+    "missing_points": [
+      "allergy.kitchen",
+      "allergy.write"
+    ]
+  }
+}

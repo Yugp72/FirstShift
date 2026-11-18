@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import os
 
+from .. import config  # noqa: F401  (loads .env before FS_MODE is read)
 from .base import AIProvider
 from .mock import MockProvider
 
