@@ -5,19 +5,24 @@
 
     .grid { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
     .dot { position: absolute; width: 22px; height: 22px; border-radius: 50%; background: #86868b; opacity: 0; }
-    .ring { position: absolute; left: 260px; top: 200px; width: 600px; height: 600px; border-radius: 50%; border: 2px solid #d2d2d7; opacity: 0; }
-    .stat { position: absolute; left: 1010px; width: 800px; }
+    .stat { position: absolute; left: 1010px; width: 820px; opacity: 0; }
     .loc { top: 250px; font-size: 34px; font-weight: 700; color: #4d4d52; }
-    .num { top: 290px; font-size: 230px; font-weight: 900; letter-spacing: -0.05em; line-height: 1; color: #1d1d1f; }
-    .num b { color: #00479a; font-weight: 900; }
+    .num { top: 290px; font-size: 230px; font-weight: 900; letter-spacing: -0.05em; line-height: 1; }
+    .num.mid { font-size: 176px; top: 310px; }
     .cap { top: 540px; font-size: 44px; font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; }
-    .sub { top: 680px; font-size: 32px; font-weight: 700; color: #4d4d52; }
-    .src { top: 760px; font-size: 28px; font-weight: 400; color: #4d4d52; }
-    .words { position: absolute; left: 260px; width: 600px; top: 780px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 22px; font-size: 26px; color: #4d4d52; }
+    .sub { font-size: 40px; font-weight: 700; letter-spacing: -0.02em; }
+    .sub b { color: #00479a; font-weight: 900; }
+    .src { top: 820px; font-size: 28px; font-weight: 400; color: #4d4d52; }
+    .words { position: absolute; left: 260px; width: 600px; top: 780px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 22px; font-size: 28px; color: #4d4d52; }
     .words span { opacity: 0; }
     .person { position: absolute; top: 425px; width: 80px; height: 150px; opacity: 0; }
     .person svg { width: 100%; height: 100%; fill: #86868b; }
-    .same { position: absolute; left: 0; width: 1920px; text-align: center; font-size: 84px; font-weight: 900; letter-spacing: -0.04em; opacity: 0; }
+    .bars { position: absolute; left: 230px; top: 360px; width: 660px; opacity: 0; }
+    .bar { margin-bottom: 64px; }
+    .bar .lbl { font-size: 32px; font-weight: 700; margin-bottom: 14px; display: flex; justify-content: space-between; }
+    .bar .trk { height: 44px; border-radius: 22px; background: #f0f0f2; overflow: hidden; }
+    .bar .fill { height: 44px; border-radius: 22px; transform-origin: 0 50%; }
+    .same { position: absolute; left: 1010px; font-size: 92px; font-weight: 900; letter-spacing: -0.04em; opacity: 0; }
     .q { position: absolute; left: 0; top: 400px; width: 1920px; text-align: center; font-size: 80px; font-weight: 900; letter-spacing: -0.035em; line-height: 1.12; opacity: 0; }
     .q em { font-style: normal; color: #00479a; }
     .seed { position: absolute; left: 880px; top: 460px; width: 160px; height: 160px; border-radius: 80px; background: #86868b; opacity: 0; }
@@ -27,133 +32,145 @@
   <div id="root" data-composition-id="act1" data-width="1920" data-height="1080">
 
     <div class="grid" id="a1-grid">
-      <div class="ring" id="a1-ring1"></div><div class="ring" id="a1-ring2"></div>
-      <i class="dot" data-r="11" data-kx="-78.0" data-ky="115.0" style="left:342.0px;top:282.0px"></i>
-      <i class="dot" data-r="9" data-kx="-94.0" data-ky="115.0" style="left:388.0px;top:282.0px"></i>
-      <i class="dot" data-r="21" data-kx="-110.0" data-ky="115.0" style="left:434.0px;top:282.0px"></i>
-      <i class="dot" data-r="47" data-kx="-126.0" data-ky="115.0" style="left:480.0px;top:282.0px"></i>
-      <i class="dot" data-r="86" data-kx="-142.0" data-ky="115.0" style="left:526.0px;top:282.0px"></i>
-      <i class="dot" data-r="69" data-kx="-158.0" data-ky="115.0" style="left:572.0px;top:282.0px"></i>
-      <i class="dot" data-r="95" data-kx="-174.0" data-ky="115.0" style="left:618.0px;top:282.0px"></i>
-      <i class="dot" data-r="89" data-kx="-190.0" data-ky="115.0" style="left:664.0px;top:282.0px"></i>
-      <i class="dot" data-r="82" data-kx="-206.0" data-ky="115.0" style="left:710.0px;top:282.0px"></i>
-      <i class="dot" data-r="94" data-kx="-222.0" data-ky="115.0" style="left:756.0px;top:282.0px"></i>
-      <i class="dot" data-r="26" data-kx="222.0" data-ky="69.0" style="left:342.0px;top:328.0px"></i>
-      <i class="dot" data-r="85" data-kx="206.0" data-ky="69.0" style="left:388.0px;top:328.0px"></i>
-      <i class="dot" data-r="92" data-kx="190.0" data-ky="69.0" style="left:434.0px;top:328.0px"></i>
-      <i class="dot" data-r="45" data-kx="174.0" data-ky="69.0" style="left:480.0px;top:328.0px"></i>
-      <i class="dot" data-r="24" data-kx="158.0" data-ky="69.0" style="left:526.0px;top:328.0px"></i>
-      <i class="dot" data-r="75" data-kx="142.0" data-ky="69.0" style="left:572.0px;top:328.0px"></i>
-      <i class="dot" data-r="28" data-kx="126.0" data-ky="69.0" style="left:618.0px;top:328.0px"></i>
-      <i class="dot" data-r="68" data-kx="110.0" data-ky="69.0" style="left:664.0px;top:328.0px"></i>
-      <i class="dot" data-r="65" data-kx="94.0" data-ky="69.0" style="left:710.0px;top:328.0px"></i>
-      <i class="dot" data-r="98" data-kx="78.0" data-ky="69.0" style="left:756.0px;top:328.0px"></i>
-      <i class="dot" data-r="40" data-kx="-78.0" data-ky="69.0" style="left:342.0px;top:374.0px"></i>
-      <i class="dot" data-r="6" data-kx="-94.0" data-ky="69.0" style="left:388.0px;top:374.0px"></i>
-      <i class="dot" data-r="10" data-kx="-110.0" data-ky="69.0" style="left:434.0px;top:374.0px"></i>
-      <i class="dot" data-r="53" data-kx="-126.0" data-ky="69.0" style="left:480.0px;top:374.0px"></i>
-      <i class="dot" data-r="14" data-kx="-142.0" data-ky="69.0" style="left:526.0px;top:374.0px"></i>
-      <i class="dot" data-r="1" data-kx="-158.0" data-ky="69.0" style="left:572.0px;top:374.0px"></i>
-      <i class="dot" data-r="16" data-kx="-174.0" data-ky="69.0" style="left:618.0px;top:374.0px"></i>
-      <i class="dot" data-r="87" data-kx="-190.0" data-ky="69.0" style="left:664.0px;top:374.0px"></i>
-      <i class="dot" data-r="74" data-kx="-206.0" data-ky="69.0" style="left:710.0px;top:374.0px"></i>
-      <i class="dot" data-r="39" data-kx="-222.0" data-ky="69.0" style="left:756.0px;top:374.0px"></i>
-      <i class="dot" data-r="81" data-kx="222.0" data-ky="23.0" style="left:342.0px;top:420.0px"></i>
-      <i class="dot" data-r="44" data-kx="206.0" data-ky="23.0" style="left:388.0px;top:420.0px"></i>
-      <i class="dot" data-r="27" data-kx="190.0" data-ky="23.0" style="left:434.0px;top:420.0px"></i>
-      <i class="dot" data-r="0" data-kx="174.0" data-ky="23.0" style="left:480.0px;top:420.0px"></i>
-      <i class="dot" data-r="42" data-kx="158.0" data-ky="23.0" style="left:526.0px;top:420.0px"></i>
-      <i class="dot" data-r="62" data-kx="142.0" data-ky="23.0" style="left:572.0px;top:420.0px"></i>
-      <i class="dot" data-r="56" data-kx="126.0" data-ky="23.0" style="left:618.0px;top:420.0px"></i>
-      <i class="dot" data-r="67" data-kx="110.0" data-ky="23.0" style="left:664.0px;top:420.0px"></i>
-      <i class="dot" data-r="23" data-kx="94.0" data-ky="23.0" style="left:710.0px;top:420.0px"></i>
-      <i class="dot" data-r="63" data-kx="78.0" data-ky="23.0" style="left:756.0px;top:420.0px"></i>
-      <i class="dot" data-r="55" data-kx="-78.0" data-ky="23.0" style="left:342.0px;top:466.0px"></i>
-      <i class="dot" data-r="99" data-kx="-94.0" data-ky="23.0" style="left:388.0px;top:466.0px"></i>
-      <i class="dot" data-r="32" data-kx="-110.0" data-ky="23.0" style="left:434.0px;top:466.0px"></i>
-      <i class="dot" data-r="60" data-kx="-126.0" data-ky="23.0" style="left:480.0px;top:466.0px"></i>
-      <i class="dot" data-r="17" data-kx="-142.0" data-ky="23.0" style="left:526.0px;top:466.0px"></i>
-      <i class="dot" data-r="50" data-kx="-158.0" data-ky="23.0" style="left:572.0px;top:466.0px"></i>
-      <i class="dot" data-r="91" data-kx="-174.0" data-ky="23.0" style="left:618.0px;top:466.0px"></i>
-      <i class="dot" data-r="20" data-kx="-190.0" data-ky="23.0" style="left:664.0px;top:466.0px"></i>
-      <i class="dot" data-r="25" data-kx="-206.0" data-ky="23.0" style="left:710.0px;top:466.0px"></i>
-      <i class="dot" data-r="15" data-kx="-222.0" data-ky="23.0" style="left:756.0px;top:466.0px"></i>
-      <i class="dot" data-r="97" data-kx="222.0" data-ky="-23.0" style="left:342.0px;top:512.0px"></i>
-      <i class="dot" data-r="22" data-kx="206.0" data-ky="-23.0" style="left:388.0px;top:512.0px"></i>
-      <i class="dot" data-r="61" data-kx="190.0" data-ky="-23.0" style="left:434.0px;top:512.0px"></i>
-      <i class="dot" data-r="83" data-kx="174.0" data-ky="-23.0" style="left:480.0px;top:512.0px"></i>
-      <i class="dot" data-r="78" data-kx="158.0" data-ky="-23.0" style="left:526.0px;top:512.0px"></i>
-      <i class="dot" data-r="84" data-kx="142.0" data-ky="-23.0" style="left:572.0px;top:512.0px"></i>
-      <i class="dot" data-r="48" data-kx="126.0" data-ky="-23.0" style="left:618.0px;top:512.0px"></i>
-      <i class="dot" data-r="38" data-kx="110.0" data-ky="-23.0" style="left:664.0px;top:512.0px"></i>
-      <i class="dot" data-r="52" data-kx="94.0" data-ky="-23.0" style="left:710.0px;top:512.0px"></i>
-      <i class="dot" data-r="33" data-kx="78.0" data-ky="-23.0" style="left:756.0px;top:512.0px"></i>
-      <i class="dot" data-r="43" data-kx="-78.0" data-ky="-23.0" style="left:342.0px;top:558.0px"></i>
-      <i class="dot" data-r="12" data-kx="-94.0" data-ky="-23.0" style="left:388.0px;top:558.0px"></i>
-      <i class="dot" data-r="51" data-kx="-110.0" data-ky="-23.0" style="left:434.0px;top:558.0px"></i>
-      <i class="dot" data-r="46" data-kx="-126.0" data-ky="-23.0" style="left:480.0px;top:558.0px"></i>
-      <i class="dot" data-r="88" data-kx="-142.0" data-ky="-23.0" style="left:526.0px;top:558.0px"></i>
-      <i class="dot" data-r="30" data-kx="-158.0" data-ky="-23.0" style="left:572.0px;top:558.0px"></i>
-      <i class="dot" data-r="36" data-kx="-174.0" data-ky="-23.0" style="left:618.0px;top:558.0px"></i>
-      <i class="dot" data-r="57" data-kx="-190.0" data-ky="-23.0" style="left:664.0px;top:558.0px"></i>
-      <i class="dot" data-r="93" data-kx="-206.0" data-ky="-23.0" style="left:710.0px;top:558.0px"></i>
-      <i class="dot" data-r="31" data-kx="-222.0" data-ky="-23.0" style="left:756.0px;top:558.0px"></i>
-      <i class="dot" data-r="79" data-kx="222.0" data-ky="-69.0" style="left:342.0px;top:604.0px"></i>
-      <i class="dot" data-r="58" data-kx="206.0" data-ky="-69.0" style="left:388.0px;top:604.0px"></i>
-      <i class="dot" data-r="76" data-kx="190.0" data-ky="-69.0" style="left:434.0px;top:604.0px"></i>
-      <i class="dot" data-r="13" data-kx="174.0" data-ky="-69.0" style="left:480.0px;top:604.0px"></i>
-      <i class="dot" data-r="90" data-kx="158.0" data-ky="-69.0" style="left:526.0px;top:604.0px"></i>
-      <i class="dot" data-r="64" data-kx="142.0" data-ky="-69.0" style="left:572.0px;top:604.0px"></i>
-      <i class="dot" data-r="18" data-kx="126.0" data-ky="-69.0" style="left:618.0px;top:604.0px"></i>
-      <i class="dot" data-r="73" data-kx="110.0" data-ky="-69.0" style="left:664.0px;top:604.0px"></i>
-      <i class="dot" data-r="4" data-kx="94.0" data-ky="-69.0" style="left:710.0px;top:604.0px"></i>
-      <i class="dot" data-r="19" data-kx="78.0" data-ky="-69.0" style="left:756.0px;top:604.0px"></i>
-      <i class="dot" data-r="59" data-kx="-78.0" data-ky="-69.0" style="left:342.0px;top:650.0px"></i>
-      <i class="dot" data-r="5" data-kx="-94.0" data-ky="-69.0" style="left:388.0px;top:650.0px"></i>
-      <i class="dot" data-r="8" data-kx="-110.0" data-ky="-69.0" style="left:434.0px;top:650.0px"></i>
-      <i class="dot" data-r="96" data-kx="-126.0" data-ky="-69.0" style="left:480.0px;top:650.0px"></i>
-      <i class="dot" data-r="3" data-kx="-142.0" data-ky="-69.0" style="left:526.0px;top:650.0px"></i>
-      <i class="dot" data-r="80" data-kx="-158.0" data-ky="-69.0" style="left:572.0px;top:650.0px"></i>
-      <i class="dot" data-r="49" data-kx="-174.0" data-ky="-69.0" style="left:618.0px;top:650.0px"></i>
-      <i class="dot" data-r="41" data-kx="-190.0" data-ky="-69.0" style="left:664.0px;top:650.0px"></i>
-      <i class="dot" data-r="34" data-kx="-206.0" data-ky="-69.0" style="left:710.0px;top:650.0px"></i>
-      <i class="dot" data-r="77" data-kx="-222.0" data-ky="-69.0" style="left:756.0px;top:650.0px"></i>
-      <i class="dot" data-r="70" data-kx="222.0" data-ky="-115.0" style="left:342.0px;top:696.0px"></i>
-      <i class="dot" data-r="37" data-kx="206.0" data-ky="-115.0" style="left:388.0px;top:696.0px"></i>
-      <i class="dot" data-r="54" data-kx="190.0" data-ky="-115.0" style="left:434.0px;top:696.0px"></i>
-      <i class="dot" data-r="7" data-kx="174.0" data-ky="-115.0" style="left:480.0px;top:696.0px"></i>
-      <i class="dot" data-r="29" data-kx="158.0" data-ky="-115.0" style="left:526.0px;top:696.0px"></i>
-      <i class="dot" data-r="71" data-kx="142.0" data-ky="-115.0" style="left:572.0px;top:696.0px"></i>
-      <i class="dot" data-r="66" data-kx="126.0" data-ky="-115.0" style="left:618.0px;top:696.0px"></i>
-      <i class="dot" data-r="72" data-kx="110.0" data-ky="-115.0" style="left:664.0px;top:696.0px"></i>
-      <i class="dot" data-r="35" data-kx="94.0" data-ky="-115.0" style="left:710.0px;top:696.0px"></i>
-      <i class="dot" data-r="2" data-kx="78.0" data-ky="-115.0" style="left:756.0px;top:696.0px"></i>
+      <i class="dot" data-r="11" style="left:342.0px;top:282.0px"></i>
+      <i class="dot" data-r="9" style="left:388.0px;top:282.0px"></i>
+      <i class="dot" data-r="21" style="left:434.0px;top:282.0px"></i>
+      <i class="dot" data-r="47" style="left:480.0px;top:282.0px"></i>
+      <i class="dot" data-r="86" style="left:526.0px;top:282.0px"></i>
+      <i class="dot" data-r="69" style="left:572.0px;top:282.0px"></i>
+      <i class="dot" data-r="95" style="left:618.0px;top:282.0px"></i>
+      <i class="dot" data-r="89" style="left:664.0px;top:282.0px"></i>
+      <i class="dot" data-r="82" style="left:710.0px;top:282.0px"></i>
+      <i class="dot" data-r="94" style="left:756.0px;top:282.0px"></i>
+      <i class="dot" data-r="26" style="left:342.0px;top:328.0px"></i>
+      <i class="dot" data-r="85" style="left:388.0px;top:328.0px"></i>
+      <i class="dot" data-r="92" style="left:434.0px;top:328.0px"></i>
+      <i class="dot" data-r="45" style="left:480.0px;top:328.0px"></i>
+      <i class="dot" data-r="24" style="left:526.0px;top:328.0px"></i>
+      <i class="dot" data-r="75" style="left:572.0px;top:328.0px"></i>
+      <i class="dot" data-r="28" style="left:618.0px;top:328.0px"></i>
+      <i class="dot" data-r="68" style="left:664.0px;top:328.0px"></i>
+      <i class="dot" data-r="65" style="left:710.0px;top:328.0px"></i>
+      <i class="dot" data-r="98" style="left:756.0px;top:328.0px"></i>
+      <i class="dot" data-r="40" style="left:342.0px;top:374.0px"></i>
+      <i class="dot" data-r="6" style="left:388.0px;top:374.0px"></i>
+      <i class="dot" data-r="10" style="left:434.0px;top:374.0px"></i>
+      <i class="dot" data-r="53" style="left:480.0px;top:374.0px"></i>
+      <i class="dot" data-r="14" style="left:526.0px;top:374.0px"></i>
+      <i class="dot" data-r="1" style="left:572.0px;top:374.0px"></i>
+      <i class="dot" data-r="16" style="left:618.0px;top:374.0px"></i>
+      <i class="dot" data-r="87" style="left:664.0px;top:374.0px"></i>
+      <i class="dot" data-r="74" style="left:710.0px;top:374.0px"></i>
+      <i class="dot" data-r="39" style="left:756.0px;top:374.0px"></i>
+      <i class="dot" data-r="81" style="left:342.0px;top:420.0px"></i>
+      <i class="dot" data-r="44" style="left:388.0px;top:420.0px"></i>
+      <i class="dot" data-r="27" style="left:434.0px;top:420.0px"></i>
+      <i class="dot" data-r="0" style="left:480.0px;top:420.0px"></i>
+      <i class="dot" data-r="42" style="left:526.0px;top:420.0px"></i>
+      <i class="dot" data-r="62" style="left:572.0px;top:420.0px"></i>
+      <i class="dot" data-r="56" style="left:618.0px;top:420.0px"></i>
+      <i class="dot" data-r="67" style="left:664.0px;top:420.0px"></i>
+      <i class="dot" data-r="23" style="left:710.0px;top:420.0px"></i>
+      <i class="dot" data-r="63" style="left:756.0px;top:420.0px"></i>
+      <i class="dot" data-r="55" style="left:342.0px;top:466.0px"></i>
+      <i class="dot" data-r="99" style="left:388.0px;top:466.0px"></i>
+      <i class="dot" data-r="32" style="left:434.0px;top:466.0px"></i>
+      <i class="dot" data-r="60" style="left:480.0px;top:466.0px"></i>
+      <i class="dot" data-r="17" style="left:526.0px;top:466.0px"></i>
+      <i class="dot" data-r="50" style="left:572.0px;top:466.0px"></i>
+      <i class="dot" data-r="91" style="left:618.0px;top:466.0px"></i>
+      <i class="dot" data-r="20" style="left:664.0px;top:466.0px"></i>
+      <i class="dot" data-r="25" style="left:710.0px;top:466.0px"></i>
+      <i class="dot" data-r="15" style="left:756.0px;top:466.0px"></i>
+      <i class="dot" data-r="97" style="left:342.0px;top:512.0px"></i>
+      <i class="dot" data-r="22" style="left:388.0px;top:512.0px"></i>
+      <i class="dot" data-r="61" style="left:434.0px;top:512.0px"></i>
+      <i class="dot" data-r="83" style="left:480.0px;top:512.0px"></i>
+      <i class="dot" data-r="78" style="left:526.0px;top:512.0px"></i>
+      <i class="dot" data-r="84" style="left:572.0px;top:512.0px"></i>
+      <i class="dot" data-r="48" style="left:618.0px;top:512.0px"></i>
+      <i class="dot" data-r="38" style="left:664.0px;top:512.0px"></i>
+      <i class="dot" data-r="52" style="left:710.0px;top:512.0px"></i>
+      <i class="dot" data-r="33" style="left:756.0px;top:512.0px"></i>
+      <i class="dot" data-r="43" style="left:342.0px;top:558.0px"></i>
+      <i class="dot" data-r="12" style="left:388.0px;top:558.0px"></i>
+      <i class="dot" data-r="51" style="left:434.0px;top:558.0px"></i>
+      <i class="dot" data-r="46" style="left:480.0px;top:558.0px"></i>
+      <i class="dot" data-r="88" style="left:526.0px;top:558.0px"></i>
+      <i class="dot" data-r="30" style="left:572.0px;top:558.0px"></i>
+      <i class="dot" data-r="36" style="left:618.0px;top:558.0px"></i>
+      <i class="dot" data-r="57" style="left:664.0px;top:558.0px"></i>
+      <i class="dot" data-r="93" style="left:710.0px;top:558.0px"></i>
+      <i class="dot" data-r="31" style="left:756.0px;top:558.0px"></i>
+      <i class="dot" data-r="79" style="left:342.0px;top:604.0px"></i>
+      <i class="dot" data-r="58" style="left:388.0px;top:604.0px"></i>
+      <i class="dot" data-r="76" style="left:434.0px;top:604.0px"></i>
+      <i class="dot" data-r="13" style="left:480.0px;top:604.0px"></i>
+      <i class="dot" data-r="90" style="left:526.0px;top:604.0px"></i>
+      <i class="dot" data-r="64" style="left:572.0px;top:604.0px"></i>
+      <i class="dot" data-r="18" style="left:618.0px;top:604.0px"></i>
+      <i class="dot" data-r="73" style="left:664.0px;top:604.0px"></i>
+      <i class="dot" data-r="4" style="left:710.0px;top:604.0px"></i>
+      <i class="dot" data-r="19" style="left:756.0px;top:604.0px"></i>
+      <i class="dot" data-r="59" style="left:342.0px;top:650.0px"></i>
+      <i class="dot" data-r="5" style="left:388.0px;top:650.0px"></i>
+      <i class="dot" data-r="8" style="left:434.0px;top:650.0px"></i>
+      <i class="dot" data-r="96" style="left:480.0px;top:650.0px"></i>
+      <i class="dot" data-r="3" style="left:526.0px;top:650.0px"></i>
+      <i class="dot" data-r="80" style="left:572.0px;top:650.0px"></i>
+      <i class="dot" data-r="49" style="left:618.0px;top:650.0px"></i>
+      <i class="dot" data-r="41" style="left:664.0px;top:650.0px"></i>
+      <i class="dot" data-r="34" style="left:710.0px;top:650.0px"></i>
+      <i class="dot" data-r="77" style="left:756.0px;top:650.0px"></i>
+      <i class="dot" data-r="70" style="left:342.0px;top:696.0px"></i>
+      <i class="dot" data-r="37" style="left:388.0px;top:696.0px"></i>
+      <i class="dot" data-r="54" style="left:434.0px;top:696.0px"></i>
+      <i class="dot" data-r="7" style="left:480.0px;top:696.0px"></i>
+      <i class="dot" data-r="29" style="left:526.0px;top:696.0px"></i>
+      <i class="dot" data-r="71" style="left:572.0px;top:696.0px"></i>
+      <i class="dot" data-r="66" style="left:618.0px;top:696.0px"></i>
+      <i class="dot" data-r="72" style="left:664.0px;top:696.0px"></i>
+      <i class="dot" data-r="35" style="left:710.0px;top:696.0px"></i>
+      <i class="dot" data-r="2" style="left:756.0px;top:696.0px"></i>
     </div>
-    <div class="words" id="a1-words"><span>中文</span><span>Español</span><span>Tiếng Việt</span><span>Tagalog</span><span>हिन्दी</span><span>한국어</span><span>粵語</span><span>Русский</span></div>
-    <div class="stat loc" id="a1-loc1">Palo Alto, California</div>
-    <div class="stat loc" id="a1-loc2">Santa Clara County, California</div>
-    <div class="stat num" id="a1-num1">0.0%</div>
-    <div class="stat cap" id="a1-cap1">speak a language other than English at home</div>
-    <div class="stat src" id="a1-src1">U.S. Census Bureau, QuickFacts · ACS 2020–2024 · residents age 5+</div>
-    <div class="stat loc" id="a1-loc3">U.S. restaurant workforce</div>
-    <div class="stat num" id="a1-num3">0%</div>
-    <div class="stat cap" id="a1-cap3">of restaurant chefs speak a language other than English at home</div>
-    <div class="stat sub" id="a1-sub3">39% of cooks · 30% of all restaurant staff</div>
-    <div class="stat src" id="a1-src3" style="top:740px">National Restaurant Association · Restaurant Employee Demographics, March 2026</div>
       <div class="person" id="p0" style="left:170px"><svg viewBox="0 0 60 110"><circle cx="30" cy="18" r="16"/><path d="M6 108 V58 a24 24 0 0 1 48 0 V108 z"/></svg></div>
       <div class="person" id="p1" style="left:310px"><svg viewBox="0 0 60 110"><circle cx="30" cy="18" r="16"/><path d="M6 108 V58 a24 24 0 0 1 48 0 V108 z"/></svg></div>
       <div class="person" id="p2" style="left:450px"><svg viewBox="0 0 60 110"><circle cx="30" cy="18" r="16"/><path d="M6 108 V58 a24 24 0 0 1 48 0 V108 z"/></svg></div>
       <div class="person" id="p3" style="left:590px"><svg viewBox="0 0 60 110"><circle cx="30" cy="18" r="16"/><path d="M6 108 V58 a24 24 0 0 1 48 0 V108 z"/></svg></div>
       <div class="person" id="p4" style="left:730px"><svg viewBox="0 0 60 110"><circle cx="30" cy="18" r="16"/><path d="M6 108 V58 a24 24 0 0 1 48 0 V108 z"/></svg></div>
       <div class="person" id="p5" style="left:870px"><svg viewBox="0 0 60 110"><circle cx="30" cy="18" r="16"/><path d="M6 108 V58 a24 24 0 0 1 48 0 V108 z"/></svg></div>
-    <div class="stat loc" id="a1-loc4">Worldwide</div>
-    <div class="stat num" id="a1-num4">1 in 6</div>
-    <div class="stat cap" id="a1-cap4">people live with a significant disability</div>
-    <div class="stat sub" id="a1-sub4">2.2 billion people have a vision impairment</div>
-    <div class="stat src" id="a1-src4">World Health Organization · 2023, 2026</div>
-    <div class="same" id="a1-s1" style="top:660px">One language.</div>
-    <div class="same" id="a1-s2" style="top:760px">One format.</div>
-    <div class="same" id="a1-s3" style="top:860px">One quiz.</div>
+    <div class="bars" id="a1-bars">
+      <div class="bar"><div class="lbl"><span>With a disability</span><span>22.8%</span></div><div class="trk"><div class="fill" id="a1-b1" style="width:22.8%;background:#00479a"></div></div></div>
+      <div class="bar"><div class="lbl"><span>Without a disability</span><span>65.2%</span></div><div class="trk"><div class="fill" id="a1-b2" style="width:65.2%;background:#86868b"></div></div></div>
+    </div>
+    <div class="words" id="a1-words"><span>中文</span><span>Español</span><span>Tiếng Việt</span><span>Tagalog</span><span>हिन्दी</span><span>한국어</span><span>粵語</span><span>Русский</span></div>
+
+    <div class="stat loc" id="a1-loc1">United States</div>
+    <div class="stat num" id="a1-num1">1 in 4</div>
+    <div class="stat cap" id="a1-cap1">More than 1 in 4 adults live with a disability</div>
+    <div class="stat src" id="a1-src1" style="top:680px">CDC · Disability and Health Data System, 2024</div>
+
+    <div class="stat loc" id="a1-loc2">Worldwide</div>
+    <div class="stat num mid" id="a1-num2">0.0 billion</div>
+    <div class="stat cap" id="a1-cap2" style="top:510px">people live with a significant disability · 1 in 6</div>
+    <div class="stat sub" id="a1-sub2a" style="top:640px"><b>2.2 billion</b> have a vision impairment</div>
+    <div class="stat sub" id="a1-sub2b" style="top:710px"><b>430 million</b> have disabling hearing loss</div>
+    <div class="stat src" id="a1-src2">World Health Organization · 2023, 2026</div>
+
+    <div class="stat loc" id="a1-loc3">Jobs</div>
+    <div class="stat num" id="a1-num3">0.0%</div>
+    <div class="stat cap" id="a1-cap3">of people with a disability are employed, vs 65.2% without</div>
+    <div class="stat src" id="a1-src3" style="top:700px">U.S. Bureau of Labor Statistics · 2025</div>
+
+    <div class="stat loc" id="a1-loc4">Santa Clara County, California</div>
+    <div class="stat num" id="a1-num4">0.0%</div>
+    <div class="stat cap" id="a1-cap4">speak a language other than English at home</div>
+    <div class="stat sub" id="a1-sub4" style="top:670px"><b>46%</b> of U.S. restaurant chefs do too</div>
+    <div class="stat src" id="a1-src4" style="top:760px;width:860px">U.S. Census Bureau, ACS 2020–2024 · National Restaurant Association, March 2026</div>
+
+    <div class="same" id="a1-s1" style="top:330px">One format.</div>
+    <div class="same" id="a1-s2" style="top:450px">One speed.</div>
+    <div class="same" id="a1-s3" style="top:570px">One language.</div>
     <div class="q" id="a1-q" data-hold="deliberate silent beat">What if training asked <em>how you learn</em><br/>— not what limits you?</div>
     <div class="seed" id="a1-seed"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path class="chk" d="M5 12.5l4.5 4.5L19 7.5" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/></svg></div>
 
@@ -171,48 +188,48 @@
 
     const dots = $$('.dot').sort((a, b) => a.dataset.r - b.dataset.r);
     const first = dots[0];
-    // B1 (0–1.5): one person, alone. Then the camera pulls back to a hundred.
     const fx = parseFloat(first.style.left) + 11, fy = parseFloat(first.style.top) + 11;
-    tl.fromTo('#a1-grid', { scale: 3.2, x: 960 - fx, y: 540 - fy, transformOrigin: `${fx}px ${fy}px` }, { scale: 1, x: 0, y: 0, duration: 1.1, ease: "power2.inOut" }, 1.4);
+    const B = (els, t, st = 0.02) => tl.to(els, { backgroundColor: "#00479a", duration: 0.25, stagger: st }, t);
+    // B1 (0–1.4): one person. Then a hundred.
     tl.set(first, { opacity: 1 }, 0);
-    tl.fromTo(dots.slice(1), { opacity: 0 }, { opacity: 1, duration: 0.3, stagger: 0.006, ease: "power2.out" }, 1.6);
-    // B2 (1.5–6.6): Palo Alto 42.3%
-    IN('#a1-loc1', 2.45); COUNT($('#a1-num1'), 0, 42.3, 2.55, 1.2, 1, '%'); IN('#a1-num1', 2.55, 0.15);
-    tl.fromTo(dots.slice(0, 42), { backgroundColor: "#86868b" }, { backgroundColor: "#00479a", duration: 0.25, stagger: 0.02 }, 2.55);
-    IN('#a1-cap1', 2.9); IN('#a1-src1', 3.3);
-    tl.fromTo('#a1-words span', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35, stagger: 0.12, ease: "power3.out" }, 3.6);
-    // B3 (6.6–10): zoom out to the county, 55.2%
-    OUT('#a1-loc1', 6.6, 0.15); IN('#a1-loc2', 6.8);
-    tl.fromTo(['#a1-ring1', '#a1-ring2'], { scale: 0.3, opacity: 0.7 }, { scale: 1.8, opacity: 0, duration: 1.6, stagger: 0.35, ease: "power2.out", immediateRender: false }, 6.6);
-    COUNT($('#a1-num1'), 42.3, 55.2, 6.9, 1.2, 1, '%');
-    tl.fromTo(dots.slice(42, 55), { backgroundColor: "#86868b" }, { backgroundColor: "#00479a", immediateRender: false, duration: 0.25, stagger: 0.05 }, 6.9);
-    // B4 (10–14.4): America's restaurant kitchens, 46% of chefs
-    ['#a1-loc2', '#a1-num1', '#a1-cap1', '#a1-src1', '#a1-words'].forEach((s) => OUT(s, 10.0));
-    tl.to(dots, { backgroundColor: "#86868b", duration: 0.3 }, 10.0);
-    tl.to(dots, { x: (i, el) => +el.dataset.kx, y: (i, el) => +el.dataset.ky, duration: 0.8, ease: "power2.inOut", stagger: 0.003 }, 10.15);
-    IN('#a1-loc3', 10.4); IN('#a1-num3', 10.6, 0.15); COUNT($('#a1-num3'), 0, 46, 10.6, 1.0, 0, '%');
-    tl.to(dots.slice(0, 46), { backgroundColor: "#00479a", duration: 0.25, stagger: 0.015 }, 10.9);
-    IN('#a1-cap3', 10.9); IN('#a1-src3', 11.4); IN('#a1-sub3', 12.0);
-    // B5 (14.4–19.6): one in six
-    ['#a1-loc3', '#a1-num3', '#a1-cap3', '#a1-sub3', '#a1-src3'].forEach((s) => OUT(s, 14.3));
-    tl.to(dots, { scale: 0, opacity: 0, duration: 0.3, stagger: 0.003, ease: "power3.in" }, 14.3);
-    tl.fromTo('.person', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, stagger: 0.06, ease: "expo.out" }, 14.6);
-    IN('#a1-loc4', 15.0); IN('#a1-num4', 15.3);
-    tl.fromTo('#p2 svg', { fill: "#86868b" }, { fill: "#00479a", duration: 0.35, ease: "power2.out" }, 15.6);
-    IN('#a1-cap4', 15.8); IN('#a1-src4', 16.3); IN('#a1-sub4', 17.2);
-    // B6 (19.6–25.8): the same way for everyone
-    ['#a1-loc4', '#a1-num4', '#a1-cap4', '#a1-sub4', '#a1-src4'].forEach((s) => OUT(s, 19.6));
-    tl.to('#p2 svg', { fill: "#86868b", duration: 0.6 }, 19.9);
-    tl.to('.person', { x: 400, duration: 0.9, ease: "power2.inOut" }, 20.0);
-    IN('#a1-s1', 23.0, 0.15); IN('#a1-s2', 23.85, 0.15); IN('#a1-s3', 24.87, 0.15);
-    // B7 (25.9–28.6): silence, and the question
-    ['.person', '#a1-s1', '#a1-s2', '#a1-s3'].forEach((s) => OUT(s, 25.7, 0.2));
-    tl.fromTo('#a1-q', { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.45, ease: "power2.out" }, 25.9);
-    OUT('#a1-q', 28.62, 0.15);
-    // B8 (28.6–29.3): one dot again, and it becomes FirstShift
-    tl.fromTo('#a1-seed', { opacity: 0, scale: 0.1375 }, { opacity: 1, duration: 0.08 }, 28.74);
-    tl.to('#a1-seed', { scale: 1, borderRadius: 36, backgroundColor: "#00479a", duration: 0.42, ease: "expo.out" }, 28.8);
-    tl.fromTo('#a1-seed .chk', { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.22, ease: "power2.out" }, 29.0);
+    tl.fromTo('#a1-grid', { scale: 3.2, x: 960 - fx, y: 540 - fy, transformOrigin: `${fx}px ${fy}px` }, { scale: 1, x: 0, y: 0, duration: 1.1, ease: "power2.inOut" }, 1.4);
+    tl.fromTo(dots.slice(1), { opacity: 0 }, { opacity: 1, duration: 0.3, stagger: 0.006, ease: "power2.out" }, 1.5);
+    // B2 (2.4–5.9): more than 1 in 4 U.S. adults
+    IN('#a1-loc1', 2.4); IN('#a1-num1', 2.6, 0.25); B(dots.slice(0, 26), 2.6, 0.025); IN('#a1-cap1', 2.95); IN('#a1-src1', 3.3);
+    // B3 (5.9–16): 1.3 billion; vision; hearing
+    ['#a1-loc1', '#a1-num1', '#a1-cap1', '#a1-src1'].forEach((s) => OUT(s, 5.9));
+    tl.to(dots, { scale: 0, opacity: 0, duration: 0.3, stagger: 0.003, ease: "power3.in" }, 5.9);
+    tl.fromTo('.person', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, stagger: 0.06, ease: "expo.out" }, 6.1);
+    IN('#a1-loc2', 6.3); IN('#a1-num2', 6.5, 0.15); COUNT($('#a1-num2'), 0, 1.3, 6.5, 1.0, 1, ' billion');
+    tl.fromTo('#p2 svg', { fill: "#86868b" }, { fill: "#00479a", duration: 0.35 }, 6.8);
+    IN('#a1-cap2', 6.9); IN('#a1-src2', 7.3);
+    IN('#a1-sub2a', 9.3); IN('#a1-sub2b', 12.5);
+    // B4 (16–20.6): 22.8% employed vs 65.2%
+    ['#a1-loc2', '#a1-num2', '#a1-cap2', '#a1-sub2a', '#a1-sub2b', '#a1-src2', '.person'].forEach((s) => OUT(s, 16.0));
+    IN('#a1-bars', 16.3, 0.25);
+    tl.fromTo('#a1-b1', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: "expo.out" }, 16.6);
+    tl.fromTo('#a1-b2', { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: "expo.out" }, 16.8);
+    IN('#a1-loc3', 16.4); IN('#a1-num3', 16.6, 0.15); COUNT($('#a1-num3'), 0, 22.8, 16.6, 1.0, 1, '%');
+    IN('#a1-cap3', 17.0); IN('#a1-src3', 17.6);
+    // B5 (20.6–28.4): languages
+    ['#a1-loc3', '#a1-num3', '#a1-cap3', '#a1-src3', '#a1-bars'].forEach((s) => OUT(s, 20.6));
+    tl.to(dots, { scale: 1, opacity: 1, backgroundColor: "#86868b", duration: 0.35, stagger: 0.003, ease: "expo.out" }, 20.8);
+    IN('#a1-loc4', 21.0); IN('#a1-num4', 21.2, 0.15); COUNT($('#a1-num4'), 0, 55.2, 21.2, 1.2, 1, '%');
+    B(dots.slice(0, 55), 21.3, 0.012); IN('#a1-cap4', 21.5); IN('#a1-src4', 21.9);
+    tl.fromTo('#a1-words span', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.35, stagger: 0.12, ease: "power3.out" }, 23.0);
+    IN('#a1-sub4', 26.1);
+    // B6 (28.4–31.6): one way for everyone
+    ['#a1-loc4', '#a1-num4', '#a1-cap4', '#a1-sub4', '#a1-src4', '#a1-words'].forEach((s) => OUT(s, 28.4));
+    tl.to(dots, { backgroundColor: "#c7c7cc", duration: 0.6 }, 28.6);
+    IN('#a1-s1', 29.5, 0.15); IN('#a1-s2', 30.2, 0.15); IN('#a1-s3', 30.9, 0.15);
+    // B7 (31.9–35.75): silence, and the question
+    ['#a1-grid', '#a1-s1', '#a1-s2', '#a1-s3'].forEach((s) => OUT(s, 31.6, 0.25));
+    tl.fromTo('#a1-q', { opacity: 0, filter: "blur(10px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.45, ease: "power2.out" }, 31.95);
+    OUT('#a1-q', 35.65, 0.15);
+    // B8 (35.8–36.4): one dot becomes FirstShift
+    tl.fromTo('#a1-seed', { opacity: 0, scale: 0.1375 }, { opacity: 1, duration: 0.08 }, 35.8);
+    tl.to('#a1-seed', { scale: 1, borderRadius: 36, backgroundColor: "#00479a", duration: 0.42, ease: "expo.out" }, 35.86);
+    tl.fromTo('#a1-seed .chk', { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.22, ease: "power2.out" }, 36.06);
 
     window.__timelines["act1"] = tl;
     })();

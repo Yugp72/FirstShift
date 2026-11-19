@@ -17,7 +17,7 @@ const reset = () => post("/api/demo/reset", {}, mgr);
 const HIDE = `(() => { const add = () => { if (document.getElementById('fs-hide-badge')) return; const css = document.createElement('style'); css.id = 'fs-hide-badge'; css.textContent = '#enter-badge,.build-with-container{display:none!important}'; (document.head || document.documentElement).appendChild(css); };
   document.addEventListener('DOMContentLoaded', add); new MutationObserver(() => { add(); const b = document.getElementById('enter-badge'); if (b) b.remove(); }).observe(document, { childList: true, subtree: true }); })();`;
 
-const browser = await chromium.launch({ channel: "msedge", headless: true });
+const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH, headless: true });
 const DESK = { viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1, recordVideo: { size: { width: 1440, height: 900 } } };
 const PHONE = { viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true, recordVideo: { size: { width: 390, height: 844 } } };
 
@@ -96,6 +96,43 @@ await clip("approve", DESK, mgr, async (p, mark) => {
 // 7. Mei's phone: the seal lands, in her language.
 await clip("seal", PHONE, null, async (p, mark) => {
   await p.goto(SITE + "/t/mei-demo", { waitUntil: "networkidle" }); mark("load"); await wait(p, 5000);
+});
+
+// 8. Accessibility setup in English: captions + read aloud + extra time, then the roomier lesson.
+await clip("a11ysetup", PHONE, null, async (p, mark) => {
+  await p.goto(SITE + "/learn/server", { waitUntil: "networkidle" }); await wait(p, 1500); mark("setup");
+  await p.mouse.wheel(0, 260); await wait(p, 600);
+  for (const re of [/Captions on videos/, /Read aloud/, /Extra time/]) { await p.getByRole("button", { name: re }).first().click({ timeout: 5000 }).catch(() => mark("miss " + re)); mark("tick " + re); await wait(p, 900); }
+  await wait(p, 600);
+  await p.getByRole("button", { name: /Continue/ }).first().click({ timeout: 5000 }).catch(() => mark("no continue")); mark("continue"); await wait(p, 2200);
+  await p.evaluate(() => { const v = document.querySelector("video"); if (v) { v.muted = true; v.play(); } }).catch(() => {});
+  await wait(p, 4000); mark("video");
+  await p.getByRole("button", { name: /Pictures/ }).first().click({ timeout: 5000 }).catch(() => mark("no pictures")); mark("pictures"); await wait(p, 2600);
+  await p.getByRole("button", { name: /Listen/ }).first().click({ timeout: 5000 }).catch(() => mark("no listen")); mark("listen"); await wait(p, 2600);
+  mark("end");
+});
+
+// 9. Daniel (Deaf, learns visually): captioned video, then picture steps.
+await clip("daniel", PHONE, null, async (p, mark) => {
+  await p.goto(SITE + "/t/daniel-demo", { waitUntil: "networkidle" }); await wait(p, 1800); mark("load");
+  await p.getByRole("button", { name: /Video/ }).first().click({ timeout: 5000 }).catch(() => mark("no video tab"));
+  await p.evaluate(() => { const v = document.querySelector("video"); if (v) { v.muted = true; v.play(); } }).catch(() => {});
+  mark("video"); await wait(p, 4000);
+  await p.getByRole("button", { name: /Pictures/ }).first().click({ timeout: 5000 }).catch(() => mark("no pictures")); mark("pictures"); await wait(p, 2500);
+});
+
+// 10. Keyboard only: focus ring moves across Daniel's card, Enter opens his passport, Esc closes it.
+await clip("keys", DESK, mgr, async (p, mark) => {
+  await p.goto(SITE + "/manager", { waitUntil: "networkidle" }); await p.waitForSelector(".pcard", { timeout: 20000 }); await wait(p, 1200);
+  await p.keyboard.press("Tab"); await wait(p, 300);
+  const card = p.locator(".pcard", { hasText: "Daniel Reyes" }).first();
+  await card.getByRole("button").first().focus(); mark("focus"); await wait(p, 700);
+  for (let k = 0; k < 3; k++) { await p.keyboard.press("Tab"); await wait(p, 650); }
+  mark("tabs");
+  await card.getByRole("button", { name: /Review passport/ }).focus(); await wait(p, 600);
+  await p.keyboard.press("Enter"); mark("enter"); await wait(p, 3800);
+  await p.keyboard.press("Tab"); await wait(p, 700); await p.keyboard.press("Tab"); await wait(p, 700);
+  await p.keyboard.press("Escape"); mark("esc"); await wait(p, 1500);
 });
 
 await reset();

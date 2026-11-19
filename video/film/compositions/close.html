@@ -4,13 +4,16 @@
     #root * { box-sizing: border-box; }
 
     .fd { position: absolute; border-radius: 50%; background: #d2d2d7; opacity: 0; }
-    .big { position: absolute; left: 0; top: 330px; width: 1920px; text-align: center; font-size: 230px; font-weight: 900; letter-spacing: -0.05em; line-height: 1; opacity: 0; }
-    .ccap { position: absolute; left: 0; top: 590px; width: 1920px; text-align: center; font-size: 46px; font-weight: 700; letter-spacing: -0.02em; opacity: 0; }
-    .csrc { position: absolute; left: 0; top: 670px; width: 1920px; text-align: center; font-size: 28px; color: #4d4d52; opacity: 0; }
-    .four { position: absolute; top: 470px; width: 180px; text-align: center; opacity: 0; }
-    .four i { display: block; margin: 0 auto 18px; width: 34px; height: 34px; border-radius: 50%; background: #00479a; }
-    .four span { font-size: 40px; font-weight: 700; }
-    .live { position: absolute; left: 0; width: 1920px; text-align: center; font-weight: 900; letter-spacing: -0.04em; opacity: 0; }
+    .big { position: absolute; left: 0; top: 330px; width: 1920px; text-align: center; font-size: 210px; font-weight: 900; letter-spacing: -0.05em; line-height: 1; opacity: 0; }
+    .ccap { position: absolute; left: 0; top: 570px; width: 1920px; text-align: center; font-size: 46px; font-weight: 700; letter-spacing: -0.02em; opacity: 0; }
+    .csrc { position: absolute; left: 0; top: 650px; width: 1920px; text-align: center; font-size: 28px; color: #4d4d52; opacity: 0; }
+    .both { position: absolute; left: 0; top: 250px; width: 1920px; text-align: center; font-size: 84px; font-weight: 900; letter-spacing: -0.04em; opacity: 0; }
+    .chips { position: absolute; left: 260px; top: 420px; width: 1400px; display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; opacity: 0; }
+    .chips span { padding: 12px 26px; border-radius: 999px; background: #eef3fa; color: #00479a; font-size: 34px; font-weight: 700; }
+    .fourrow { position: absolute; left: 0; top: 640px; width: 1920px; height: 120px; opacity: 0; }
+    .four { position: absolute; top: 0; width: 180px; text-align: center; }
+    .four i { display: block; margin: 0 auto 14px; width: 30px; height: 30px; border-radius: 50%; background: #00479a; }
+    .four span { font-size: 38px; font-weight: 700; }
     .start { position: absolute; left: 949px; top: 529px; width: 22px; height: 22px; border-radius: 50%; background: #00479a; }
     .elogo { position: absolute; left: 505px; top: 330px; width: 160px; height: 160px; border-radius: 36px; background: #00479a; opacity: 0; }
     .elogo svg { position: absolute; inset: 22px; width: 116px; height: 116px; }
@@ -161,19 +164,24 @@
     <i class="fd" style="left:1762px;top:913px;width:9px;height:9px"></i>
     <i class="fd" style="left:1625px;top:475px;width:12px;height:12px"></i>
     <div class="start" id="c-start"></div>
-    <div class="big" id="c-num">~0</div>
-    <div class="ccap" id="c-cap">languages are in use worldwide, spoken or signed</div>
-    <div class="csrc" id="c-src">UNESCO World Atlas of Languages</div>
-    <div class="four" id="c-f0" style="left:540px"><i></i><span>English</span></div>
-    <div class="four" id="c-f1" style="left:760px"><i></i><span>中文</span></div>
-    <div class="four" id="c-f2" style="left:980px"><i></i><span>粵語</span></div>
-    <div class="four" id="c-f3" style="left:1200px"><i></i><span>Español</span></div>
-    <div class="live" id="c-live1" style="top:640px;font-size:76px">4 live today.</div>
-    <div class="live" id="c-live2" style="top:740px;font-size:56px;color:#4d4d52">Built to add the next.</div>
+    <div class="big" id="c-n1">1.3 billion</div>
+    <div class="ccap" id="c-c1">people live with a significant disability</div>
+    <div class="csrc" id="c-s1">World Health Organization</div>
+    <div class="big" id="c-n2">~0</div>
+    <div class="ccap" id="c-c2">languages are in use worldwide, spoken or signed</div>
+    <div class="csrc" id="c-s2">UNESCO World Atlas of Languages</div>
+    <div class="both" id="c-both">FirstShift is built for both.</div>
+    <div class="chips" id="c-chips"><span>Captions</span><span>Picture steps</span><span>Read aloud</span><span>Extra time</span><span>Seated station</span><span>Keyboard &amp; screen reader</span><span>WCAG AAA contrast</span></div>
+    <div class="fourrow" id="c-four">
+      <div class="four" style="left:540px"><i></i><span>English</span></div>
+      <div class="four" style="left:760px"><i></i><span>中文</span></div>
+      <div class="four" style="left:980px"><i></i><span>粵語</span></div>
+      <div class="four" style="left:1200px"><i></i><span>Español</span></div>
+    </div>
     <div class="elogo" id="c-logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path class="chk" d="M5 12.5l4.5 4.5L19 7.5" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/></svg></div>
     <div class="eword" id="c-word">FirstShift</div>
     <div class="eline" id="c-l1" style="top:560px;font-size:64px;font-weight:900;letter-spacing:-0.035em">From first hello to first shift.</div>
-    <div class="eline" id="c-l2" style="top:660px;font-size:40px;font-weight:700;color:#4d4d52">In your language. In the way you learn best.</div>
+    <div class="eline" id="c-l2" style="top:660px;font-size:40px;font-weight:700;color:#4d4d52">However you learn. Whatever your language.</div>
     <div class="eline" id="c-l3" style="top:860px;font-size:30px;color:#4d4d52">Built on Converge.AI Enter and Framia · All people shown are demo data</div>
 
   </div>
@@ -188,23 +196,23 @@
     const COUNT = (el, from, to, t, d, dec, suffix) => { const o = { v: from }; tl.fromTo(o, { v: from }, { v: to, duration: d, ease: "expo.out",
       onUpdate: () => { el.textContent = o.v.toFixed(dec) + suffix; } }, t); };
 
-    // C1 (75–78.6): the world has ~7,000 languages
     tl.to('#c-start', { scale: 0, opacity: 0, duration: 0.3, ease: 'power3.in' }, 0.30);
-    tl.fromTo('.fd', { opacity: 0, scale: 0 }, { opacity: 1, scale: 1, duration: 0.4, stagger: 0.01, ease: 'expo.out' }, 0.30);
-    IN('#c-num', 0.50, 0.15); { const o = { v: 0 }; tl.fromTo(o, { v: 0 }, { v: 7000, duration: 1.3, ease: 'expo.out', onUpdate: () => { $('#c-num').textContent = '~' + (Math.round(o.v / 10) * 10).toLocaleString('en-US'); } }, 0.50); }
-    IN('#c-cap', 1.00); IN('#c-src', 1.40);
-    ['#c-num', '#c-cap', '#c-src'].forEach((s) => OUT(s, 3.55));
-    // C2 (78.8–82.4): four live, built to add the next
-    tl.fromTo('.four', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.45, stagger: 0.12, ease: 'expo.out' }, 3.90);
-    IN('#c-live1', 4.40);
-    tl.to('.fd', { backgroundColor: '#b9c6da', duration: 0.6, stagger: 0.004 }, 5.90);
-    IN('#c-live2', 6.00);
-    ['.four', '#c-live1', '#c-live2', '.fd'].forEach((s) => OUT(s, 7.45, 0.25));
-    // C3 (82.7–89): end card
-    tl.fromTo('#c-logo', { opacity: 0, scale: 0.14, borderRadius: 80, backgroundColor: '#00479a' }, { opacity: 1, scale: 1, borderRadius: 36, duration: 0.6, ease: 'expo.out' }, 7.70);
-    tl.fromTo('#c-logo .chk', { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.3, ease: 'power2.out' }, 7.95);
-    tl.fromTo('#c-word', { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 0.6, ease: 'power3.inOut' }, 8.10);
-    IN('#c-l1', 9.20, 0.3); IN('#c-l2', 10.30, 0.3); IN('#c-l3', 10.90, 0.3);
+    IN('#c-n1', 0.45, 0.25); IN('#c-c1', 0.80); IN('#c-s1', 1.10);
+    ['#c-n1', '#c-c1', '#c-s1'].forEach((s) => OUT(s, 3.35));
+    tl.fromTo('.fd', { opacity: 0, scale: 0 }, { opacity: 1, scale: 1, duration: 0.4, stagger: 0.008, ease: 'expo.out' }, 3.50);
+    IN('#c-n2', 3.60, 0.15);
+    { const o = { v: 0 }; tl.fromTo(o, { v: 0 }, { v: 7000, duration: 1.2, ease: 'expo.out', onUpdate: () => { $('#c-n2').textContent = '~' + (Math.round(o.v / 10) * 10).toLocaleString('en-US'); } }, 3.60); }
+    IN('#c-c2', 3.65); IN('#c-s2', 4.00);
+    ['#c-n2', '#c-c2', '#c-s2', '.fd'].forEach((s) => OUT(s, 5.75, 0.2));
+    IN('#c-both', 5.95, 0.25);
+    tl.fromTo('#c-chips span', { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.35, stagger: 0.07, ease: 'expo.out' }, 6.10);
+    tl.set('#c-chips', { opacity: 1 }, 6.10);
+    IN('#c-four', 6.70, 0.3);
+    ['#c-both', '#c-chips', '#c-four'].forEach((s) => OUT(s, 7.95, 0.22));
+    tl.fromTo('#c-logo', { opacity: 0, scale: 0.14, borderRadius: 80 }, { opacity: 1, scale: 1, borderRadius: 36, duration: 0.6, ease: 'expo.out' }, 8.20);
+    tl.fromTo('#c-logo .chk', { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.3, ease: 'power2.out' }, 8.45);
+    tl.fromTo('#c-word', { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 0.6, ease: 'power3.inOut' }, 8.60);
+    IN('#c-l1', 9.50, 0.3); IN('#c-l2', 10.50, 0.3); IN('#c-l3', 11.10, 0.3);
 
     window.__timelines["close"] = tl;
     })();
