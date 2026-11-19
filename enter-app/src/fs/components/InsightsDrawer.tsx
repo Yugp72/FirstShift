@@ -1,30 +1,27 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { api, type Gap } from "../lib/api";
+import { useDialog } from "../lib/useDialog";
 
 export function InsightsDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [gaps, setGaps] = useState<Gap[] | null>(null);
-  const closeRef = useRef<HTMLButtonElement>(null);
+  const ref = useDialog<HTMLElement>(open, onClose);
   useEffect(() => {
     if (!open) return;
     api.insights().then((r) => setGaps(r.gaps)).catch(() => setGaps([]));
-    closeRef.current?.focus();
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open, onClose]);
+  }, [open]);
 
   return (
     <AnimatePresence>
       {open && (
         <>
           <motion.div className="scrim" onClick={onClose} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
-          <motion.aside className="drawer" role="dialog" aria-modal="true" aria-labelledby="gaps-title"
+          <motion.aside ref={ref} className="drawer" role="dialog" aria-modal="true" aria-labelledby="gaps-title"
             initial={{ x: 460 }} animate={{ x: 0 }} exit={{ x: 460 }} transition={{ type: "spring", stiffness: 320, damping: 34 }}>
-            <button ref={closeRef} type="button" className="close-x" onClick={onClose} aria-label="Close">×</button>
+            <button data-autofocus type="button" className="close-x" onClick={onClose} aria-label="Close">×</button>
             <h2 id="gaps-title">Team knowledge gaps</h2>
             <p className="sub">Most-missed checks on first try, across every hire. Fix the lesson once, not the person every time.</p>
-            {gaps === null && <p className="sub">Loading…</p>}
+            {gaps === null && <p className="sub" role="status">Loading…</p>}
             {gaps?.length === 0 && <p className="sub">No gaps yet. Every check passed on first try.</p>}
             {gaps?.map((g, i) => (
               <div className="gap" key={i}>

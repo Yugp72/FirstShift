@@ -4,6 +4,7 @@ import { SpeakButton } from "../components/SpeakButton";
 import { api, type AnswerResult, type HireModule, type Lang } from "../lib/api";
 import { BCP47, HTML_LANG, tr } from "../lib/i18n";
 import { useListen } from "../lib/listen";
+import { speak, stopSpeaking } from "../lib/speak";
 
 interface Props {
   token: string;
@@ -11,6 +12,7 @@ interface Props {
   qi: number;
   lang: Lang;
   visual: boolean;
+  autoRead?: boolean;
   onNext: (moduleComplete: boolean) => void;
 }
 
@@ -21,8 +23,9 @@ const SURE = [
 ] as const;
 
 /** Untimed checks. Tap a picture or an answer, say how sure you are, get kind feedback. Free text can be typed or spoken. */
-export function HireCheck({ token, m, qi, lang, visual, onNext }: Props) {
+export function HireCheck({ token, m, qi, lang, visual, autoRead, onNext }: Props) {
   const q = m.questions[qi];
+  const spoken = q.type === "mc" ? `${q.prompt} ${q.options.map((o, i) => `${i + 1}. ${o.text}`).join(". ")}` : q.prompt;
   const [sel, setSel] = useState<string | null>(null);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
@@ -33,6 +36,13 @@ export function HireCheck({ token, m, qi, lang, visual, onNext }: Props) {
   const mic = useListen(BCP47[lang], setText);
 
   useEffect(() => { head.current?.focus(); }, [qi]);
+  // "Read aloud" hires hear each question and its choices without having to find the button.
+  useEffect(() => {
+    if (!autoRead) return;
+    const t = window.setTimeout(() => speak(spoken, BCP47[lang]), 350);
+    return () => { window.clearTimeout(t); stopSpeaking(); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoRead, qi, lang]);
 
   const submit = async (answer: string, confidence?: number) => {
     setBusy(true);
@@ -58,7 +68,7 @@ export function HireCheck({ token, m, qi, lang, visual, onNext }: Props) {
         {m.icon} {m.title} · {tr("checkOf", lang, { n: qi + 1, total: m.questions.length })} · {tr("noTimer", lang)}
       </p>
       <h1 ref={head} tabIndex={-1} id="q-title" style={{ marginTop: 8 }}>{q.prompt}</h1>
-      <SpeakButton text={q.type === "mc" ? `${q.prompt} ${q.options.map((o, i) => `${i + 1}. ${o.text}`).join(". ")}` : q.prompt} lang={lang} />
+      <SpeakButton text={spoken} lang={lang} />
 
       {!res && hint && (
         <div className="kind almost"><p className="fb">{tr("stepRedo", lang)}</p><mark>{hint}</mark></div>
@@ -109,6 +119,7 @@ export function HireCheck({ token, m, qi, lang, visual, onNext }: Props) {
               </button>
             )}
           </div>
+          {busy && <p className="muted" role="status" style={{ fontSize: 14, margin: "10px 0 0" }}>{tr("readingSlow", lang)}</p>}
         </>
       )}
 

@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { api, LANG_CHIP, type Meta, type Ticket } from "../lib/api";
+import { useDialog } from "../lib/useDialog";
 
 interface Props {
   t: Ticket;
@@ -16,14 +17,7 @@ export function SendBackDialog({ t, meta, onClose, onSent }: Props) {
   const [note, setNote] = useState<string>(presets[0]?.en ?? "");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
-  const first = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    first.current?.focus();
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [onClose]);
+  const ref = useDialog<HTMLDivElement>(true, onClose);
 
   const send = async () => {
     if (!t.hire) return;
@@ -41,16 +35,16 @@ export function SendBackDialog({ t, meta, onClose, onSent }: Props) {
   return (
     <>
       <div className="scrim" onClick={onClose} />
-      <div className="dialog" role="dialog" aria-modal="true" aria-labelledby="sb-title">
+      <div ref={ref} className="dialog" role="dialog" aria-modal="true" aria-labelledby="sb-title" aria-describedby="sb-sub">
         <button type="button" className="close-x" onClick={onClose} aria-label="Close">×</button>
         <h2 id="sb-title">Send back a step for {t.name}</h2>
-        <p className="sub">Pick one step to review again. Your note is translated into {LANG_CHIP[t.lang]} and shown on their phone.</p>
+        <p className="sub" id="sb-sub">Pick one step to review again. Your note is translated into {LANG_CHIP[t.lang]} and shown on their phone.</p>
 
         <fieldset style={{ border: 0, padding: 0, margin: 0 }}>
           <legend className="field-label">Step to review</legend>
           {mods.map((m, i) => (
             <label className="opt" key={m.id}>
-              <input ref={i === 0 ? first : undefined} type="radio" name="mod" checked={moduleId === m.id} onChange={() => setModuleId(m.id)} />
+              <input data-autofocus={i === 0 ? "" : undefined} type="radio" name="mod" checked={moduleId === m.id} onChange={() => setModuleId(m.id)} />
               <span>{m.icon} {m.title} · {m.score !== null ? `${Math.round(m.score * 100)}% first try` : "–"} {m.confidence === 1 ? "· feels unsure" : ""}</span>
             </label>
           ))}

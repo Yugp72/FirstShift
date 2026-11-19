@@ -19,6 +19,10 @@ export function voiceFor(bcp47: string): SpeechSynthesisVoice | null {
   return pool.find((v) => /natural|premium|enhanced|google/i.test(v.name)) || pool.find((v) => v.localService) || pool[0];
 }
 
+/** Slower speech for hires who chose "Extra time". */
+let slow = false;
+export function setSlowSpeech(on: boolean): void { slow = on; }
+
 export function speak(text: string, bcp47: string, onEnd?: () => void): void {
   if (!ttsSupported) return;
   const synth = window.speechSynthesis;
@@ -27,7 +31,7 @@ export function speak(text: string, bcp47: string, onEnd?: () => void): void {
   u.lang = bcp47;
   const v = voiceFor(bcp47);
   if (v) u.voice = v;
-  u.rate = bcp47.startsWith("en") ? 0.95 : 0.9;
+  u.rate = (bcp47.startsWith("en") ? 0.95 : 0.9) * (slow ? 0.8 : 1);
   u.onend = () => onEnd?.();
   u.onerror = () => onEnd?.();
   synth.speak(u);

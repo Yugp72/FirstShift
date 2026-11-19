@@ -1,2 +1,5 @@
 [functions.firstshift-ai]
 verify_jwt = false
+
+[functions.firstshift-api]
+verify_jwt = false

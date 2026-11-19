@@ -1,4 +1,5 @@
-/* FirstShift design tokens (Apple-inspired). Plain CSS: no Tailwind directives. */
+/* FirstShift design tokens (Apple-inspired). Plain CSS: no Tailwind directives.
+   Every text colour meets WCAG AAA (7:1) on every surface it is used on. */
 :root {
   --font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "PingFang SC", "Noto Sans SC", Helvetica, Arial, sans-serif;
   --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", "PingFang SC", "Noto Sans SC", Helvetica, Arial, sans-serif;
@@ -9,18 +10,18 @@
   --surface: #ffffff;
   --surface-2: #f5f5f7;
   --border: #e8e8ed;
-  --border-strong: #d2d2d7;
+  --border-strong: #86868b;     /* 3.6:1 – form fields and controls (WCAG 1.4.11) */
   --text: #1d1d1f;
-  --muted: #6e6e73;            /* 5.0:1 on white */
-  --accent: #0071e3;           /* buttons */
-  --accent-hover: #0077ed;
-  --link: #0066cc;             /* 5.6:1 on white */
+  --muted: #4d4d52;            /* 8.4:1 on white, 7.4:1 on tinted panels (AAA) */
+  --accent: #00479a;           /* white text on it: 9.2:1 (AAA) */
+  --accent-hover: #003a80;
+  --link: #00479a;             /* 9.2:1 on white (AAA) */
   --accent-soft: #e8f2fd;
-  --success: #1e7e34;          /* 5.0:1 on white */
+  --success: #0f5222;          /* 9.3:1 on white (AAA) */
   --success-soft: #e9f6ec;
-  --warn: #b64400;             /* 5.2:1 on white */
+  --warn: #8a3300;             /* 8.2:1 on white (AAA) */
   --warn-soft: #fff4e5;
-  --danger: #d70015;           /* 5.0:1 on white */
+  --danger: #9b000e;           /* 8.9:1 on white (AAA) */
   --danger-soft: #ffeef0;
   --radius: 18px;
   --radius-sm: 12px;
@@ -29,4 +30,9 @@
   --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.14);
   --hire-size: 19px;
   --track: -0.022em;
+}
+
+/* Users who ask their OS for more contrast get pure black text and solid borders. */
+@media (prefers-contrast: more) {
+  :root { --text: #000; --muted: #1d1d1f; --border: #1d1d1f; --border-strong: #000; --accent: #003a80; --link: #003a80; }
 }

@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useRef } from "react";
 import { CONF_EMOJI, LANG_CHIP, hireUrl, type Ticket } from "../lib/api";
+import { useDialog } from "../lib/useDialog";
 import { QR } from "./QR";
 import { Seal } from "./Stamp";
 import { initials } from "./Ticket";
@@ -12,14 +12,7 @@ const STATUS: Record<string, string> = { APPLIED: "Applied", TRAINING: "In train
 export function Passport({ t, publicBase, onClose, onApprove, onSendBack }: {
   t: Ticket | null; publicBase: string | null; onClose: () => void; onApprove: (t: Ticket) => void; onSendBack: (t: Ticket) => void;
 }) {
-  const closeRef = useRef<HTMLButtonElement>(null);
-  useEffect(() => {
-    if (!t) return;
-    closeRef.current?.focus();
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [t, onClose]);
+  const ref = useDialog<HTMLElement>(!!t?.hire, onClose);
 
   const h = t?.hire;
   return (
@@ -27,9 +20,9 @@ export function Passport({ t, publicBase, onClose, onApprove, onSendBack }: {
       {t && h && (
         <>
           <motion.div className="scrim" onClick={onClose} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
-          <motion.aside className="drawer" role="dialog" aria-modal="true" aria-labelledby="pp-title"
+          <motion.aside ref={ref} className="drawer" role="dialog" aria-modal="true" aria-labelledby="pp-title"
             initial={{ x: 560 }} animate={{ x: 0 }} exit={{ x: 560 }} transition={{ type: "spring", stiffness: 320, damping: 34 }}>
-            <button ref={closeRef} type="button" className="close-x" onClick={onClose} aria-label="Close">×</button>
+            <button data-autofocus type="button" className="close-x" onClick={onClose} aria-label="Close">×</button>
             <div className="row" style={{ gap: 12 }}>
               <span className="initials" style={{ width: 44, height: 44, fontSize: 15 }} aria-hidden="true">{initials(t.name)}</span>
               <div>

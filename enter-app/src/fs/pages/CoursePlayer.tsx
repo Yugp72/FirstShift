@@ -3,12 +3,13 @@ import { Link, useParams } from "react-router-dom";
 import { ConfidencePicker } from "../components/ConfidencePicker";
 import { GlobalNav } from "../components/GlobalNav";
 import { SpeakButton } from "../components/SpeakButton";
-import { api, type Format, type HireModule, type Lang, type Training } from "../lib/api";
+import { api, captionsUrl, type Format, type HireModule, type Lang, type Training } from "../lib/api";
 import { useAuth } from "../lib/auth";
-import { HTML_LANG, tr, type Key } from "../lib/i18n";
+import { BCP47, HTML_LANG, tr, type Key } from "../lib/i18n";
 import { HireCheck } from "./HireCheck";
 import { HireDone } from "./HireDone";
-import { HirePrefs } from "./HirePrefs";
+import { HirePrefs, PREFS } from "./HirePrefs";
+import { setSlowSpeech, speak, stopSpeaking } from "../lib/speak";
 
 type Pos =
   | { kind: "setup" } | { kind: "done" }
@@ -23,6 +24,19 @@ const TABS: { id: Format; i: string; k: Key }[] = [
 
 function store(key: string): string | null { try { return localStorage.getItem(key); } catch { return null; } }
 function save(key: string, v: string) { try { localStorage.setItem(key, v); } catch { /* private mode */ } }
+
+/** Text descriptions of the Framia step pictures, so screen-reader users get what the picture shows. */
+const STEP_ALT: Record<string, Record<Lang, string>> = {
+  "allergy-c1": { en: "A server stands at a table with a notepad, listening as two guests ask about allergies.", zh: "服务员拿着点菜本站在桌边，认真听两位客人询问过敏的问题。", es: "Una mesera con libreta escucha en la mesa a dos clientes que preguntan por alergias." },
+  "allergy-c2": { en: "Common allergens laid out: peanuts, tree nuts, shrimp and shellfish, fish, eggs, milk, wheat, soybeans and sesame.", zh: "常见过敏原：花生、坚果、虾和贝类、鱼、鸡蛋、牛奶、小麦、大豆和芝麻。", es: "Alérgenos comunes: cacahuates, nueces, camarones y mariscos, pescado, huevos, leche, trigo, soya y ajonjolí." },
+  "allergy-c3": { en: "The server writes on her notepad while checking with the chef at the kitchen pass.", zh: "服务员在出菜口一边和厨师确认，一边在点菜本上记录。", es: "La mesera anota en su libreta mientras confirma con el chef en el pase de cocina." },
+  "allergy-c4": { en: "Two scenes: a server unsure of the answer, then the same server walking into the kitchen to ask the chefs.", zh: "两个画面：服务员不确定答案，然后走进厨房去问厨师。", es: "Dos escenas: una mesera con dudas y luego la misma mesera entrando a la cocina para preguntar a los chefs." },
+  "allergy-c5": { en: "A server smiles and sets down a dish for a happy guest, after confirming it is safe.", zh: "确认安全后，服务员微笑着把菜端给开心的客人。", es: "Tras confirmar que es seguro, una mesera sonríe y sirve el plato a una clienta contenta." },
+};
+const altFor = (src: string | undefined, lang: Lang) => {
+  const key = src?.split("/").pop()?.replace(/\.\w+$/, "") ?? "";
+  return STEP_ALT[key]?.[lang] ?? "";
+};
 
 function defaultFormat(prefs: string[]): Format {
   if (prefs.includes("captions")) return "video";
@@ -114,6 +128,11 @@ export default function CoursePlayer() {
 
   const mod = (mid: number) => data?.modules.find((m) => m.id === mid);
   const format: Format = fmt ?? defaultFormat(data?.hire.prefs ?? []);
+  const prefs = data?.hire.prefs ?? [];
+  const roomy = prefs.includes("extra_time");
+  const [readOff, setReadOff] = useState(false);
+  const autoRead = prefs.includes("read_aloud") && !readOff;
+  useEffect(() => { setSlowSpeech(roomy); return () => setSlowSpeech(false); }, [roomy]);
 
   const progress = useMemo(() => {
     if (!data) return 0;
@@ -177,7 +196,7 @@ export default function CoursePlayer() {
         <aside className={`curriculum ${toc ? "open" : ""}`} aria-label={tr("courseContent", lang)} lang={HTML_LANG[lang]}>
           <div className="curriculum-head">
             <h2>{title}</h2>
-            <div className="pbar" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}><i style={{ width: `${progress}%` }} /></div>
+            <div className="pbar" role="progressbar" aria-label={tr("courseContent", lang)} aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}><i style={{ width: `${progress}%` }} /></div>
             <div className="row" style={{ marginTop: 10, justifyContent: "space-between" }}>
               <span className="muted" style={{ fontSize: 13 }}>{progress}%</span>
               <button type="button" className="btn btn-plain btn-sm" onClick={() => go({ kind: "setup" })}>{tr("settings", lang)}</button>
@@ -227,7 +246,7 @@ export default function CoursePlayer() {
           })}
         </aside>
 
-        <main id="main" className="stage hire" lang={HTML_LANG[lang]}>
+        <main id="main" className={`stage hire ${roomy ? "roomy" : ""}`} lang={HTML_LANG[lang]}>
           <div className="row" style={{ marginBottom: 12 }}>
             <button type="button" className="btn btn-sm mobile-toc" onClick={() => setToc(!toc)} aria-expanded={toc}>☰ {tr("menu", lang)} · {progress}%</button>
           </div>
@@ -241,6 +260,22 @@ export default function CoursePlayer() {
             </div>
           )}
 
+          {prefs.length > 0 && (pos.kind === "lesson" || pos.kind === "quiz") && (
+            <div className="setup-strip" role="group" aria-label={tr("yourSetup", lang)}>
+              <span className="muted">{tr("yourSetup", lang)}:</span>
+              {PREFS.filter((p) => prefs.includes(p.id)).map((p) => (
+                <span key={p.id} className="badge badge-accent"><span aria-hidden="true">{p.ico}</span> {tr(`pref_${p.id}` as Key, lang)}</span>
+              ))}
+              {prefs.includes("read_aloud") && (
+                <button type="button" className="btn btn-sm" aria-pressed={autoRead} onClick={() => { setReadOff(autoRead); if (autoRead) stopSpeaking(); }}>
+                  <span aria-hidden="true">{autoRead ? "🔊" : "🔈"}</span> {tr("autoRead", lang)}
+                </button>
+              )}
+              <button type="button" className="btn btn-plain btn-sm" onClick={() => go({ kind: "setup" })}>{tr("change", lang)}</button>
+              {roomy && <p className="take-time">{tr("takeTime", lang)}</p>}
+            </div>
+          )}
+
           {pos.kind === "setup" && (
             <Setup lang={lang} prefs={data.hire.prefs} busy={busy} onSave={saveSetup} firstName={practice ? "" : data.hire.first_name} />
           )}
@@ -249,6 +284,7 @@ export default function CoursePlayer() {
             const m = mod(pos.mid)!;
             return (
               <Lesson key={`${m.id}-${pos.i}`} token={token!} m={m} i={pos.i} lang={lang} fmt={format} onFmt={setFmt}
+                autoRead={autoRead} slow={roomy}
                 onSeen={(cid) => markViewed(m.id, cid)}
                 prev={prevOf(m, pos.i)} next={nextAfterLesson(m, pos.i)} go={go} />
             );
@@ -271,7 +307,7 @@ export default function CoursePlayer() {
               return <ConfidencePicker lang={lang} busy={busy} onPick={(v) => pickConfidence(m.id, v)} />;
             }
             return (
-              <HireCheck key={`${m.id}-${pos.qi}`} token={token!} m={m} qi={pos.qi} lang={lang} visual={data.hire.prefs.includes("visual")}
+              <HireCheck key={`${m.id}-${pos.qi}`} token={token!} m={m} qi={pos.qi} lang={lang} visual={data.hire.prefs.includes("visual")} autoRead={autoRead}
                 onNext={async (complete) => {
                   if (complete || pos.qi + 1 >= m.questions.length) { await load(lang); setPos({ kind: "quiz", mid: m.id, qi: pos.qi, conf: true }); }
                   else setPos({ kind: "quiz", mid: m.id, qi: pos.qi + 1 });
@@ -316,8 +352,9 @@ function Setup({ lang, prefs, busy, onSave, firstName }: { lang: Lang; prefs: st
   );
 }
 
-function Lesson({ token, m, i, lang, fmt, onFmt, onSeen, prev, next, go }: {
+function Lesson({ token, m, i, lang, fmt, onFmt, onSeen, prev, next, go, autoRead, slow }: {
   token: string; m: HireModule; i: number; lang: Lang; fmt: Format; onFmt: (f: Format) => void;
+  autoRead: boolean; slow: boolean;
   onSeen: (cid: string) => void; prev: Pos | null; next: Pos; go: (p: Pos) => void;
 }) {
   const card = m.cards[i];
@@ -326,6 +363,17 @@ function Lesson({ token, m, i, lang, fmt, onFmt, onSeen, prev, next, go }: {
   const img = m.media?.steps?.[card.id];
   useEffect(() => { onSeen(card.id); }, [card.id, onSeen]);
   useEffect(() => { api.usedFormat(token, m.id, fmt).catch(() => undefined); }, [token, m.id, fmt]);
+  // "Read aloud": each step is spoken when it opens. Stops when the hire moves on.
+  useEffect(() => {
+    if (!autoRead) return;
+    const t = window.setTimeout(() => speak(card.text, BCP47[lang]), 350);
+    return () => { window.clearTimeout(t); stopSpeaking(); };
+  }, [autoRead, card.text, lang]);
+  // Captions are always on for the video; "Extra time" plays it slower.
+  const onVideoReady = (v: HTMLVideoElement) => {
+    for (const tt of Array.from(v.textTracks)) tt.mode = "showing";
+    v.playbackRate = slow ? 0.75 : 1;
+  };
 
   const start = i * per, end = (i + 1) * per;
   const toQuiz = next.kind === "quiz";
@@ -333,9 +381,9 @@ function Lesson({ token, m, i, lang, fmt, onFmt, onSeen, prev, next, go }: {
   return (
     <article>
       <p className="muted" style={{ margin: 0, fontSize: 15 }}>{m.icon} {m.title} · {tr("lessonOf", lang, { n: i + 1, total: m.cards.length })}</p>
-      <div className="tabs" role="tablist" aria-label={tr("formatLabel", lang)}>
+      <div className="tabs" role="group" aria-label={tr("formatLabel", lang)}>
         {TABS.map((t) => (
-          <button key={t.id} type="button" role="tab" aria-selected={fmt === t.id} onClick={() => onFmt(t.id)}>
+          <button key={t.id} type="button" aria-pressed={fmt === t.id} onClick={() => onFmt(t.id)}>
             <span aria-hidden="true">{t.i}</span>{tr(t.k, lang)}
           </button>
         ))}
@@ -345,21 +393,23 @@ function Lesson({ token, m, i, lang, fmt, onFmt, onSeen, prev, next, go }: {
         <>
           <div className="media">
             <video ref={vref} key={`${m.id}-${i}-${lang}`} controls playsInline preload="metadata" poster={i === 0 ? m.media.poster : undefined}
+              aria-label={tr("videoOf", lang, { title: m.title, n: i + 1 })} aria-describedby="lesson-text"
+              onLoadedMetadata={(e) => onVideoReady(e.currentTarget)}
               src={`${m.media.video}#t=${start},${end}`}
               onTimeUpdate={(e) => { const v = e.currentTarget; if (v.currentTime >= end - 0.3) { v.pause(); v.currentTime = Math.max(start, end - 0.3); } }}>
-              <track kind="captions" src={`/api/media/${m.id}/captions.vtt?lang=${lang}`} srcLang={HTML_LANG[lang]} label={tr("captionsToggle", lang)} default />
+              <track kind="captions" src={captionsUrl(m.cards, m.seconds_per_card)} srcLang={HTML_LANG[lang]} label={tr("captionsToggle", lang)} default />
             </video>
           </div>
           <p className="media-credit">{tr("framiaCredit", lang)}</p>
         </>
       ) : fmt === "read" ? null : (
         <div className="media pic">
-          {img ? <img src={img} alt="" /> : <span aria-hidden="true">{card.icon}</span>}
+          {img ? <img src={img} alt={altFor(img, lang)} /> : <span aria-hidden="true">{card.icon}</span>}
           {fmt === "video" && <div className="cap" aria-hidden="true">{card.text}</div>}
         </div>
       )}
 
-      <p className="lesson-text">{fmt === "read" && <span aria-hidden="true" style={{ marginRight: 8 }}>{card.icon}</span>}{card.text}</p>
+      <p className="lesson-text" id="lesson-text">{fmt === "read" && <span aria-hidden="true" style={{ marginRight: 8 }}>{card.icon}</span>}{card.text}</p>
       <div style={{ marginTop: 14 }}><SpeakButton text={card.text} lang={lang} glow={fmt === "listen"} /></div>
 
       <nav className="lesson-nav" aria-label="Lesson navigation">

@@ -37,13 +37,37 @@ export default function ManagerRail() {
   const [gapsOpen, setGapsOpen] = useState(false);
   const [toast, setToast] = useState("");
   const [live, setLive] = useState("");
+  // Visual + screen-reader alert for new arrivals, so the bell is never the only signal.
+  const [arrivals, setArrivals] = useState<{ id: number; name: string }[]>([]);
   const loading = useRef(false);
+  const prevStatus = useRef<Map<number, string> | null>(null);
   const pending = useRef(false);
 
   const load = useCallback(async () => {
     if (loading.current) { pending.current = true; return; }
     loading.current = true;
-    try { setBoard(await api.board()); setErr(""); }
+    try {
+      const b = await api.board();
+      // Polling replaces server push: ring the bell when someone newly arrives at Ready for review.
+      const now = new Map<number, string>();
+      const names = new Map<number, string>();
+      for (const [st, ts] of Object.entries(b.columns)) for (const t of ts) { now.set(t.id, st); names.set(t.id, t.name); }
+      if (prevStatus.current) {
+        for (const [id, st] of now) {
+          const before = prevStatus.current.get(id);
+          if (st === "REVIEW" && before && before !== "REVIEW") {
+            if (soundRef.current) bell();
+            setGlow((s) => new Set(s).add(id));
+            const name = names.get(id) ?? "Someone";
+            // The banner is role="alert", so screen readers announce it once; no extra live message needed.
+            setArrivals((a) => (a.some((x) => x.id === id) ? a : [...a, { id, name }]));
+            window.setTimeout(() => setGlow((s) => { const n = new Set(s); n.delete(id); return n; }), 1800);
+          }
+        }
+      }
+      prevStatus.current = now;
+      setBoard(b); setErr("");
+    }
     catch (e) { setErr((e as Error).message); }
     finally {
       loading.current = false;
@@ -54,17 +78,7 @@ export default function ManagerRail() {
   useEffect(() => {
     load();
     api.meta().then(setMeta).catch(() => undefined);
-    return subscribeBoard((ev) => {
-      if (ev.type === "hello") return;
-      if (ev.type === "ticket.moved" && ev.to === "REVIEW" && ev.candidate_id) {
-        const id = ev.candidate_id;
-        if (soundRef.current) bell();
-        setGlow((s) => new Set(s).add(id));
-        setLive("Someone just finished training and is ready for review.");
-        window.setTimeout(() => setGlow((s) => { const n = new Set(s); n.delete(id); return n; }), 1800);
-      }
-      load();
-    });
+    return subscribeBoard(() => { load(); });
   }, [load]);
 
   useEffect(() => {
@@ -72,6 +86,13 @@ export default function ManagerRail() {
     const id = window.setTimeout(() => setToast(""), 5200);
     return () => window.clearTimeout(id);
   }, [toast]);
+
+  // Unread arrivals also show in the browser tab title, visible from another tab.
+  useEffect(() => {
+    const base = "FirstShift · Hiring pipeline";
+    document.title = arrivals.length ? `(${arrivals.length}) Ready for review · ${base}` : base;
+    return () => { document.title = "FirstShift · Imperial Treasure Palo Alto"; };
+  }, [arrivals.length]);
 
   const all = board ? Object.values(board.columns).flat() : [];
   const passport = all.find((t) => t.id === passportId) ?? null;
@@ -85,6 +106,7 @@ export default function ManagerRail() {
 
   const approve = async (t: Ticket) => {
     if (!t.hire) return;
+    setArrivals((a) => a.filter((x) => x.id !== t.id));
     setBusy(t.id);
     setPassportId(null);
     setApproving(t);
@@ -101,6 +123,7 @@ export default function ManagerRail() {
     await api.reset();
     setOpenLink(null);
     setPassportId(null);
+    setArrivals([]);
     setToast("Demo data reset.");
     load();
   };
@@ -109,7 +132,7 @@ export default function ManagerRail() {
     <div className="mgr">
       <ManagerHeader>
         <button type="button" className="btn btn-sm hide-sm" aria-pressed={sound} onClick={() => { setSound(!sound); if (!sound) bell(); }}>
-          {sound ? "Sound on" : "Sound off"}
+          {sound ? "🔔 Sound on" : "🔕 Sound off"}
         </button>
         <button type="button" className="btn btn-sm" onClick={reset}>Reset demo</button>
       </ManagerHeader>
@@ -122,6 +145,20 @@ export default function ManagerRail() {
           </div>
           <button type="button" className="btn" style={{ marginLeft: "auto" }} onClick={() => setGapsOpen(true)}>Team knowledge gaps</button>
         </div>
+
+        {arrivals.length > 0 && (
+          <div className="arrival" role="alert">
+            <span className="arrival-ico" aria-hidden="true">🔔</span>
+            <div style={{ flex: 1 }}>
+              <b>{arrivals.length === 1 ? `${arrivals[0].name} is ready for review` : `${arrivals.length} people are ready for review`}</b>
+              <div className="arrival-sub">{arrivals.map((a) => a.name).join(", ")} finished training. Open the passport to check and approve.</div>
+            </div>
+            <button type="button" className="btn btn-primary btn-sm" onClick={() => { setPassportId(arrivals[0].id); setArrivals((a) => a.slice(1)); }}>
+              Open {arrivals[0].name.split(" ")[0]}'s passport
+            </button>
+            <button type="button" className="btn btn-sm" onClick={() => setArrivals([])}>Dismiss</button>
+          </div>
+        )}
 
         {board && <MetricsStrip m={board.metrics} />}
         {err && <p role="alert" className="col-empty" style={{ marginBottom: 16 }}>Can't reach the server: {err}</p>}
@@ -152,8 +189,10 @@ export default function ManagerRail() {
                         <div className="pcard-sub" style={{ marginTop: 8 }}>{j.applicants} applicants</div>
                         <div className="pcard-actions">
                           <Link className="btn btn-sm" to={`/manager/new?job=${j.id}`}>View posts</Link>
-                          {/* [DEMO ONLY] */}
-                          <DemoOnly className="btn btn-sm">Close post</DemoOnly>
+                          <button type="button" className="btn btn-sm" onClick={async () => {
+                            if (!window.confirm(`Close "${j.title}"? It leaves the public job board.`)) return;
+                            try { await api.closeJob(j.id); load(); } catch (e) { setErr((e as Error).message); }
+                          }}>Close post</button>
                         </div>
                       </article>
                     ))}
@@ -177,7 +216,7 @@ export default function ManagerRail() {
         </div>
       </main>
 
-      <p className="footer-note">Sample training content · All people are demo data · AI: {meta?.ai.provider === "converge+fallback" ? "Converge.AI Enter (live, cached)" : "offline mock"}</p>
+      <p className="footer-note">Sample training content · All people are demo data · AI: {meta?.ai.mode === "live" ? "Enter AI by Converge.AI (live, cached)" : "offline templates"} · Built on Enter and Framia by Converge.AI</p>
 
       <Passport t={passport} publicBase={board?.public_base ?? null} onClose={() => setPassportId(null)}
         onApprove={approve} onSendBack={(t) => { setPassportId(null); setSendBack(t); }} />
