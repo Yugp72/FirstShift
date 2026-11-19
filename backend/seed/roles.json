@@ -1,74 +1,195 @@
 {
   "roles": {
     "server": {
-      "title": {"en": "Server", "zh": "服务员", "es": "Mesero/a"},
-      "area": {"en": "Front of house", "zh": "前厅", "es": "Sala"},
+      "title": {
+        "en": "Server",
+        "zh": "服务员",
+        "yue": "侍應",
+        "es": "Mesero/a"
+      },
+      "area": {
+        "en": "Front of house",
+        "zh": "前厅",
+        "yue": "樓面",
+        "es": "Sala"
+      },
       "blurb": {
         "en": "Welcome guests, take orders, and serve tea and dishes in a busy, friendly dining room.",
         "zh": "在热闹友好的餐厅里迎接客人、点菜、上茶上菜。",
+        "yue": "喺熱鬧友善嘅餐廳迎接客人、落單、斟茶上菜。",
         "es": "Recibir a los clientes, tomar órdenes y servir té y platillos en un comedor animado y amable."
       },
       "easy": {
         "en": "You will say hello to guests. You will bring tea and food.",
         "zh": "你会和客人打招呼。你会给客人上茶和上菜。",
+        "yue": "你會同客人打招呼。你會幫客人斟茶同上菜。",
         "es": "Vas a saludar a los clientes. Vas a llevar té y comida."
       }
     },
     "kitchen": {
-      "title": {"en": "Kitchen prep", "zh": "厨房备料", "es": "Preparación en cocina"},
-      "area": {"en": "Back of house", "zh": "后厨", "es": "Cocina"},
+      "title": {
+        "en": "Kitchen prep",
+        "zh": "厨房备料",
+        "yue": "廚房備料",
+        "es": "Preparación en cocina"
+      },
+      "area": {
+        "en": "Back of house",
+        "zh": "后厨",
+        "yue": "廚房",
+        "es": "Cocina"
+      },
       "blurb": {
         "en": "Prepare ingredients, keep the station clean and safe, and help the kitchen run smoothly.",
         "zh": "准备食材，保持工位干净安全，协助厨房顺利运转。",
+        "yue": "準備食材，保持工位乾淨安全，幫廚房順利運作。",
         "es": "Preparar ingredientes, mantener la estación limpia y segura, y ayudar a que la cocina funcione bien."
       },
       "easy": {
         "en": "You will wash, cut and get food ready. You will keep the kitchen clean.",
         "zh": "你会清洗、切配和准备食材。你会保持厨房干净。",
+        "yue": "你會洗、切同準備食材。你會保持廚房乾淨。",
         "es": "Vas a lavar, cortar y preparar comida. Vas a mantener limpia la cocina."
       }
     }
   },
   "requirements": {
-    "no_experience": {"en": "No experience needed, we train you", "zh": "无需经验，我们提供培训", "es": "No se necesita experiencia, te capacitamos"},
-    "weekends": {"en": "Available on weekends", "zh": "周末可以上班", "es": "Disponibilidad en fines de semana"},
-    "standing": {"en": "Comfortable standing for a full shift", "zh": "能整个班次站立工作", "es": "Poder estar de pie todo el turno"},
-    "lifting": {"en": "Able to lift up to 25 lb", "zh": "能搬运最多25磅的物品", "es": "Poder cargar hasta 25 lb"},
-    "food_handler": {"en": "Food handler card, or get one in your first 30 days", "zh": "食品处理员证，或在入职30天内办理", "es": "Tarjeta de manipulador de alimentos, o tramitarla en tus primeros 30 días"},
-    "team": {"en": "Friendly and good with a team", "zh": "友善，善于团队合作", "es": "Buena actitud para trabajar en equipo"}
+    "no_experience": {
+      "en": "No experience needed, we train you",
+      "zh": "无需经验，我们提供培训",
+      "yue": "唔使經驗，我哋會教",
+      "es": "No se necesita experiencia, te capacitamos"
+    },
+    "weekends": {
+      "en": "Available on weekends",
+      "zh": "周末可以上班",
+      "yue": "週末可以返工",
+      "es": "Disponibilidad en fines de semana"
+    },
+    "standing": {
+      "en": "Comfortable standing for a full shift",
+      "zh": "能整个班次站立工作",
+      "yue": "可以成更企住做嘢",
+      "es": "Poder estar de pie todo el turno"
+    },
+    "lifting": {
+      "en": "Able to lift up to 25 lb",
+      "zh": "能搬运最多25磅的物品",
+      "yue": "可以搬最多25磅嘅嘢",
+      "es": "Poder cargar hasta 25 lb"
+    },
+    "food_handler": {
+      "en": "Food handler card, or get one in your first 30 days",
+      "zh": "食品处理员证，或在入职30天内办理",
+      "yue": "有食物處理員證，或者入職30日內考",
+      "es": "Tarjeta de manipulador de alimentos, o tramitarla en tus primeros 30 días"
+    },
+    "team": {
+      "en": "Friendly and good with a team",
+      "zh": "友善，善于团队合作",
+      "yue": "友善，識得同人合作",
+      "es": "Buena actitud para trabajar en equipo"
+    }
   },
   "languages": [
-    {"code": "en", "native": "English", "name": "English", "bcp47": "en-US"},
-    {"code": "zh", "native": "中文", "name": "Mandarin (Simplified)", "bcp47": "zh-CN"},
-    {"code": "es", "native": "Español", "name": "Spanish", "bcp47": "es-ES"}
+    {
+      "code": "en",
+      "native": "English",
+      "name": "English",
+      "bcp47": "en-US"
+    },
+    {
+      "code": "zh",
+      "native": "中文",
+      "name": "Mandarin (Simplified)",
+      "bcp47": "zh-CN"
+    },
+    {
+      "code": "yue",
+      "native": "粵語",
+      "name": "Cantonese (Traditional)",
+      "bcp47": "zh-HK"
+    },
+    {
+      "code": "es",
+      "native": "Español",
+      "name": "Spanish",
+      "bcp47": "es-ES"
+    }
   ],
   "pilot_languages": [
-    {"native": "粵語", "name": "Cantonese"},
-    {"native": "Tiếng Việt", "name": "Vietnamese"}
+    {
+      "native": "Tiếng Việt",
+      "name": "Vietnamese"
+    }
   ],
   "channels": {
-    "job_board": {"label": "Job board", "kind": "Indeed-style listing", "limit": 5000, "format_note": "Headings and bullets, plain text"},
-    "classifieds": {"label": "Classifieds", "kind": "Craigslist-style ad", "limit": 1500, "format_note": "Pay in the title line, short body"},
-    "chat_zh": {"label": "WeChat message", "kind": "Group chat post, 中文", "limit": 500, "format_note": "Short lines, emoji markers"},
-    "chat_es": {"label": "WhatsApp message", "kind": "Group chat post, Español", "limit": 500, "format_note": "Short lines, emoji markers"},
-    "flyer": {"label": "In-store flyer", "kind": "Window / counter sign", "limit": 300, "format_note": "Big headline, 4 lines max"},
-    "bilingual": {"label": "Bilingual post", "kind": "Side-by-side", "limit": 2000, "format_note": "English first, then translation"},
-    "easy_read": {"label": "Easy-read", "kind": "Plain language", "limit": 600, "format_note": "One idea per line, short words"}
+    "job_board": {
+      "label": "Job board",
+      "kind": "Indeed-style listing",
+      "limit": 5000,
+      "format_note": "Headings and bullets, plain text"
+    },
+    "classifieds": {
+      "label": "Classifieds",
+      "kind": "Craigslist-style ad",
+      "limit": 1500,
+      "format_note": "Pay in the title line, short body"
+    },
+    "chat_zh": {
+      "label": "WeChat message",
+      "kind": "Group chat post, 中文",
+      "limit": 500,
+      "format_note": "Short lines, emoji markers"
+    },
+    "chat_yue": {
+      "label": "WhatsApp message",
+      "kind": "Group chat post, 粵語",
+      "limit": 500,
+      "format_note": "Short lines, emoji markers"
+    },
+    "chat_es": {
+      "label": "WhatsApp message",
+      "kind": "Group chat post, Español",
+      "limit": 500,
+      "format_note": "Short lines, emoji markers"
+    },
+    "flyer": {
+      "label": "In-store flyer",
+      "kind": "Window / counter sign",
+      "limit": 300,
+      "format_note": "Big headline, 4 lines max"
+    },
+    "bilingual": {
+      "label": "Bilingual post",
+      "kind": "Side-by-side",
+      "limit": 2000,
+      "format_note": "English first, then translation"
+    },
+    "easy_read": {
+      "label": "Easy-read",
+      "kind": "Plain language",
+      "limit": 600,
+      "format_note": "One idea per line, short words"
+    }
   },
   "send_back_notes": [
     {
       "en": "Let's go over this step once more before your first shift. You're very close!",
       "zh": "我们在你第一次上班前再复习一下这一步。你已经很接近了！",
+      "yue": "第一次返工之前，我哋再溫多次呢一步。你已經好接近喇！",
       "es": "Repasemos este paso una vez más antes de tu primer turno. ¡Ya casi lo tienes!"
     },
     {
       "en": "Great effort so far. Please review the allergy steps again, they matter a lot to our guests.",
       "zh": "到目前为止你做得很好。请再复习一下过敏的步骤，这对客人非常重要。",
+      "yue": "到而家為止你做得好好。請再溫多次食物敏感嘅步驟，呢樣對客人好重要。",
       "es": "Vas muy bien. Por favor repasa otra vez los pasos sobre alergias, son muy importantes para nuestros clientes."
     },
     {
       "en": "Take your time with this one. Ask me anything when you come in.",
       "zh": "这一步慢慢来。来上班时有任何问题都可以问我。",
+      "yue": "呢一步慢慢嚟。返工嗰陣有咩問題都可以問我。",
       "es": "Tómate tu tiempo con este paso. Pregúntame lo que necesites cuando vengas."
     }
   ]

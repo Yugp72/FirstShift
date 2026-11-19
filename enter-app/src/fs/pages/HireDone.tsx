@@ -5,7 +5,7 @@ import type { Lang, Training } from "../lib/api";
 import { BCP47, HTML_LANG, tr } from "../lib/i18n";
 import { speak } from "../lib/speak";
 
-const SEAL_LABEL: Record<Lang, string> = { en: "Ready", zh: "可以上班", es: "Listo" };
+const SEAL_LABEL: Record<Lang, string> = { en: "Ready", zh: "可以上班", yue: "可以返工", es: "Listo" };
 
 /** The manager's approval lands on the hire's phone, and is read aloud. */
 export function HireDone({ data, lang }: { data: Training; lang: Lang }) {

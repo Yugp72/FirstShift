@@ -218,14 +218,15 @@ export function MyApplications() {
 }
 
 const WORK_PREFS: { id: string; icon: string; label: Record<Lang, string> }[] = [
-  { id: "captions", icon: "💬", label: { en: "Captions", zh: "字幕", es: "Subtítulos" } },
-  { id: "visual", icon: "🖼️", label: { en: "Picture steps", zh: "图片步骤", es: "Pasos con imágenes" } },
-  { id: "read_aloud", icon: "🔊", label: { en: "Read aloud", zh: "朗读", es: "Leer en voz alta" } },
-  { id: "seated", icon: "🪑", label: { en: "Seated station", zh: "坐着的工位", es: "Puesto sentado" } },
-  { id: "extra_time", icon: "⏳", label: { en: "Extra time", zh: "多一点时间", es: "Más tiempo" } },
+  { id: "captions", icon: "💬", label: { en: "Captions", zh: "字幕", yue: "字幕", es: "Subtítulos" } },
+  { id: "visual", icon: "🖼️", label: { en: "Picture steps", zh: "图片步骤", yue: "圖片步驟", es: "Pasos con imágenes" } },
+  { id: "read_aloud", icon: "🔊", label: { en: "Read aloud", zh: "朗读", yue: "讀出嚟", es: "Leer en voz alta" } },
+  { id: "seated", icon: "🪑", label: { en: "Seated station", zh: "坐着的工位", yue: "坐住做嘅工位", es: "Puesto sentado" } },
+  { id: "extra_time", icon: "⏳", label: { en: "Extra time", zh: "多一点时间", yue: "多啲時間", es: "Más tiempo" } },
 ];
 const WB: Record<Lang, Record<string, string>> = {
   en: { title: "How do you work best? (optional)", sub: "Work preferences, not medical questions. Your manager sees them as setup notes.", apply: "Apply now", noCv: "No résumé needed.", slots: "Pick a time to meet the manager", booked: "Requested:" },
   zh: { title: "你怎样工作最顺手？（可选）", sub: "这是工作偏好，不是健康问题。经理会看到这些安排建议。", apply: "立即申请", noCv: "不需要简历。", slots: "选一个时间和经理见面", booked: "已申请：" },
+  yue: { title: "你點樣做嘢最順手？（可以唔填）", sub: "呢啲係工作偏好，唔係健康問題。經理會當係安排工作嘅建議。", apply: "即刻申請", noCv: "唔使履歷。", slots: "揀個時間同經理見面", booked: "已經申請：" },
   es: { title: "¿Cómo trabajas mejor? (opcional)", sub: "Preferencias de trabajo, no preguntas médicas. Tu gerente las verá como notas de preparación.", apply: "Postularme", noCv: "No necesitas currículum.", slots: "Elige un horario para conocer al gerente", booked: "Solicitado:" },
 };

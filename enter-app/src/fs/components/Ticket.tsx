@@ -59,7 +59,7 @@ export function PersonCard({ t, publicBase, linkOpen, highlight, busy, onOpen, o
       </div>
 
       <div className="pcard-meta">
-        <span className="badge" lang={t.lang === "zh" ? "zh-CN" : undefined}>{LANG_CHIP[t.lang]}</span>
+        <span className="badge" lang={t.lang === "zh" ? "zh-CN" : t.lang === "yue" ? "zh-HK" : undefined}>{LANG_CHIP[t.lang]}</span>
         {h?.prefs.slice(0, 2).map((p) => <span key={p.id} className="badge badge-accent">{p.label}</span>)}
         {h?.confidence ? <span className="badge" aria-label={`Feels ${h.confidence} of 3`}>{CONF_EMOJI[h.confidence]}</span> : null}
       </div>
