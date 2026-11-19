@@ -1,0 +1,152 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; background: #ffffff; font-family: Inter, system-ui, sans-serif; color: #1d1d1f; overflow: hidden; }
+    #root * { box-sizing: border-box; }
+
+    .lockup { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+    .logo { position: absolute; left: 880px; top: 460px; width: 160px; height: 160px; border-radius: 36px; background: #00479a; }
+    .logo svg { position: absolute; inset: 22px; width: 116px; height: 116px; }
+    .word { position: absolute; left: 1070px; top: 468px; font-size: 128px; font-weight: 900; letter-spacing: -0.045em; line-height: 1; clip-path: inset(0 100% 0 0); }
+    .tag { position: absolute; left: 0; top: 690px; width: 1920px; text-align: center; font-size: 52px; font-weight: 700; letter-spacing: -0.02em; color: #4d4d52; opacity: 0; }
+    .laptop { position: absolute; left: 594px; top: 120px; width: 1276px; height: 820px; opacity: 0; }
+    .laptop .bezel { position: absolute; left: 0; top: 0; width: 1276px; height: 790px; border-radius: 26px; background: #1d1d1f; box-shadow: 0 40px 80px rgba(0,0,0,0.18); }
+    .laptop .screen { position: absolute; left: 15px; top: 15px; width: 1216px; height: 760px; border-radius: 12px; overflow: hidden; background: #fff; }
+    .laptop .base { position: absolute; left: -60px; top: 790px; width: 1396px; height: 22px; border-radius: 0 0 22px 22px; background: linear-gradient(#d2d2d7, #b8b8bd); }
+    .phone { position: absolute; left: 300px; top: 70px; width: 410px; height: 855px; opacity: 0; }
+    .phone .bezel { position: absolute; inset: 0; border-radius: 58px; background: #1d1d1f; box-shadow: 0 40px 80px rgba(0,0,0,0.18); }
+    .phone .screen { position: absolute; left: 14px; top: 14px; width: 382px; height: 827px; border-radius: 46px; overflow: hidden; background: #fff; }
+    .zoom { position: absolute; left: 0; top: 0; }
+    .zoom video { display: block; }
+    .hl { position: absolute; width: 900px; font-size: 76px; font-weight: 900; letter-spacing: -0.04em; line-height: 1.05; opacity: 0; }
+    .hl.left { width: 460px; font-size: 62px; }
+    .hl.chips { font-size: 40px; font-weight: 700; letter-spacing: -0.01em; color: #4d4d52; }
+    .hl.accent { color: #00479a; }
+    .hl.flag { font-size: 44px; color: #8a3300; }
+    .demo { position: absolute; left: 1660px; top: 70px; font-size: 28px; color: #4d4d52; opacity: 0; }
+    .dotout { position: absolute; left: 949px; top: 529px; width: 22px; height: 22px; border-radius: 50%; background: #00479a; opacity: 0; }
+
+  </style>
+  <div id="root" data-composition-id="product" data-width="1920" data-height="1080">
+
+    <div class="lockup" id="p-lockup">
+      <div class="logo" id="p-logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path class="chk" d="M5 12.5l4.5 4.5L19 7.5" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0"/></svg></div>
+      <div class="word" id="p-word">FirstShift</div>
+      <div class="tag" id="p-tag">From first hello to first shift.</div>
+    </div>
+    <div class="laptop" id="p-laptop">
+      <div class="bezel"></div><div class="base"></div>
+      <div class="screen">
+        <div class="zoom" id="z-posts" style="width:1440px;height:900px">
+          <video id="v-posts" class="clip" src="assets/rec/posts.mp4" data-start="4.10" data-duration="6.00" data-media-start="5.0" data-playback-rate="1.0" data-track-index="2" muted playsinline style="width:1440px;height:900px"></video>
+        </div>
+        <div class="zoom" id="z-pass" style="width:1440px;height:900px">
+          <video id="v-pass" class="clip" src="assets/rec/passport.mp4" data-start="27.70" data-duration="11.26" data-media-start="5.0" data-playback-rate="0.9" data-track-index="2" muted playsinline style="width:1440px;height:900px"></video>
+        </div>
+        <div class="zoom" id="z-appr" style="width:1440px;height:900px">
+          <video id="v-appr" class="clip" src="assets/rec/approve.mp4" data-start="39.00" data-duration="3.40" data-media-start="5.6" data-playback-rate="1.0" data-track-index="2" muted playsinline style="width:1440px;height:900px"></video>
+        </div>
+      </div>
+    </div>
+    <div class="phone" id="p-phone">
+      <div class="bezel"></div>
+      <div class="screen">
+        <div class="zoom" id="z-setup" style="width:390px;height:844px">
+          <video id="v-setup" class="clip" src="assets/rec/setup.mp4" data-start="10.10" data-duration="7.10" data-media-start="4.0" data-playback-rate="1.0" data-track-index="2" muted playsinline style="width:390px;height:844px"></video>
+        </div>
+        <div class="zoom" id="z-lesson" style="width:390px;height:844px">
+          <video id="v-lesson" class="clip" src="assets/rec/lesson.mp4" data-start="17.20" data-duration="6.20" data-media-start="6.62" data-playback-rate="1.6" data-track-index="2" muted playsinline style="width:390px;height:844px"></video>
+        </div>
+        <div class="zoom" id="z-quiz" style="width:390px;height:844px">
+          <video id="v-quiz" class="clip" src="assets/rec/quiz.mp4" data-start="23.40" data-duration="4.30" data-media-start="8.1" data-playback-rate="1.0" data-track-index="2" muted playsinline style="width:390px;height:844px"></video>
+        </div>
+        <div class="zoom" id="z-seal" style="width:390px;height:844px">
+          <video id="v-seal" class="clip" src="assets/rec/seal.mp4" data-start="42.40" data-duration="3.30" data-media-start="2.4" data-playback-rate="1.0" data-track-index="2" muted playsinline style="width:390px;height:844px"></video>
+        </div>
+      </div>
+    </div>
+    <div class="hl  left" id="h-once"style="left:110px;top:330px">Write the job once.</div>
+    <div class="hl  left" id="h-every"style="left:110px;top:520px">Every channel.<br/>Four languages.</div>
+    <div class="hl  " id="h-lang"style="left:860px;top:330px">Their language.</div>
+    <div class="hl chips " id="h-chips"style="left:860px;top:520px">English · 中文 · 粵語 · Español</div>
+    <div class="hl  " id="h-way"style="left:860px;top:610px">Their way to learn.</div>
+    <div class="hl  " id="h-watch"style="left:860px;top:330px">Watch with captions.</div>
+    <div class="hl  " id="h-pics"style="left:860px;top:330px">Follow the pictures.</div>
+    <div class="hl  " id="h-listen"style="left:860px;top:330px">Listen.</div>
+    <div class="hl  " id="h-read"style="left:860px;top:330px">Or read.<br/>No timer.</div>
+    <div class="hl  " id="h-one"style="left:860px;top:330px">One more question:</div>
+    <div class="hl accent " id="h-sure"style="left:860px;top:520px">How sure are you?</div>
+    <div class="hl  left" id="h-ready"style="left:110px;top:330px">Readiness,<br/>not just a score.</div>
+    <div class="hl  left" id="h-mei"style="left:110px;top:330px">Scored 100%.<br/>Feels unsure.</div>
+    <div class="hl flag left" id="h-mei2"style="left:110px;top:660px">→ Buddy shift</div>
+    <div class="hl  left" id="h-jorge"style="left:110px;top:330px">Feels confident.<br/>Missed the allergy check.</div>
+    <div class="hl flag left" id="h-jorge2"style="left:110px;top:660px">→ Double-check</div>
+    <div class="hl  left" id="h-appr"style="left:110px;top:330px">Approved<br/>with evidence.</div>
+    <div class="hl  " id="h-seal"style="left:860px;top:330px">Shift-ready.<br/>In her language.</div>
+    <div class="hl chips " id="h-sealw"style="left:860px;top:520px">可以上班 · 可以返工 · Listo · Ready</div>
+    <div class="demo" id="p-demo">In demo data</div>
+    <div class="dotout" id="p-dot"></div>
+
+  </div>
+  <script>
+    (() => {
+    const root = document.querySelector('[data-composition-id="product"]');
+    const $ = (s) => root.querySelector(s);
+    const $$ = (s) => Array.from(root.querySelectorAll(s));
+    const tl = gsap.timeline({ paused: true });
+    const IN = (el, t, d = 0.2) => tl.fromTo(el, { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: d, ease: "power4.out" }, t);
+    const OUT = (el, t, d = 0.18) => tl.to(el, { opacity: 0, filter: "blur(8px)", duration: d, ease: "power2.in" }, t);
+    const COUNT = (el, from, to, t, d, dec, suffix) => { const o = { v: from }; tl.fromTo(o, { v: from }, { v: to, duration: d, ease: "expo.out",
+      onUpdate: () => { el.textContent = o.v.toFixed(dec) + suffix; } }, t); };
+
+    $$('#p-laptop .zoom').forEach((z) => tl.set(z, { scale: 0.8444, transformOrigin: '0 0', x: 0, y: 0 }, 0));
+    $$('#p-phone .zoom').forEach((z) => tl.set(z, { scale: 0.98, transformOrigin: '0 0', x: 0, y: 0 }, 0));
+    // P0 (29.3–33.2): the lockup
+    tl.fromTo('#p-logo', { x: 0 }, { x: -375, duration: 0.6, ease: 'power3.inOut' }, 0.25);
+    tl.fromTo('#p-word', { x: 0, clipPath: 'inset(0 100% 0 0)' }, { x: -375, clipPath: 'inset(0 0% 0 0)', duration: 0.6, ease: 'power3.inOut' }, 0.25);
+    tl.fromTo('#p-tag', { opacity: 0, filter: 'blur(8px)' }, { opacity: 1, filter: 'blur(0px)', duration: 0.3, ease: 'power3.out' }, 1.55);
+    OUT('#p-lockup', 3.55, 0.25);
+    // devices: laptop 33.2–39.4, phone 39.4–57.0, laptop 57.0–71.7, phone 71.7–75.0
+    const DEV_IN = (el, t) => tl.fromTo(el, { opacity: 0, y: 70, filter: 'blur(8px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.5, ease: 'expo.out', immediateRender: false }, t);
+    const DEV_OUT = (el, t) => tl.to(el, { opacity: 0, y: -40, filter: 'blur(8px)', duration: 0.25, ease: 'power3.in' }, t);
+    tl.set(['#p-laptop', '#p-phone'], { opacity: 0 }, 0);
+    DEV_IN('#p-laptop', 3.75); DEV_OUT('#p-laptop', 9.85);
+    DEV_IN('#p-phone', 10.05); DEV_OUT('#p-phone', 27.45);
+    DEV_IN('#p-laptop', 27.70); DEV_OUT('#p-laptop', 42.15);
+    DEV_IN('#p-phone', 42.35);
+    // punch-ins on the real UI
+    tl.to('#z-posts', { scale: 1.0977, x: -228.0, y: -141.9, duration: 0.55, ease: 'power2.inOut' }, 6.70);
+    tl.to('#z-posts', { scale: 0.8444, x: 0, y: 0, duration: 0.45, ease: 'power2.inOut' }, 9.70);
+    tl.to('#z-pass', { scale: 1.6044, x: -889.2, y: -145.9, duration: 0.55, ease: 'power2.inOut' }, 30.00);
+    tl.to('#z-pass', { scale: 0.8444, x: 0, y: 0, duration: 0.45, ease: 'power2.inOut' }, 33.40);
+    tl.to('#z-pass', { scale: 1.6044, x: -889.2, y: -152.0, duration: 0.55, ease: 'power2.inOut' }, 35.10);
+    tl.to('#z-pass', { scale: 0.8444, x: 0, y: 0, duration: 0.45, ease: 'power2.inOut' }, 38.60);
+    tl.to('#z-appr', { scale: 1.1399, x: -212.8, y: -133.0, duration: 0.55, ease: 'power2.inOut' }, 40.70);
+    tl.to('#z-appr', { scale: 0.8444, x: 0, y: 0, duration: 0.45, ease: 'power2.inOut' }, 42.00);
+    IN('#p-demo', 28.10); OUT('#p-demo', 38.80);
+    IN('#h-once', 4.30); OUT('#h-once', 9.80);
+    IN('#h-every', 6.10); OUT('#h-every', 9.80);
+    IN('#h-lang', 10.50); OUT('#h-lang', 17.10);
+    IN('#h-chips', 11.10); OUT('#h-chips', 17.10);
+    IN('#h-way', 14.60); OUT('#h-way', 17.10);
+    IN('#h-watch', 17.50); OUT('#h-watch', 18.90);
+    IN('#h-pics', 19.00); OUT('#h-pics', 20.40);
+    IN('#h-listen', 20.50); OUT('#h-listen', 21.60);
+    IN('#h-read', 21.70); OUT('#h-read', 23.30);
+    IN('#h-one', 24.00); OUT('#h-one', 27.50);
+    IN('#h-sure', 25.90); OUT('#h-sure', 27.50);
+    IN('#h-ready', 28.10); OUT('#h-ready', 29.90);
+    IN('#h-mei', 30.10); OUT('#h-mei', 33.70);
+    IN('#h-mei2', 32.30); OUT('#h-mei2', 33.70);
+    IN('#h-jorge', 35.10); OUT('#h-jorge', 38.80);
+    IN('#h-jorge2', 36.90); OUT('#h-jorge2', 38.80);
+    IN('#h-appr', 40.30); OUT('#h-appr', 42.20);
+    IN('#h-seal', 42.90); OUT('#h-seal', 45.20);
+    IN('#h-sealw', 43.50); OUT('#h-sealw', 45.20);
+    // out: the phone becomes one blue dot, which the close picks up
+    tl.to('#p-phone', { scale: 0.06, x: 455, y: 43, opacity: 0, duration: 0.45, ease: 'power3.in' }, 45.20);
+    tl.fromTo('#p-dot', { opacity: 0 }, { opacity: 1, duration: 0.15 }, 45.52);
+
+    window.__timelines["product"] = tl;
+    })();
+  </script>
+</template>
