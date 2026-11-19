@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Team33 FirstShift: one-page overview</title>
+<style>
+  @page { size: Letter; margin: 0; }
+  :root { --ink: #1d1d1f; --muted: #4d4d52; --blue: #00479a; --line: #d2d2d7; --tint: #f5f5f7; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #fff; }
+  body { width: 8.5in; height: 11in; padding: 0.42in 0.5in 0.36in; font-family: "Segoe UI", -apple-system, system-ui, Arial, sans-serif; color: var(--ink); font-size: 9.05pt; line-height: 1.32; overflow: hidden; }
+  header { display: flex; align-items: center; gap: 12px; border-bottom: 1.5px solid var(--ink); padding-bottom: 9px; margin-bottom: 10px; }
+  .mark { width: 34px; height: 34px; border-radius: 8px; background: var(--blue); display: grid; place-items: center; flex: none; }
+  .mark svg { width: 24px; height: 24px; }
+  h1 { font-size: 21pt; letter-spacing: -0.03em; line-height: 1; }
+  .tag { color: var(--muted); font-size: 10pt; margin-top: 3px; }
+  .meta { margin-left: auto; flex: none; width: 2.3in; text-align: right; font-size: 8.4pt; color: var(--muted); line-height: 1.35; }
+  h2 { font-size: 10pt; letter-spacing: 0.02em; text-transform: uppercase; color: var(--blue); margin: 7px 0 3px; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 22px; }
+  p { margin-bottom: 5px; }
+  ul { padding-left: 14px; margin-bottom: 4px; }
+  li { margin-bottom: 1.5px; }
+  b { font-weight: 700; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 2px 0 6px; }
+  .stat { background: var(--tint); border-radius: 8px; padding: 7px 8px; }
+  .stat .n { font-size: 15.5pt; font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; }
+  .stat .l { font-size: 7.8pt; color: var(--muted); line-height: 1.25; margin-top: 2px; }
+  .box { border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; margin-top: 4px; }
+  .small { font-size: 7.6pt; color: var(--muted); line-height: 1.3; }
+  footer { position: absolute; left: 0.5in; right: 0.5in; bottom: 0.3in; border-top: 1px solid var(--line); padding-top: 5px; }
+  a { color: var(--blue); text-decoration: none; }
+</style>
+</head>
+<body>
+<header>
+  <div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+  <div>
+    <h1>FirstShift</h1>
+    <div class="tag">From first hello to first shift: hiring and training that adapt to how each person learns and the language they speak.</div>
+  </div>
+  <div class="meta">Team33 · Stanford 30x30 “We Mean Business”<br/>Built for Imperial Treasure, Palo Alto<br/>Built on Converge.AI <b>Enter</b> + <b>Framia</b></div>
+</header>
+
+<h2>The business problem</h2>
+<div class="stats">
+  <div class="stat"><div class="n">1 in 4+</div><div class="l">U.S. adults live with a disability (CDC)</div></div>
+  <div class="stat"><div class="n">22.8%</div><div class="l">of people with a disability are employed, vs 65.2% without (BLS, 2025)</div></div>
+  <div class="stat"><div class="n">55.2%</div><div class="l">of Santa Clara County residents speak a language other than English at home (Census)</div></div>
+  <div class="stat"><div class="n">46%</div><div class="l">of U.S. restaurant chefs speak a language other than English at home (NRA, 2026)</div></div>
+</div>
+<p>Restaurants hire constantly from a workforce that is multilingual and includes many people who learn differently: Deaf and hard-of-hearing, low-vision, people who need more time or a seated station. Yet onboarding is usually one format, one speed, one language: a binder, a shadow shift and a quiz. Managers re-explain the same procedures, and a quiz score can't tell them who is <i>actually</i> ready. A confidently wrong answer about allergens is a guest-safety and liability risk, not just a training gap. The result is slow time-to-floor, uneven readiness, and qualified people screened out before they start.</p>
+
+<div class="cols">
+<div>
+<h2>Our solution</h2>
+<ul>
+  <li><b>“How do you learn best?”</b> Every hire chooses captions, picture steps, read aloud, a seated station or extra time. These are framed as <b>work preferences, never a medical or disability record</b>.</li>
+  <li><b>Training adapts.</b> Each lesson comes as captioned video, pictures, listen (read aloud) or read. Extra time gives larger text and buttons, slower video and speech, and <b>no timers, ever</b>.</li>
+  <li><b>Four languages live:</b> English, 中文, 粵語 (Cantonese) and Español, across lessons, quizzes, captions and the UI.</li>
+  <li><b>Accessible by design:</b> WCAG AAA (7:1) text contrast, keyboard use with focus-trapped dialogs, screen-reader alerts (never only a sound), and translated picture descriptions.</li>
+  <li><b>One job post, every channel.</b> AI writes 8 posts (job board, classifieds, WeChat, WhatsApp in 中文 / 粵語 / Español, flyer, bilingual, easy-read). Applying takes one tap, with no CV needed.</li>
+  <li><b>Readiness passport.</b> Managers see what each hire learned, how, and <b>how sure they feel</b>. “Scored 100% but feels unsure” becomes a buddy shift; “confident but wrong on allergens” becomes a double-check. Approval is based on evidence and reaches the hire’s phone in their language.</li>
+</ul>
+</div>
+<div>
+<h2>How we built it with Converge.AI</h2>
+<ul>
+  <li><b>Enter</b> is the whole product: the React app, the <code>firstshift-api</code> edge function, Postgres state, and a single deployed URL. We built and deployed through Enter’s agent and CLI.</li>
+  <li><b>Enter AI</b> powers the live AI: job posts in 8 channels, grading free-text answers in any language with kind feedback, and translating manager notes into the hire’s language. Every call is cached and has a rubric fallback, so the demo never breaks.</li>
+  <li><b>Framia</b> produced the training media: the allergy-safety video and step photos. It has <b>no burned-in text by design</b>, so one shoot works in every language and captions come from each lesson’s text. Adding a language means adding text, not re-filming.</li>
+</ul>
+<h2>Results (prototype, Nov 18)</h2>
+<ul>
+  <li><b>Live and working end to end</b> on Enter: post → apply → train → passport → approve → shift-ready.</li>
+  <li><b>Cantonese added in one day</b> as data plus translations; the automated end-to-end test passes 14/14 against production.</li>
+  <li>Live AI response times: about 24 s to grade a free-text answer, about 45–50 s for a full 8-channel post set; cached repeats are instant.</li>
+  <li>Accessibility pass shipped: AAA contrast verified on every text colour, focus trap and Esc on all dialogs, visual and screen-reader review alerts.</li>
+  <li>The pipeline shows hire-to-shift-ready in <b>3.1 days</b> and 75% of steps completed, <i>in demo data</i>. “50% less manager time per opening” is a <i>pilot target, not a result</i>.</li>
+</ul>
+</div>
+</div>
+
+<h2>What it needs to go live</h2>
+<div class="box">
+<ul style="columns: 2; column-gap: 22px; margin: 0;">
+  <li><b>Native-speaker review</b> of 中文, 粵語 and Español content, starting with allergen safety. Cantonese is AI-drafted today and labelled as such.</li>
+  <li><b>A 4–6 week pilot at Imperial Treasure</b> with real SOPs per role. Measure time-to-shift-ready, manager hours per hire, 90-day retention and allergen incidents.</li>
+  <li><b>Testing with disabled users:</b> screen-reader, Deaf/hard-of-hearing and low-vision hires, plus a formal WCAG audit.</li>
+  <li><b>Production hardening:</b> manager SSO, per-location roles, and a privacy and retention policy for preference data.</li>
+  <li><b>Interview scheduling</b> (plan written) and integrations with the restaurant’s scheduling and payroll tools.</li>
+  <li><b>Public access:</b> make the Enter project public on a custom domain, then add languages and roles as data (Vietnamese is next).</li>
+</ul>
+</div>
+
+<footer class="small">
+  Sources: CDC Disability and Health Data System (2024); U.S. Bureau of Labor Statistics, Persons with a Disability (2025); U.S. Census Bureau QuickFacts, ACS 2020–2024; National Restaurant Association, Restaurant Employee Demographics (Mar 2026); WHO fact sheets (1.3 billion people with significant disability; 2.2 billion with vision impairment; 430 million with disabling hearing loss). All people in the product are fictional demo data.
+  &nbsp;·&nbsp; App: <a href="https://7ceaa6f9d4a2409ab7753ed1c9165da1.prod.enter.pro">7ceaa6f9d4a2409ab7753ed1c9165da1.prod.enter.pro</a> (one-click “Demo manager” and “Demo applicant” on the sign-in page)
+</footer>
+</body>
+</html>
