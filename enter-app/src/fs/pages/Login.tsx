@@ -70,8 +70,8 @@ export default function Login() {
               <>
                 <span className="field-label" id="l-lang">Preferred language</span>
                 <div className="seg" role="group" aria-labelledby="l-lang">
-                  {([["en", "English"], ["zh", "中文"], ["es", "Español"]] as [Lang, string][]).map(([c, n]) => (
-                    <button key={c} type="button" aria-pressed={lang === c} onClick={() => setLang(c)} lang={c === "zh" ? "zh-CN" : c}>{n}</button>
+                  {([["en", "English"], ["zh", "中文"], ["yue", "粵語"], ["es", "Español"]] as [Lang, string][]).map(([c, n]) => (
+                    <button key={c} type="button" aria-pressed={lang === c} onClick={() => setLang(c)} lang={c === "zh" ? "zh-CN" : c === "yue" ? "zh-HK" : c}>{n}</button>
                   ))}
                 </div>
               </>

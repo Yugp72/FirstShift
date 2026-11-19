@@ -1,4 +1,4 @@
-export type Lang = "en" | "zh" | "es";
+export type Lang = "en" | "zh" | "yue" | "es";
 export type Status = "APPLIED" | "TRAINING" | "REVIEW" | "SHIFT_READY" | "PRACTICE";
 
 export interface ModuleProgress {
@@ -179,7 +179,7 @@ export const api = {
   status: (token: string) => req<HireStatus>(`/api/training/${token}/status`),
 };
 
-export const LANG_CHIP: Record<Lang, string> = { en: "EN", zh: "中文", es: "ES" };
+export const LANG_CHIP: Record<Lang, string> = { en: "EN", zh: "中文", yue: "粵語", es: "ES" };
 export const CONF_EMOJI: Record<number, string> = { 1: "😟", 2: "🙂", 3: "💪" };
 
 export function ago(iso: string): string {

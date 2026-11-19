@@ -5,7 +5,7 @@ import { DemoOnly } from "../components/DemoOnly";
 import { ManagerHeader } from "../components/ManagerHeader";
 import { api, download, type ChannelPost, type Job, type Lang, type Meta } from "../lib/api";
 
-const LANG_ATTR: Record<string, string | undefined> = { zh: "zh-CN", es: "es", en: "en" };
+const LANG_ATTR: Record<string, string | undefined> = { zh: "zh-CN", yue: "zh-HK", es: "es", en: "en" };
 export const TASK_ICON: Record<string, string> = { seated: "🪑", standing: "🧍", lifting: "📦", customer: "🙂", language: "🗣️", detail: "🔎" };
 
 function ChannelPostCard({ p, i, meta }: { p: ChannelPost; i: number; meta: Meta | null }) {
@@ -53,7 +53,7 @@ export default function ManagerOrderIn() {
   const [pay, setPay] = useState("");
   const [schedule, setSchedule] = useState("Sat–Sun evenings, 4 shifts a week");
   const [reqs, setReqs] = useState<string[]>(["no_experience", "weekends", "standing"]);
-  const [langs, setLangs] = useState<Lang[]>(["en", "zh", "es"]);
+  const [langs, setLangs] = useState<Lang[]>(["en", "zh", "yue", "es"]);
   const [notes, setNotes] = useState("");
   const [job, setJob] = useState<Job | null>(null);
   const [busy, setBusy] = useState(false);
@@ -165,7 +165,7 @@ export default function ManagerOrderIn() {
           {busy && (
             <div className="empty" role="status">
               <b>Enter AI is writing your posts…</b>
-              Seven channels in English, 中文 and Español, plus task cards. This takes about 30–45 seconds.
+              Every channel in English, 中文, 粵語 and Español, plus task cards. This takes about 30–45 seconds.
             </div>
           )}
           {job && !busy && (

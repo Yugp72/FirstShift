@@ -28,9 +28,9 @@ class HttpError extends Error {
 }
 
 // ---------------------------------------------------------------- helpers
-const LANGS = ["en", "zh", "es"];
+const LANGS = ["en", "zh", "yue", "es"];
 const STATUSES = ["APPLIED", "TRAINING", "REVIEW", "SHIFT_READY"];
-const ALL_CHANNELS = ["job_board", "classifieds", "chat_zh", "chat_es", "flyer", "bilingual", "easy_read"];
+const ALL_CHANNELS = ["job_board", "classifieds", "chat_zh", "chat_yue", "chat_es", "flyer", "bilingual", "easy_read"];
 const nowIso = (d?: Date) => (d || new Date()).toISOString();
 const daysAgo = (days: number, hours = 0) => new Date(Date.now() - days * 86400e3 - hours * 3600e3);
 
@@ -41,16 +41,16 @@ export function pick(d: any, lang: string): string {
 }
 
 const T: Record<string, Record<string, string>> = {
-  mc_correct: { en: "That's it.", zh: "对了！", es: "¡Eso es!" },
-  almost: { en: "Almost. Here's the bit to look at.", zh: "差一点。我们再看一下这一句。", es: "Casi. Mira esta parte otra vez." },
-  free_pass: { en: "Good answer. You covered: {points}.", zh: "回答得很好。你说到了：{points}。", es: "Buena respuesta. Mencionaste: {points}." },
-  free_tip: { en: " One more thing to remember: {missing}.", zh: "再记住一点：{missing}。", es: " Recuerda también: {missing}." },
+  mc_correct: { en: "That's it.", zh: "对了！", yue: "啱喇！", es: "¡Eso es!" },
+  almost: { en: "Almost. Here's the bit to look at.", zh: "差一点。我们再看一下这一句。", yue: "差少少。我哋再睇下呢句。", es: "Casi. Mira esta parte otra vez." },
+  free_pass: { en: "Good answer. You covered: {points}.", zh: "回答得很好。你说到了：{points}。", yue: "答得好好。你講到：{points}。", es: "Buena respuesta. Mencionaste: {points}." },
+  free_tip: { en: " One more thing to remember: {missing}.", zh: "再记住一点：{missing}。", yue: "再記住一樣：{missing}。", es: " Recuerda también: {missing}." },
   free_almost: {
     en: "Almost. You're on the right track. The key step: {missing}.",
-    zh: "差一点，方向是对的。最重要的一步是：{missing}。",
+    zh: "差一点，方向是对的。最重要的一步是：{missing}。", yue: "差少少，方向啱嘅。最重要嘅一步係：{missing}。",
     es: "Casi, vas por buen camino. El paso clave: {missing}.",
   },
-  free_empty: { en: "Write a few words. Any language is fine.", zh: "写几个字就可以，用什么语言都行。", es: "Escribe unas palabras. Cualquier idioma está bien." },
+  free_empty: { en: "Write a few words. Any language is fine.", zh: "写几个字就可以，用什么语言都行。", yue: "寫幾個字就得，用咩語言都得。", es: "Escribe unas palabras. Cualquier idioma está bien." },
 };
 function t(key: string, lang: string, kw: Record<string, string> = {}): string {
   let s = T[key][lang] || T[key].en;
@@ -94,8 +94,8 @@ const modulesFor = (role: string) => MODS.filter((m) => m.role === role).sort((a
 const moduleById = (id: number) => MODS.find((m) => m.id === id) || null;
 const ROLE_LABEL: Record<string, string> = { server: "Front of house", kitchen: "Back of house" };
 const ROLE_TITLES: Record<string, Record<string, string>> = {
-  server: { en: "Server", zh: "服务员", es: "Mesero/a" },
-  kitchen: { en: "Kitchen prep", zh: "厨房备料", es: "Preparación en cocina" },
+  server: { en: "Server", zh: "服务员", yue: "侍應", es: "Mesero/a" },
+  kitchen: { en: "Kitchen prep", zh: "厨房备料", yue: "廚房備料", es: "Preparación en cocina" },
 };
 const COURSE_TITLE: Record<string, string> = { server: "Server essentials", kitchen: "Kitchen prep essentials" };
 const COURSE_BLURB: Record<string, string> = {
@@ -110,8 +110,8 @@ const PREFS: Record<string, [string, string]> = {
   extra_time: ["Extra time", "Allow extra time on early shifts; no rushing on new tasks."],
 };
 const FORMAT_LABELS: Record<string, string> = { read: "Text", pictures: "Picture steps", video: "Captioned video", listen: "Audio" };
-const LANG_NAMES: Record<string, string> = { en: "English", zh: "中文", es: "Español" };
-const LANG_FULL: Record<string, string> = { en: "English", zh: "Simplified Chinese (Mandarin)", es: "Spanish" };
+const LANG_NAMES: Record<string, string> = { en: "English", zh: "中文", yue: "粵語", es: "Español" };
+const LANG_FULL: Record<string, string> = { en: "English", zh: "Simplified Chinese (Mandarin)", yue: "Traditional Chinese (written Cantonese, Hong Kong)", es: "Spanish" };
 
 // ---------------------------------------------------------------- the request context
 class Ctx {
@@ -185,7 +185,7 @@ function mockGrade(rubric: Row[], answer: string, lang: string) {
   const missing = rubric.filter((p) => !matched.includes(p.id));
   const requiredOk = rubric.filter((p) => p.required).every((p) => matched.includes(p.id));
   const passed = requiredOk && matched.length >= Math.ceil(rubric.length / 2);
-  const sep = lang === "zh" ? "、" : ", ";
+  const sep = lang === "zh" || lang === "yue" ? "、" : ", ";
   let fb: string;
   if (passed) {
     fb = t("free_pass", lang, { points: rubric.filter((p) => matched.includes(p.id)).map((p) => pick(p.text, lang)).join(sep) });
@@ -233,11 +233,13 @@ function mockJobPosts(job: Row, channels = ALL_CHANNELS): Row[] {
   const other = langs.filter((l) => l !== "en");
   const reqLines = (lang: string, bullet: string) =>
     (job.requirements || []).filter((r: string) => reqs[r]).map((r: string) => `${bullet}${pick(reqs[r], lang)}`).join("\n");
-  const namesEn: Record<string, string> = { en: "English", zh: "Mandarin", es: "Spanish" };
+  const namesEn: Record<string, string> = { en: "English", zh: "Mandarin", yue: "Cantonese", es: "Spanish" };
   const welcomeEn = langs.filter((x) => namesEn[x]).map((x) => namesEn[x]).join(", ");
   const pay = job.pay_range || "Pay discussed at interview";
   const sched = job.schedule || "Flexible shifts";
   const notes = (job.notes || "").trim() ? `\n${job.notes.trim()}\n` : "";
+  const natives = langs.map((x) => LANG_NAMES[x]).filter(Boolean);
+  const trainIn = natives.length > 1 ? `${natives.slice(0, -1).join(", ")} or ${natives[natives.length - 1]}` : natives[0] || "English";
   const texts: Record<string, [string, string]> = {};
   texts.job_board = ["en",
     `${job.title} · ${job.location}\nImperial Treasure Palo Alto · ${pay}\n\nAbout the role\n${pick(role.blurb, "en")}\n\n` +
@@ -246,11 +248,16 @@ function mockJobPosts(job: Row, channels = ALL_CHANNELS): Row[] {
     "How to apply\nReply to this post or ask for the manager in person. No résumé needed."];
   texts.classifieds = ["en",
     `${job.title.toUpperCase()} · ${pay} (${job.location})\n\nNow hiring: ${job.title}. ${sched}.\n${reqLines("en", "- ")}\n` +
-    `No résumé needed. Training in English, 中文 or Español.\n${notes}Reply with your name, phone and the days you can work.`];
+    `No résumé needed. Training in ${trainIn}.\n${notes}Reply with your name, phone and the days you can work.`];
   if (langs.includes("zh")) {
     texts.chat_zh = ["zh",
       `【招聘】${pick(role.title, "zh")} 📍${job.location}\n💰 ${pay}\n🗓 ${sched}\n${reqLines("zh", "✅ ")}\n` +
       "欢迎讲中文、英文、西班牙语的朋友！提供中文培训。\n有兴趣请回复你的名字和可以上班的时间 🙏"];
+  }
+  if (langs.includes("yue")) {
+    texts.chat_yue = ["yue",
+      `【請人】${pick(role.title, "yue")} 📍${job.location}\n💰 ${pay}\n🗓 ${sched}\n${reqLines("yue", "✅ ")}\n` +
+      "歡迎識講廣東話、普通話、英文嘅朋友！提供廣東話培訓。\n有興趣請回覆你個名同可以返工嘅時間 🙏"];
   }
   if (langs.includes("es")) {
     texts.chat_es = ["es",
@@ -258,19 +265,19 @@ function mockJobPosts(job: Row, channels = ALL_CHANNELS): Row[] {
       "Capacitación en español, inglés o chino.\nSi te interesa, responde con tu nombre y los días que puedes trabajar 🙌"];
   }
   texts.flyer = ["en",
-    `NOW HIRING\n${job.title.toUpperCase()}\n${sched} · ${pay}\nNo experience? We'll train you, in English, 中文 or Español. Ask any of our team.`];
+    `NOW HIRING\n${job.title.toUpperCase()}\n${sched} · ${pay}\nNo experience? We'll train you, in ${trainIn}. Ask any of our team.`];
   if (other.length) {
     const o = other[0];
-    const label = ({ zh: "中文", es: "Español" } as Record<string, string>)[o] || o;
+    const label = LANG_NAMES[o] || o;
     texts.bilingual = [`en+${o}`,
       `NOW HIRING: ${job.title}\n${pick(role.blurb, "en")}\n${sched} · ${pay}\n${reqLines("en", "• ")}\n\n── ${label} ──\n` +
-      (o === "zh" ? `招聘：${pick(role.title, o)}\n` : `SE BUSCA: ${pick(role.title, o)}\n`) +
+      (o === "zh" ? `招聘：${pick(role.title, o)}\n` : o === "yue" ? `請人：${pick(role.title, o)}\n` : `SE BUSCA: ${pick(role.title, o)}\n`) +
       `${pick(role.blurb, o)}\n${sched} · ${pay}\n${reqLines(o, "• ")}`];
   }
   const simple = (job.requirements || []).filter((r: string) => reqs[r]).map((r: string) => pick(reqs[r], "en") + ".").join("\n");
   texts.easy_read = ["en",
     `We need a ${pick(role.title, "en").toLowerCase()}.\n${pick(role.easy, "en")}\nWhen: ${sched}.\nPay: ${pay}.\n${simple}\n` +
-    "We will train you.\nYou can learn in English, Chinese or Spanish.\nYou do not need a résumé.\nTo apply: talk to us, or reply to this post."];
+    `We will train you.\nYou can learn in ${trainIn}.\nYou do not need a résumé.` + "\nTo apply: talk to us, or reply to this post."];
   return channels.filter((ch) => texts[ch]).map((ch) => ({
     channel: ch, label: meta[ch].label, lang: texts[ch][0], text: texts[ch][1].trim(), limit: meta[ch].limit, format_note: meta[ch].format_note,
   }));
@@ -322,10 +329,11 @@ async function generateJobPosts(c: Ctx, job: Row): Promise<{ posts: Row[]; task_
     flyer: "flyer: English, <=250 chars, big simple lines",
     easy_read: "easy_read: plain English, very short sentences, one idea per line, <=450 chars",
     chat_zh: "chat_zh: WeChat-style post in Simplified Chinese, a few emoji, <=350 chars",
+    chat_yue: "chat_yue: WhatsApp-style post in written Cantonese (Traditional Chinese, Hong Kong usage), a few emoji, <=350 chars",
     chat_es: "chat_es: WhatsApp-style post in Spanish, a few emoji, <=350 chars",
     bilingual: `bilingual: English, then the same post in ${LANG_FULL[(job.languages || []).find((l: string) => l !== "en") || "zh"]}, <=800 chars`,
   };
-  const groups = [["job_board", "classifieds", "flyer", "easy_read"], ["chat_zh", "chat_es", "bilingual"]]
+  const groups = [["job_board", "classifieds", "flyer", "easy_read"], ["chat_zh", "chat_yue", "chat_es", "bilingual"]]
     .map((g) => g.filter(has)).filter((g) => g.length);
   // Smaller parallel calls: Enter's model is ~7 s per call, so one big call can time out.
   const [cards, ...outs] = await Promise.all([
@@ -650,7 +658,7 @@ async function startSession(c: Ctx, accountId: number): Promise<string> {
 // Mocked interview slots: the next three weekday afternoons (scheduling is DEMO ONLY).
 function interviewSlots(lang: string): string[] {
   const out: string[] = [];
-  const loc = lang === "zh" ? "zh-CN" : lang === "es" ? "es-ES" : "en-US";
+  const loc = lang === "zh" ? "zh-CN" : lang === "yue" ? "zh-HK" : lang === "es" ? "es-ES" : "en-US";
   const tz = "America/Los_Angeles";
   for (let day = 1; out.length < 3 && day < 10; day++) {
     const d = new Date(Date.now() + day * 86400e3);
@@ -662,7 +670,7 @@ function interviewSlots(lang: string): string[] {
 }
 const APPLY_REPLY: Record<string, string> = {
   en: "Thank you, {name}! We got your application for {title}. No résumé needed. You can start the training now, in your language. Pick a time below to meet the manager.",
-  zh: "谢谢你，{name}！我们收到了你对「{title}」的申请。不需要简历。你现在就可以用中文开始培训。请在下面选一个时间和经理见面。",
+  zh: "谢谢你，{name}！我们收到了你对「{title}」的申请。不需要简历。你现在就可以用中文开始培训。请在下面选一个时间和经理见面。", yue: "多謝你，{name}！我哋收到你申請「{title}」。唔使履歷。你而家就可以用廣東話開始培訓。請喺下面揀個時間同經理見面。",
   es: "¡Gracias, {name}! Recibimos tu solicitud para {title}. No necesitas currículum. Puedes empezar la capacitación ahora, en tu idioma. Elige un horario abajo para conocer al gerente.",
 };
 
@@ -809,7 +817,7 @@ on("POST", "/api/jobs", async (c) => {
   if (!ROLES.roles[b.role]) throw new HttpError(400, "Pick a role we have training for (server or kitchen prep).");
   const job = { role: b.role, title, location: String(b.location || "Palo Alto, CA"), pay_range: String(b.pay_range || ""),
     schedule: String(b.schedule || ""), requirements: (b.requirements || []).filter((r: string) => ROLES.requirements[r]),
-    languages: (b.languages?.length ? b.languages : ["en", "zh", "es"]).filter((l: string) => LANGS.includes(l)),
+    languages: (b.languages?.length ? b.languages : ["en", "zh", "yue", "es"]).filter((l: string) => LANGS.includes(l)),
     notes: String(b.notes || "").slice(0, 600) };
   const { posts, task_cards, by } = await generateJobPosts(c, job);
   const id = c.insert("job", { ...job, posts, task_cards, posts_by: by, closed: false, created_at: nowIso() });

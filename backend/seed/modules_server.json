@@ -9,6 +9,7 @@
       "title": {
         "en": "Greeting & seating",
         "zh": "迎接与带位",
+        "yue": "迎客同帶位",
         "es": "Saludo y acomodo"
       },
       "cards": [
@@ -18,6 +19,7 @@
           "text": {
             "en": "Look up and smile when a guest walks in. Greet them within 30 seconds, even when it's busy.",
             "zh": "客人进门时，抬头微笑。即使很忙，也要在30秒内打招呼。",
+            "yue": "客人入門口嗰陣，擰轉頭笑一笑。就算好忙，都要喺30秒內打招呼。",
             "es": "Cuando entre un cliente, levanta la vista y sonríe. Salúdalo en menos de 30 segundos, aunque haya mucho trabajo."
           }
         },
@@ -27,6 +29,7 @@
           "text": {
             "en": "Ask how many people are in the party, and if they have a reservation.",
             "zh": "问客人几位用餐，有没有预订。",
+            "yue": "問客人幾多位，有冇訂位。",
             "es": "Pregunta cuántas personas son y si tienen reservación."
           }
         },
@@ -36,6 +39,7 @@
           "text": {
             "en": "Walk at the guest's pace. Help elders with their chair and offer a high chair for small children.",
             "zh": "按客人的步速带位。帮长辈拉椅子，为小朋友提供儿童椅。",
+            "yue": "跟客人嘅步速帶位。幫長輩拉櫈，畀小朋友BB櫈。",
             "es": "Camina al ritmo del cliente. Ayuda a las personas mayores con su silla y ofrece una silla alta para niños pequeños."
           }
         },
@@ -45,6 +49,7 @@
           "text": {
             "en": "Hand out the menus and tell the table their server will be right with them.",
             "zh": "把菜单递给客人，告诉他们服务员马上就来。",
+            "yue": "將餐牌遞畀客人，話佢哋知侍應即刻就到。",
             "es": "Entrega los menús y di que su mesero llegará enseguida."
           }
         },
@@ -54,6 +59,7 @@
           "text": {
             "en": "If there is a wait, give an honest time. Never guess low just to keep guests happy.",
             "zh": "如果需要等位，如实告诉客人要等多久。不要为了让客人高兴而少说时间。",
+            "yue": "如果要等位，老實話畀客人知要等幾耐。唔好為咗氹客人開心而講少啲時間。",
             "es": "Si hay espera, da un tiempo honesto. No digas menos solo para que estén contentos."
           }
         }
@@ -67,6 +73,7 @@
           "prompt": {
             "en": "A guest walks in while you're carrying plates. What do you do?",
             "zh": "你正端着盘子，有客人进门了。你怎么做？",
+            "yue": "你捧緊碟，有客人入嚟。你點做？",
             "es": "Entra un cliente mientras llevas platos. ¿Qué haces?"
           },
           "options": [
@@ -75,6 +82,7 @@
               "text": {
                 "en": "Wait until I'm free, then say hello",
                 "zh": "等我忙完再打招呼",
+                "yue": "等我忙完先打招呼",
                 "es": "Espero a estar libre y luego saludo"
               },
               "icon": "⏳"
@@ -84,6 +92,7 @@
               "text": {
                 "en": "Smile and say hello now, then come back soon",
                 "zh": "现在就微笑打招呼，马上回来",
+                "yue": "而家就笑住打招呼，好快返嚟",
                 "es": "Sonrío y saludo ahora, y vuelvo pronto"
               },
               "icon": "👋"
@@ -93,6 +102,7 @@
               "text": {
                 "en": "Pretend I didn't see them",
                 "zh": "假装没看到",
+                "yue": "扮睇唔到",
                 "es": "Hago como que no lo vi"
               },
               "icon": "🙈"
@@ -107,6 +117,7 @@
           "prompt": {
             "en": "The wait is about 20 minutes. What do you tell the guest?",
             "zh": "大概要等20分钟。你怎么告诉客人？",
+            "yue": "大概要等20分鐘。你點話畀客人知？",
             "es": "La espera es de unos 20 minutos. ¿Qué le dices al cliente?"
           },
           "options": [
@@ -115,6 +126,7 @@
               "text": {
                 "en": "\"About 5 minutes\"",
                 "zh": "“大概5分钟”",
+                "yue": "「大概5分鐘」",
                 "es": "«Unos 5 minutos»"
               },
               "icon": "5️⃣"
@@ -124,6 +136,7 @@
               "text": {
                 "en": "\"About 20 minutes\"",
                 "zh": "“大概20分钟”",
+                "yue": "「大概20分鐘」",
                 "es": "«Unos 20 minutos»"
               },
               "icon": "⏱️"
@@ -133,6 +146,7 @@
               "text": {
                 "en": "\"I don't know\"",
                 "zh": "“我不知道”",
+                "yue": "「我唔知」",
                 "es": "«No sé»"
               },
               "icon": "🤷"
@@ -146,6 +160,7 @@
           "prompt": {
             "en": "A family arrives with a grandmother and a baby. How do you seat them?",
             "zh": "一家人带着奶奶和宝宝来了。你怎么为他们带位？",
+            "yue": "一家人帶住嫲嫲同BB嚟到。你點樣幫佢哋帶位？",
             "es": "Llega una familia con la abuela y un bebé. ¿Cómo los acomodas?"
           },
           "rubric": [
@@ -155,6 +170,7 @@
               "text": {
                 "en": "help the grandmother with her chair",
                 "zh": "帮奶奶拉椅子",
+                "yue": "幫嫲嫲拉櫈",
                 "es": "ayudar a la abuela con su silla"
               }
             },
@@ -164,6 +180,7 @@
               "text": {
                 "en": "offer a high chair for the baby",
                 "zh": "给宝宝准备儿童椅",
+                "yue": "幫BB預備BB櫈",
                 "es": "ofrecer una silla alta para el bebé"
               }
             }
@@ -179,6 +196,7 @@
       "title": {
         "en": "Tea service basics",
         "zh": "茶水服务基础",
+        "yue": "茶水服務基本功",
         "es": "Servicio de té básico"
       },
       "cards": [
@@ -188,6 +206,7 @@
           "text": {
             "en": "Ask which tea the table would like before anything else. Show them the tea list.",
             "zh": "先问客人想喝什么茶，再做其他事。把茶单给客人看。",
+            "yue": "先問客人想飲咩茶，再做其他嘢。將茶單畀客人睇。",
             "es": "Antes que nada, pregunta qué té quiere la mesa. Muéstrales la lista de tés."
           }
         },
@@ -197,6 +216,7 @@
           "text": {
             "en": "Hot tea is very hot. Pour with the spout turned away from the guest.",
             "zh": "热茶非常烫。倒茶时，壶嘴不要对着客人。",
+            "yue": "熱茶好熱。斟茶嗰陣，壺嘴唔好對住客人。",
             "es": "El té está muy caliente. Sirve con el pico de la tetera lejos del cliente."
           }
         },
@@ -206,6 +226,7 @@
           "text": {
             "en": "Pour for elders and guests first, then the rest of the table. Fill cups about three-quarters.",
             "zh": "先给长辈和客人倒茶，再给其他人。杯子倒七分满。",
+            "yue": "先同長輩同客人斟茶，再到其他人。杯斟七分滿。",
             "es": "Sirve primero a las personas mayores y a los invitados, luego al resto. Llena las tazas tres cuartos."
           }
         },
@@ -215,6 +236,7 @@
           "text": {
             "en": "If a guest leaves the teapot lid open or tilted, they want more hot water. Refill it soon.",
             "zh": "如果客人把茶壶盖打开或斜放，意思是要加水。请尽快加水。",
+            "yue": "如果客人打開或者斜擺茶壺蓋，即係要加水。請盡快加水。",
             "es": "Si el cliente deja la tapa de la tetera abierta o inclinada, quiere más agua caliente. Rellénala pronto."
           }
         },
@@ -224,6 +246,7 @@
           "text": {
             "en": "Guests may tap two fingers on the table to say thank you. A smile back is enough.",
             "zh": "客人用两根手指轻敲桌面，是在说谢谢。微笑回应就好。",
+            "yue": "客人用兩隻手指輕輕敲枱，係講多謝。笑一笑回應就得。",
             "es": "Si un cliente toca la mesa con dos dedos, está dando las gracias. Basta con sonreír."
           }
         }
@@ -237,6 +260,7 @@
           "prompt": {
             "en": "A guest leaves the teapot lid open. What does it mean?",
             "zh": "客人把茶壶盖打开了。这是什么意思？",
+            "yue": "客人打開咗茶壺蓋。即係咩意思？",
             "es": "Un cliente deja abierta la tapa de la tetera. ¿Qué significa?"
           },
           "options": [
@@ -245,6 +269,7 @@
               "text": {
                 "en": "They have finished",
                 "zh": "他们喝完了",
+                "yue": "佢哋飲完喇",
                 "es": "Ya terminaron"
               },
               "icon": "🙅"
@@ -254,6 +279,7 @@
               "text": {
                 "en": "They want more hot water",
                 "zh": "他们要加热水",
+                "yue": "佢哋要加熱水",
                 "es": "Quieren más agua caliente"
               },
               "icon": "♨️"
@@ -263,6 +289,7 @@
               "text": {
                 "en": "The tea is too strong",
                 "zh": "茶太浓了",
+                "yue": "茶太濃",
                 "es": "El té está muy fuerte"
               },
               "icon": "😖"
@@ -277,6 +304,7 @@
           "prompt": {
             "en": "Who do you pour tea for first?",
             "zh": "先给谁倒茶？",
+            "yue": "先同邊個斟茶？",
             "es": "¿A quién le sirves el té primero?"
           },
           "options": [
@@ -285,6 +313,7 @@
               "text": {
                 "en": "Whoever is closest to me",
                 "zh": "离我最近的人",
+                "yue": "離我最近嗰個",
                 "es": "A quien esté más cerca"
               },
               "icon": "📍"
@@ -294,6 +323,7 @@
               "text": {
                 "en": "Elders and guests",
                 "zh": "长辈和客人",
+                "yue": "長輩同客人",
                 "es": "A las personas mayores y a los invitados"
               },
               "icon": "👵"
@@ -303,6 +333,7 @@
               "text": {
                 "en": "The children",
                 "zh": "小朋友",
+                "yue": "小朋友",
                 "es": "A los niños"
               },
               "icon": "🧒"
@@ -316,6 +347,7 @@
           "prompt": {
             "en": "How do you pour hot tea safely?",
             "zh": "怎样安全地倒热茶？",
+            "yue": "點樣安全咁斟熱茶？",
             "es": "¿Cómo sirves el té caliente de forma segura?"
           },
           "rubric": [
@@ -325,6 +357,7 @@
               "text": {
                 "en": "turn the spout away from the guest",
                 "zh": "壶嘴不要对着客人",
+                "yue": "壺嘴唔好對住客人",
                 "es": "poner el pico lejos del cliente"
               }
             },
@@ -334,6 +367,7 @@
               "text": {
                 "en": "fill cups about three-quarters",
                 "zh": "倒七分满",
+                "yue": "斟七分滿",
                 "es": "llenar las tazas tres cuartos"
               }
             }
@@ -349,6 +383,7 @@
       "title": {
         "en": "Allergy questions",
         "zh": "过敏问题",
+        "yue": "敏感問題",
         "es": "Preguntas sobre alergias"
       },
       "cards": [
@@ -358,6 +393,7 @@
           "text": {
             "en": "Always ask: \"Does anyone at the table have a food allergy?\" Ask before you take the order.",
             "zh": "一定要问：“请问有没有人对食物过敏？”在点菜之前问。",
+            "yue": "一定要問：「請問有冇人對食物敏感？」喺落單之前問。",
             "es": "Siempre pregunta: «¿Alguien en la mesa tiene alergia a algún alimento?». Hazlo antes de tomar la orden."
           }
         },
@@ -367,6 +403,7 @@
           "text": {
             "en": "Common allergens: peanuts, tree nuts, shellfish, fish, eggs, milk, wheat, soy and sesame.",
             "zh": "常见过敏原：花生、坚果、贝类海鲜、鱼、鸡蛋、牛奶、小麦、大豆和芝麻。",
+            "yue": "常見致敏食物：花生、果仁、貝殼類海鮮、魚、雞蛋、牛奶、小麥、黃豆同芝麻。",
             "es": "Alérgenos comunes: cacahuate, nueces, mariscos, pescado, huevo, leche, trigo, soya y ajonjolí."
           }
         },
@@ -376,6 +413,7 @@
           "text": {
             "en": "If a guest has an allergy, always tell the kitchen. Write it on the order and say it to the chef.",
             "zh": "如果客人有过敏，一定要告诉厨房。写在点菜单上，并当面告诉厨师。",
+            "yue": "如果客人有食物敏感，一定要話畀廚房知。寫喺單上面，仲要當面同廚師講。",
             "es": "Si un cliente tiene alergia, siempre avisa a la cocina. Escríbelo en la orden y díselo al chef."
           }
         },
@@ -385,6 +423,7 @@
           "text": {
             "en": "Never guess what is in a dish. If you're not sure, say: \"Let me check with the kitchen.\"",
             "zh": "不要猜菜里有什么。如果不确定，就说：“我去问一下厨房。”",
+            "yue": "唔好估啲餸有咩材料。唔肯定就講：「我去問下廚房。」",
             "es": "Nunca adivines qué lleva un platillo. Si tienes dudas, di: «Déjeme preguntar en la cocina»."
           }
         },
@@ -394,6 +433,7 @@
           "text": {
             "en": "When the dish is ready, confirm the allergy again as you bring it to the table.",
             "zh": "上菜时，再跟客人确认一次过敏情况。",
+            "yue": "上菜嗰陣，再同客人確認多次敏感情況。",
             "es": "Cuando el platillo esté listo, confirma la alergia otra vez al llevarlo a la mesa."
           }
         }
@@ -407,6 +447,7 @@
           "prompt": {
             "en": "A guest asks if the dumplings have sesame. You're not sure. What do you say?",
             "zh": "客人问饺子里有没有芝麻。你不确定。你怎么说？",
+            "yue": "客人問啲餃子有冇芝麻。你唔肯定。你點講？",
             "es": "Un cliente pregunta si las empanadillas llevan ajonjolí. No estás seguro. ¿Qué dices?"
           },
           "options": [
@@ -415,6 +456,7 @@
               "text": {
                 "en": "\"Probably not\"",
                 "zh": "“应该没有吧”",
+                "yue": "「應該冇嘅」",
                 "es": "«Creo que no»"
               },
               "icon": "🤞"
@@ -424,6 +466,7 @@
               "text": {
                 "en": "\"Let me check with the kitchen\"",
                 "zh": "“我去问一下厨房”",
+                "yue": "「我去問下廚房」",
                 "es": "«Déjeme preguntar en la cocina»"
               },
               "icon": "🧑‍🍳"
@@ -433,6 +476,7 @@
               "text": {
                 "en": "\"Just pick another dish\"",
                 "zh": "“您换一道菜吧”",
+                "yue": "「不如你揀過第二樣啦」",
                 "es": "«Mejor pida otro platillo»"
               },
               "icon": "🔄"
@@ -447,6 +491,7 @@
           "prompt": {
             "en": "When should you ask about allergies?",
             "zh": "什么时候问过敏的问题？",
+            "yue": "幾時問食物敏感嘅問題？",
             "es": "¿Cuándo debes preguntar por alergias?"
           },
           "options": [
@@ -455,6 +500,7 @@
               "text": {
                 "en": "Before taking the order",
                 "zh": "点菜之前",
+                "yue": "落單之前",
                 "es": "Antes de tomar la orden"
               },
               "icon": "📝"
@@ -464,6 +510,7 @@
               "text": {
                 "en": "After the food arrives",
                 "zh": "上菜之后",
+                "yue": "上咗菜之後",
                 "es": "Después de que llegue la comida"
               },
               "icon": "🍽️"
@@ -473,6 +520,7 @@
               "text": {
                 "en": "Only if the guest brings it up",
                 "zh": "只有客人提起时",
+                "yue": "淨係客人提起先問",
                 "es": "Solo si el cliente lo menciona"
               },
               "icon": "🙊"
@@ -486,6 +534,7 @@
           "prompt": {
             "en": "A guest says they are allergic to shellfish. What do you do next?",
             "zh": "客人说他对贝类海鲜过敏。你接下来做什么？",
+            "yue": "客人話佢對貝殼類海鮮敏感。你跟住做咩？",
             "es": "Un cliente dice que es alérgico a los mariscos. ¿Qué haces después?"
           },
           "rubric": [
@@ -495,6 +544,7 @@
               "text": {
                 "en": "tell the kitchen",
                 "zh": "告诉厨房",
+                "yue": "話畀廚房知",
                 "es": "avisar a la cocina"
               }
             },
@@ -504,6 +554,7 @@
               "text": {
                 "en": "write it on the order",
                 "zh": "写在点菜单上",
+                "yue": "寫喺單上面",
                 "es": "escribirlo en la orden"
               }
             }

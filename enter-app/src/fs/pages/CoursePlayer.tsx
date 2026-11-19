@@ -16,7 +16,7 @@ type Pos =
   | { kind: "lesson"; mid: number; i: number }
   | { kind: "quiz"; mid: number; qi: number; conf?: boolean };
 
-const LANGS: { code: Lang; native: string }[] = [{ code: "en", native: "English" }, { code: "zh", native: "中文" }, { code: "es", native: "Español" }];
+const LANGS: { code: Lang; native: string }[] = [{ code: "en", native: "English" }, { code: "zh", native: "中文" }, { code: "yue", native: "粵語" }, { code: "es", native: "Español" }];
 const TABS: { id: Format; i: string; k: Key }[] = [
   { id: "video", i: "▶︎", k: "fmt_video" }, { id: "pictures", i: "◧", k: "fmt_pictures" },
   { id: "listen", i: "♪", k: "fmt_listen" }, { id: "read", i: "¶", k: "fmt_read" },
@@ -27,11 +27,11 @@ function save(key: string, v: string) { try { localStorage.setItem(key, v); } ca
 
 /** Text descriptions of the Framia step pictures, so screen-reader users get what the picture shows. */
 const STEP_ALT: Record<string, Record<Lang, string>> = {
-  "allergy-c1": { en: "A server stands at a table with a notepad, listening as two guests ask about allergies.", zh: "服务员拿着点菜本站在桌边，认真听两位客人询问过敏的问题。", es: "Una mesera con libreta escucha en la mesa a dos clientes que preguntan por alergias." },
-  "allergy-c2": { en: "Common allergens laid out: peanuts, tree nuts, shrimp and shellfish, fish, eggs, milk, wheat, soybeans and sesame.", zh: "常见过敏原：花生、坚果、虾和贝类、鱼、鸡蛋、牛奶、小麦、大豆和芝麻。", es: "Alérgenos comunes: cacahuates, nueces, camarones y mariscos, pescado, huevos, leche, trigo, soya y ajonjolí." },
-  "allergy-c3": { en: "The server writes on her notepad while checking with the chef at the kitchen pass.", zh: "服务员在出菜口一边和厨师确认，一边在点菜本上记录。", es: "La mesera anota en su libreta mientras confirma con el chef en el pase de cocina." },
-  "allergy-c4": { en: "Two scenes: a server unsure of the answer, then the same server walking into the kitchen to ask the chefs.", zh: "两个画面：服务员不确定答案，然后走进厨房去问厨师。", es: "Dos escenas: una mesera con dudas y luego la misma mesera entrando a la cocina para preguntar a los chefs." },
-  "allergy-c5": { en: "A server smiles and sets down a dish for a happy guest, after confirming it is safe.", zh: "确认安全后，服务员微笑着把菜端给开心的客人。", es: "Tras confirmar que es seguro, una mesera sonríe y sirve el plato a una clienta contenta." },
+  "allergy-c1": { en: "A server stands at a table with a notepad, listening as two guests ask about allergies.", zh: "服务员拿着点菜本站在桌边，认真听两位客人询问过敏的问题。", yue: "侍應拎住落單簿企喺枱邊，用心聽兩位客人問食物敏感嘅問題。", es: "Una mesera con libreta escucha en la mesa a dos clientes que preguntan por alergias." },
+  "allergy-c2": { en: "Common allergens laid out: peanuts, tree nuts, shrimp and shellfish, fish, eggs, milk, wheat, soybeans and sesame.", zh: "常见过敏原：花生、坚果、虾和贝类、鱼、鸡蛋、牛奶、小麦、大豆和芝麻。", yue: "常見致敏食物：花生、果仁、蝦同貝殼類、魚、雞蛋、牛奶、小麥、黃豆同芝麻。", es: "Alérgenos comunes: cacahuates, nueces, camarones y mariscos, pescado, huevos, leche, trigo, soya y ajonjolí." },
+  "allergy-c3": { en: "The server writes on her notepad while checking with the chef at the kitchen pass.", zh: "服务员在出菜口一边和厨师确认，一边在点菜本上记录。", yue: "侍應喺出菜口一邊同廚師確認，一邊喺落單簿度記低。", es: "La mesera anota en su libreta mientras confirma con el chef en el pase de cocina." },
+  "allergy-c4": { en: "Two scenes: a server unsure of the answer, then the same server walking into the kitchen to ask the chefs.", zh: "两个画面：服务员不确定答案，然后走进厨房去问厨师。", yue: "兩個畫面：侍應唔肯定答案，跟住行入廚房問廚師。", es: "Dos escenas: una mesera con dudas y luego la misma mesera entrando a la cocina para preguntar a los chefs." },
+  "allergy-c5": { en: "A server smiles and sets down a dish for a happy guest, after confirming it is safe.", zh: "确认安全后，服务员微笑着把菜端给开心的客人。", yue: "確認安全之後，侍應笑住將餸端畀開心嘅客人。", es: "Tras confirmar que es seguro, una mesera sonríe y sirve el plato a una clienta contenta." },
 };
 const altFor = (src: string | undefined, lang: Lang) => {
   const key = src?.split("/").pop()?.replace(/\.\w+$/, "") ?? "";
@@ -344,9 +344,15 @@ function Setup({ lang, prefs, busy, onSave, firstName }: { lang: Lang; prefs: st
       <div className="lang-titles" style={{ marginTop: 18 }}>
         {LANGS.map((x) => <p key={x.code} lang={HTML_LANG[x.code]} style={{ margin: 0, fontWeight: 600 }}>{tr("chooseLang", x.code)}</p>)}
       </div>
-      <div className="seg" role="group" aria-label={tr("language", l)} style={{ marginTop: 12, maxWidth: 420 }}>
+      <div className="seg" role="group" aria-label={tr("language", l)} style={{ marginTop: 12, maxWidth: 520 }}>
         {LANGS.map((x) => <button key={x.code} type="button" aria-pressed={l === x.code} onClick={() => setL(x.code)} lang={HTML_LANG[x.code]}>{x.native}</button>)}
       </div>
+      {/* Honesty: the Cantonese content is AI-drafted and has not yet been checked by a native speaker. */}
+      {l === "yue" && (
+        <p className="muted" lang="zh-HK" style={{ fontSize: 14, margin: "10px 0 0" }}>
+          粵語內容由 AI 翻譯，正等緊母語人士審閱。<span lang="en"> Cantonese is AI-drafted, pending native review.</span>
+        </p>
+      )}
       <HirePrefs lang={l} initial={prefs} busy={busy} onDone={(p) => onSave(l, p)} />
     </div>
   );
