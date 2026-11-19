@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { GlobalNav } from "../components/GlobalNav";
-import { api, type Course } from "../lib/api";
+import { api, MEDIA_BASE, type Course } from "../lib/api";
 
-const COVER: Record<string, string> = { server: "/media/allergy-c1.jpg", kitchen: "" };
+const COVER: Record<string, string> = { server: `${MEDIA_BASE}allergy-c1.jpg`, kitchen: "" };
 const ICON: Record<string, string> = { server: "🍽️", kitchen: "🥟" };
 
 /** Course catalogue: plain training, open to anyone. */

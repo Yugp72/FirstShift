@@ -109,6 +109,7 @@ export function HireCheck({ token, m, qi, lang, visual, onNext }: Props) {
               </button>
             )}
           </div>
+          {busy && <p className="muted" role="status" style={{ fontSize: 14, margin: "10px 0 0" }}>{tr("readingSlow", lang)}</p>}
         </>
       )}
 

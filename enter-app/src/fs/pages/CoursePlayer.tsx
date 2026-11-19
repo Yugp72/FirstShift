@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { ConfidencePicker } from "../components/ConfidencePicker";
 import { GlobalNav } from "../components/GlobalNav";
 import { SpeakButton } from "../components/SpeakButton";
-import { api, type Format, type HireModule, type Lang, type Training } from "../lib/api";
+import { api, captionsUrl, type Format, type HireModule, type Lang, type Training } from "../lib/api";
 import { useAuth } from "../lib/auth";
 import { HTML_LANG, tr, type Key } from "../lib/i18n";
 import { HireCheck } from "./HireCheck";
@@ -347,7 +347,7 @@ function Lesson({ token, m, i, lang, fmt, onFmt, onSeen, prev, next, go }: {
             <video ref={vref} key={`${m.id}-${i}-${lang}`} controls playsInline preload="metadata" poster={i === 0 ? m.media.poster : undefined}
               src={`${m.media.video}#t=${start},${end}`}
               onTimeUpdate={(e) => { const v = e.currentTarget; if (v.currentTime >= end - 0.3) { v.pause(); v.currentTime = Math.max(start, end - 0.3); } }}>
-              <track kind="captions" src={`/api/media/${m.id}/captions.vtt?lang=${lang}`} srcLang={HTML_LANG[lang]} label={tr("captionsToggle", lang)} default />
+              <track kind="captions" src={captionsUrl(m.cards, m.seconds_per_card)} srcLang={HTML_LANG[lang]} label={tr("captionsToggle", lang)} default />
             </video>
           </div>
           <p className="media-credit">{tr("framiaCredit", lang)}</p>

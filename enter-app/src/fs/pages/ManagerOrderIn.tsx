@@ -3,9 +3,10 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useSearchParams } from "react-router-dom";
 import { DemoOnly } from "../components/DemoOnly";
 import { ManagerHeader } from "../components/ManagerHeader";
-import { api, type ChannelPost, type Job, type Lang, type Meta } from "../lib/api";
+import { api, download, type ChannelPost, type Job, type Lang, type Meta } from "../lib/api";
 
 const LANG_ATTR: Record<string, string | undefined> = { zh: "zh-CN", es: "es", en: "en" };
+export const TASK_ICON: Record<string, string> = { seated: "🪑", standing: "🧍", lifting: "📦", customer: "🙂", language: "🗣️", detail: "🔎" };
 
 function ChannelPostCard({ p, i, meta }: { p: ChannelPost; i: number; meta: Meta | null }) {
   const reduce = useReducedMotion();
@@ -148,20 +149,45 @@ export default function ManagerOrderIn() {
             <h2 id="out-title" style={{ margin: 0, fontSize: 18 }}>{job ? `${job.posts.length} channel posts · ${job.title}` : "Channel posts"}</h2>
             {job && (
               <>
-                <a className="btn btn-sm" style={{ marginLeft: "auto" }} href={`/api/jobs/${job.id}/export?fmt=csv`} download>Export CSV</a>
-                <a className="btn btn-sm" href={`/api/jobs/${job.id}/export?fmt=json`} download>Export JSON</a>
+                <button type="button" className="btn btn-sm" style={{ marginLeft: "auto" }} onClick={() => download(`/api/jobs/${job.id}/export?fmt=csv`, `firstshift-job-${job.id}.csv`).catch((e) => setErr((e as Error).message))}>Export CSV</button>
+                <button type="button" className="btn btn-sm" onClick={() => download(`/api/jobs/${job.id}/export?fmt=json`, `firstshift-job-${job.id}.json`).catch((e) => setErr((e as Error).message))}>Export JSON</button>
               </>
             )}
             <p className="muted" style={{ flexBasis: "100%", margin: 0, fontSize: 13.5 }}>Copy each post to its channel, or export them all. Publishing straight to job boards comes in the pilot.</p>
           </div>
-          {!job && (
+          {!job && !busy && (
             <div className="empty">
               <b>No posts yet</b>
               Fill in the role and press Generate posts. One entry writes a job-board listing, a classifieds ad,
               WeChat and WhatsApp messages, an in-store flyer, a bilingual post and an easy-read version.
             </div>
           )}
-          {job && (
+          {busy && (
+            <div className="empty" role="status">
+              <b>Enter AI is writing your posts…</b>
+              Seven channels in English, 中文 and Español, plus task cards. This takes about 30–45 seconds.
+            </div>
+          )}
+          {job && !busy && (
+            <p className="muted" style={{ margin: "0 0 12px", fontSize: 13.5 }}>
+              {job.posts_by === "enter-ai" ? "✦ Written by Enter AI (Converge.AI) from your one entry." : "Written from the FirstShift templates (AI was unavailable)."}
+            </p>
+          )}
+          {job && !busy && !!job.task_cards?.length && (
+            <div className="panel" style={{ marginBottom: 16 }} aria-label="Task cards">
+              <h3 style={{ margin: "0 0 4px", fontSize: 16 }}>Task cards</h3>
+              <p className="muted" style={{ margin: "0 0 10px", fontSize: 13.5 }}>What the job involves, so candidates can see which stations fit how they work best. Shown on the job board.</p>
+              <div className="row" style={{ alignItems: "stretch" }}>
+                {job.task_cards.map((tc, i) => (
+                  <div key={i} className="chip" style={{ display: "block", textAlign: "left", maxWidth: 260, whiteSpace: "normal", padding: "10px 14px", height: "auto" }}>
+                    <b>{TASK_ICON[tc.kind] || "•"} {tc.title}</b>
+                    <div className="muted" style={{ fontSize: 13 }}>{tc.detail}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {job && !busy && (
             <div className="posts" key={printKey}>
               {job.posts.map((p, i) => <ChannelPostCard key={p.channel} p={p} i={i} meta={meta} />)}
             </div>
@@ -169,7 +195,7 @@ export default function ManagerOrderIn() {
         </section>
         </div>
       </main>
-      <p className="footer-note">AI: {meta?.ai.provider === "converge+fallback" ? "Converge.AI Enter (live, cached)" : "offline mock"} · Posts are drafts to check before posting.</p>
+      <p className="footer-note">AI: {meta?.ai.mode === "live" ? "Enter AI by Converge.AI (live, cached)" : "offline templates"} · Posts are drafts to check before posting.</p>
     </div>
   );
 }

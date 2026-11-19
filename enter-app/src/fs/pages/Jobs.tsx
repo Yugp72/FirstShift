@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { GlobalNav } from "../components/GlobalNav";
-import { api, LANG_CHIP, type Application, type PublicJob } from "../lib/api";
+import { SpeakButton } from "../components/SpeakButton";
+import { api, LANG_CHIP, type Application, type ApplyResult, type Lang, type PublicJob } from "../lib/api";
+import { TASK_ICON } from "./ManagerOrderIn";
 import { useAuth } from "../lib/auth";
 
 const ICON: Record<string, string> = { server: "🍽️", kitchen: "🥟" };
@@ -48,6 +50,10 @@ export function JobDetail() {
   const [easy, setEasy] = useState(false);
   const [applied, setApplied] = useState<Application | null>(null);
   const [busy, setBusy] = useState(false);
+  const [prefs, setPrefs] = useState<string[]>([]);
+  const [reply, setReply] = useState<ApplyResult | null>(null);
+  const [slot, setSlot] = useState<string>("");
+  const L = (account?.lang || "en") as Lang;
 
   useEffect(() => { api.openJob(Number(id)).then(setJob).catch((e) => setErr((e as Error).message)); }, [id]);
   useEffect(() => {
@@ -60,7 +66,7 @@ export function JobDetail() {
     setBusy(true);
     setErr("");
     try {
-      await api.apply(Number(id));
+      setReply(await api.apply(Number(id), undefined, prefs));
       const r = await api.myApplications();
       setApplied(r.applications.find((a) => a.job_id === Number(id)) ?? null);
     } catch (e) { setErr((e as Error).message); }
@@ -83,10 +89,37 @@ export function JobDetail() {
                 <button type="button" aria-pressed={easy} onClick={() => setEasy(true)}>Easy read</button>
               </div>
               <pre>{easy ? job.easy_read : job.listing}</pre>
+              {!!job.task_cards?.length && (
+                <>
+                  <h2 style={{ fontSize: 19, margin: "22px 0 8px" }}>What the job involves</h2>
+                  <div className="row" style={{ alignItems: "stretch" }}>
+                    {job.task_cards.map((tc, i) => (
+                      <div key={i} className="chip" style={{ display: "block", textAlign: "left", maxWidth: 260, whiteSpace: "normal", padding: "10px 14px", height: "auto" }}>
+                        <b>{TASK_ICON[tc.kind] || "•"} {tc.title}</b>
+                        <div className="muted" style={{ fontSize: 13 }}>{tc.detail}</div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
             </article>
             <aside className="card-box sticky-card">
               <h2 style={{ margin: 0, fontSize: 21, fontWeight: 600 }}>{job.pay_range}</h2>
               <p className="muted" style={{ margin: "6px 0 16px", fontSize: 15 }}>{job.schedule}<br />{job.location}</p>
+              {reply && (
+                <div className="panel" role="status" lang={reply.lang} style={{ marginBottom: 14 }}>
+                  <p style={{ margin: "0 0 8px", fontSize: 15 }}>{reply.reply}</p>
+                  <SpeakButton text={reply.reply} lang={reply.lang} />
+                  <span className="field-label">{WB[L].slots}</span>
+                  <div className="row">
+                    {reply.interview_slots.map((sl) => (
+                      <button key={sl} type="button" className="chip" aria-pressed={slot === sl} onClick={() => setSlot(sl)}>{sl}</button>
+                    ))}
+                  </div>
+                  {slot && <p style={{ fontSize: 14, margin: "8px 0 0" }}>✓ {WB[L].booked} {slot}</p>}
+                  <p className="muted" style={{ fontSize: 12, margin: "8px 0 0" }}>{reply.interview_note}</p>
+                </div>
+              )}
               {applied ? (
                 <>
                   <span className="badge badge-success">Applied ✓</span>
@@ -96,9 +129,26 @@ export function JobDetail() {
               ) : account?.role === "manager" ? (
                 <p className="muted" style={{ fontSize: 15 }}>You're signed in as a manager. Applicants apply here.</p>
               ) : (
+                <>
+                {account && (
+                  <fieldset style={{ border: 0, padding: 0, margin: "0 0 14px" }}>
+                    <legend className="field-label" style={{ marginTop: 0 }}>{WB[L].title}</legend>
+                    <p className="muted" style={{ fontSize: 13, margin: "0 0 8px" }}>{WB[L].sub}</p>
+                    <div className="row">
+                      {WORK_PREFS.map((wp) => (
+                        <button key={wp.id} type="button" className="chip" aria-pressed={prefs.includes(wp.id)}
+                          onClick={() => setPrefs(prefs.includes(wp.id) ? prefs.filter((x) => x !== wp.id) : [...prefs, wp.id])}>
+                          {wp.icon} {wp.label[L]}
+                        </button>
+                      ))}
+                    </div>
+                  </fieldset>
+                )}
                 <button type="button" className="btn btn-primary btn-lg btn-block" onClick={apply} disabled={busy}>
-                  {busy ? "Sending…" : account ? "Apply now" : "Sign in to apply"}
+                  {busy ? "Sending…" : account ? WB[L].apply : "Sign in to apply"}
                 </button>
+                <p className="muted" style={{ fontSize: 13, margin: "8px 0 0" }}>{WB[L].noCv}</p>
+                </>
               )}
               {err && job && <p className="err" role="alert">{err}</p>}
               <p className="muted" style={{ fontSize: 13, marginTop: 14 }}>Training is available in English, 中文 and Español, with video, pictures and read-aloud.</p>
@@ -166,3 +216,16 @@ export function MyApplications() {
     </div>
   );
 }
+
+const WORK_PREFS: { id: string; icon: string; label: Record<Lang, string> }[] = [
+  { id: "captions", icon: "💬", label: { en: "Captions", zh: "字幕", es: "Subtítulos" } },
+  { id: "visual", icon: "🖼️", label: { en: "Picture steps", zh: "图片步骤", es: "Pasos con imágenes" } },
+  { id: "read_aloud", icon: "🔊", label: { en: "Read aloud", zh: "朗读", es: "Leer en voz alta" } },
+  { id: "seated", icon: "🪑", label: { en: "Seated station", zh: "坐着的工位", es: "Puesto sentado" } },
+  { id: "extra_time", icon: "⏳", label: { en: "Extra time", zh: "多一点时间", es: "Más tiempo" } },
+];
+const WB: Record<Lang, Record<string, string>> = {
+  en: { title: "How do you work best? (optional)", sub: "Work preferences, not medical questions. Your manager sees them as setup notes.", apply: "Apply now", noCv: "No résumé needed.", slots: "Pick a time to meet the manager", booked: "Requested:" },
+  zh: { title: "你怎样工作最顺手？（可选）", sub: "这是工作偏好，不是健康问题。经理会看到这些安排建议。", apply: "立即申请", noCv: "不需要简历。", slots: "选一个时间和经理见面", booked: "已申请：" },
+  es: { title: "¿Cómo trabajas mejor? (opcional)", sub: "Preferencias de trabajo, no preguntas médicas. Tu gerente las verá como notas de preparación.", apply: "Postularme", noCv: "No necesitas currículum.", slots: "Elige un horario para conocer al gerente", booked: "Solicitado:" },
+};

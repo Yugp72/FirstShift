@@ -40,6 +40,7 @@ const S = {
   placeholder: { en: "Type here…", zh: "在这里输入…", es: "Escribe aquí…" },
   send: { en: "Send", zh: "发送", es: "Enviar" },
   reading: { en: "Reading your answer", zh: "正在看你的回答", es: "Leyendo tu respuesta" },
+  readingSlow: { en: "Enter AI is reading your answer for meaning, in any language. This can take about 20 seconds.", zh: "Enter AI 正在理解你的回答，用什么语言都可以。大约需要 20 秒。", es: "Enter AI está leyendo el sentido de tu respuesta, en cualquier idioma. Puede tardar unos 20 segundos." },
   tryAgain: { en: "Try again", zh: "再试一次", es: "Intentar otra vez" },
   speakAnswer: { en: "Say it", zh: "用说的", es: "Dilo en voz" },
   listening: { en: "Listening… tap to stop", zh: "正在听…点一下停止", es: "Escuchando… toca para parar" },
